@@ -1,0 +1,270 @@
+<body>
+  <!-- tap on top start -->
+  <div class="tap-top">
+      <span class="lnr lnr-chevron-up"></span>
+  </div>
+  <!-- tap on tap end -->
+
+  <!-- page-wrapper start -->
+  <div class="page-wrapper compact-wrapper" id="pageWrapper">
+    <%- include('../partials/adminHeader')%>
+    <!-- Page Body start -->
+          <div class="page-body-wrapper">
+            <%- include('../partials/adminSidebar')%>
+
+                  <div class="page-body">
+
+                      <!-- New Product Add Start -->
+                      <div class="container-fluid">
+                          <div class="row">
+                              <div class="col-12">
+                                  <div class="row">
+                                      <div class="col-sm-8 m-auto">
+                                          <div class="card">
+                                              <div class="card-body">
+                                                  <div class="card-header-2">
+                                                      <h5>Edit Product</h5>
+                                                  </div>
+                                                  <form class="theme-form theme-form-2 mega-form"
+                                                      action=""
+                                                      enctype="multipart/form-data" role="form" method="post">
+                                                      <div class="mb-4 row align-items-center">
+                                                          <label class="form-label-title col-sm-3 mb-0">Product
+                                                              Name</label>
+                                                          <div class="col-sm-9">
+                                                              <input required name="title" class="form-control"
+                                                                  type="text" value="<%= product.title %>">
+                                                          </div>
+                                                      </div>
+
+                                                      <div class="mb-4 row align-items-center">
+                                                          <label
+                                                              class="col-sm-3 col-form-label form-label-title">Category</label>
+                                                          <div class="col-sm-9">
+                                                              <select required name="category"
+                                                                  class="js-example-basic-single w-100" name="state">
+                                                                  <option selected> <%= product.category %></option>
+                                                                  <% allCategories.forEach(category=> { %>
+                                                                      <option>
+                                                                          <%= category.name%>
+                                                                      </option>
+                                                                      <% }) %>
+                                                              </select>
+                                                          </div>
+                                                      </div>
+
+
+
+                                                      <div class="mb-4 row align-items-center">
+                                                          <label
+                                                              class="col-sm-3 col-form-label form-label-title">Brand</label>
+                                                          <div class="col-sm-9">
+                                                              <input required name="brand" class="form-control"
+                                                                  type="text" value="<%= product.brand %>">
+                                                          </div>
+                                                      </div>
+
+                                                      
+                                                      <div class="mb-4 row align-items-center">
+                                                          <label
+                                                              class="col-sm-3 col-form-label form-label-title">Model</label>
+                                                          <div class="col-sm-9">
+                                                              <input required name="product_type" class="form-control"
+                                                                  type="text" value="<%= product.model %>">
+                                                          </div>
+                                                      </div>
+
+
+                                                      <div class="mb-4 row align-items-center">
+                                                          <label class="form-label-title col-sm-3 mb-0">Regular Price</label>
+                                                          <div class="col-sm-9">
+                                                              <input required name="regular_price" class="form-control"
+                                                                  type="text" value="<%= product.regular_price %>">
+                                                          </div>
+                                                      </div>
+
+                                                      
+                                                      <div class="mb-4 row align-items-center">
+                                                          <label class="form-label-title col-sm-3 mb-0">Sales Price</label>
+                                                          <div class="col-sm-9">
+                                                              <input required name="sales_price" class="form-control"
+                                                                  type="text" value="<%= product.sales_price%>">
+                                                          </div>
+                                                      </div>
+
+                                                      <div class="mb-4 row align-items-center">
+                                                          <label class="form-label-title col-sm-3 mb-0">Quantity</label>
+                                                          <div class="col-sm-9">
+                                                              <input required name="quantity" class="form-control"
+                                                                  type="text" value="<%= product.quantity %>">
+                                                          </div>
+                                                      </div>                                    
+                                                      
+                                                      <div class="mb-4 row align-items-center">
+                                                          <label class="form-label-title col-sm-3 mb-0">Stock status</label>
+                                                          <div class="col-sm-9">
+                                                              <% if (product.stock_status==="Not Available") { %>
+                                                                  <input type="radio" id="html" name="stock_status" value="Available" >
+                                                                  <label for="html" >Yes</label>
+                                                                  <input type="radio" id="css" name="stock_status" value="Not Available" checked="checked">
+                                                                  <label for="css">No</label>
+                                                              <% } else { %>
+                                                                  <input type="radio" id="html" name="stock_status" value="Available" checked="checked">
+                                                                  <label for="html" >Yes</label>
+                                                                  <input type="radio" id="css" name="stock_status" value="Not Available">
+                                                                  <label for="css">No</label>
+                                                              <% } %>
+                                                          </div>
+                                                      </div>
+
+                                                      <div class="mb-4 row align-items-center">
+                                                          <label
+                                                              class="form-label-title col-sm-3 mb-0">Description</label>
+                                                          <div class="col-sm-9">
+                                                              <textarea class="form-control" rows="4"
+                                                                  name="description"
+                                                                  ><%= product.description %></textarea>
+                                                          </div>
+                                                      </div>
+                                                      <div class="card-header">
+                                                          <h4>Images</h4>
+                                                      </div>
+                                                      <div class="card-body">
+                                                          <div class="input-upload">
+                                                              <div class="d-flex"> 
+                                                                  <% for(var i=0;i<product.images.length;i++){ %>
+                                                                      <img src="/productImages/<%= product.images[i] %>" alt="<%= product.images[1] %>" width="m-auto" height="150px">
+                                                                      <div><a class="btn-sm text  btn-danger" href="/admin/delete-image/<%=product._id%>/<%= product.images[i]%>" onclick="return confirm('This action is going to delete the selected image.')">X</a></div>
+                                                                  <% } %>
+                                                              </div>
+                                                              <input multiple name="image" id="image" class="form-control" type="file">
+                                                          </div>
+                                                      </div>
+                                                      <div class="mb-4">
+                                                          <label for="product_name" class="form-label"></label>
+                                                          <input type="hidden" class="form-control" value="<%=product.images%>" name="imageImport">
+                                                      </div>
+
+                                                      <div class="col-xxl-4">
+                                                          <button type="submit"
+                                                              class="btn text-white theme-bg-color">Update
+                                                              Product</button>
+                                                      </div>
+                                                  </form>
+                                              </div>
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                      <!-- New Product Add End -->
+
+                  </div>
+                  <!-- Container-fluid End -->
+          </div>
+          <!-- Page Body End -->
+  </div>
+  <!-- page-wrapper End -->
+
+  <!-- Modal Start -->
+  <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+      aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal-dialog  modal-dialog-centered">
+          <div class="modal-content">
+              <div class="modal-body">
+                  <h5 class="modal-title" id="staticBackdropLabel">Logging Out</h5>
+                  <p>Are you sure you want to log out?</p>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                  <div class="button-box">
+                      <button type="button" class="btn btn--no" data-bs-dismiss="modal">No</button>
+                      <button type="button" class="btn  btn--yes btn-primary">Yes</button>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+  <!-- Modal End -->
+
+
+</body>
+<style>
+
+/* CSS for image preview size */
+.image-preview {
+  max-width: 277px; /* Set the maximum width */
+  max-height: 277px; /* Set the maximum height */
+  margin: 5px; /* Add margin for spacing */
+}
+
+</style>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+      const removeButtons = document.querySelectorAll(".remove-image");
+      removeButtons.forEach((button) => {
+          button.addEventListener("click", function () {
+              const index = this.getAttribute("data-index");
+              // Remove the image from the DOM
+              this.parentNode.remove();
+              // Add logic to remove the corresponding image from your data
+          });
+      });
+
+      // Handle newly selected images
+// Inside the JavaScript code for handling newly selected images
+const newImagesInput = document.querySelector('input[name="new_images"]');
+newImagesInput.addEventListener("change", function () {
+  const files = this.files;
+  const imageContainer = this.nextElementSibling; // Assuming it's the div after the input
+  for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      const reader = new FileReader();
+      reader.onload = function (event) {
+          // Create an image element, apply the CSS class, and append it to the container
+          const img = document.createElement("img");
+          img.src = event.target.result;
+          img.classList.add("image-preview"); // Apply the CSS class
+          imageContainer.appendChild(img);
+      };
+      reader.readAsDataURL(file);
+  }
+});
+
+  });
+</script>
+
+  <!-- Modal End -->
+  <script src="/assetsb/js/jquery-3.6.0.min.js"></script>
+  <script src="/assetsb/js/bootstrap/bootstrap.bundle.min.js"></script>
+  <script src="/assetsb/js/icons/feather-icon/feather.min.js"></script>
+  <script src="/assetsb/js/icons/feather-icon/feather-icon.js"></script>
+  <!-- scrollbar simplebar js -->
+  <script src="/assetsb/js/scrollbar/simplebar.js"></script>
+  <script src="/assetsb/js/scrollbar/custom.js"></script>
+  <!-- Sidebar js -->
+  <script src="/assetsb/js/config.js"></script>        
+  <!-- bootstrap tag-input js -->
+  <script src="/assetsb/js/bootstrap-tagsinput.min.js"></script>
+  <script src="/assetsb/js/sidebar-menu.js"></script>        
+  <!-- customizer js -->
+  <script src="/assetsb/js/customizer.js"></script>
+
+  <!--Dropzon js -->
+  <script src="/assetsb/js/dropzone/dropzone.js"></script>
+  <script src="/assetsb/js/dropzone/dropzone-script.js"></script>        
+  <!-- Plugins js -->
+  <script src="/assetsb/js/notify/bootstrap-notify.min.js"></script>
+  <script src="/assetsb/js/notify/index.js"></script>        
+  <!-- ck editor js -->
+  <script src="/assetsb/js/ckeditor.js"></script>
+  <script src="/assetsb/js/ckeditor-custom.js"></script>        
+  <!-- select2 js -->
+  <script src="/assetsb/js/select2.min.js"></script>
+  <!-- <script src="/assetsb/js/select2-custom.js"></script> -->
+
+  <!-- sidebar effect -->
+  <script src="/assetsb/js/sidebareffect.js"></script>        
+  <!-- Theme js -->
+  <script src="/assetsb/js/script.js"></script>
+

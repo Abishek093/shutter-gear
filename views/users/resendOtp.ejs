@@ -1,0 +1,83 @@
+<%- include('../partials/styleh') %>
+
+   <div class="container mt-5 shadow p-3 mb-5 bg-white rounded align-items-center">
+      <div class="text-center ">
+         <h1 class="mb-4">OTP Verification</h1>
+         <p>Please enter the OTP sent to your email:</p>
+      </div>
+      <div class="d-flex justify-content-center">
+         <form action="/otp" method="POST" class="text-center">
+            <!-- Timer Display -->
+            <div id="otp-timer" class="error-message"></div>
+            <div class="form-group">
+               <input type="text" name="otp" class="form-control" placeholder="Enter OTP" id="otp" name="otp"
+                  maxlength="4">
+            </div>
+            <button type="submit" class="btn btn-primary">Verify OTP</button>
+            <br>
+            <div class="pt-2">
+               <a class="btn btn-primary" onclick="resendOtp()">Resend OTP</a>
+            </div>
+      </div>
+      <% if(typeof err !=='undefined' ){ %>
+         <p style="color: rgb(255, 0, 0);">
+            <%=err%>
+         </p>
+         <% } %>
+            </form>
+   </div>
+   </div>
+
+
+   <script>
+      function startTimer(duration, display) {
+         var timer = duration, minutes, seconds;
+         setInterval(function () {
+            minutes = parseInt(timer / 60, 10);
+            seconds = parseInt(timer % 60, 10);
+
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+
+            display.textContent = minutes + ":" + seconds;
+
+            if (--timer < 0) {
+               // Timer expired, you can redirect or handle it as needed
+               window.location.href = '/register'; // Redirect to the registration page
+            }
+         }, 1000);
+      }
+
+      // Call this function when the page loads or when the OTP is sent
+      function initializeTimer() {
+         var timerDuration = 60; // Set the duration in seconds (1 minute in this example)
+         var display = document.getElementById('otp-timer');
+         startTimer(timerDuration, display);
+      }
+
+      // Call initializeTimer when the page loads
+      window.onload = function () {
+         initializeTimer();
+      };
+
+      function resendOtp() {
+        // Make an AJAX request to resend OTP
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "/resendOtp", true);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                // Reset the timer
+                initializeTimer();
+            }
+        };
+        xhr.send();
+      }
+
+   </script>
+
+
+
+   <!-- Add the Bootstrap JS and jQuery CDN links before the closing </body> tag -->
+   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

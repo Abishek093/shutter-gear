@@ -1,0 +1,733 @@
+const loadProductsView = async(req, res)=>{
+    try {
+    const category = Array.isArray(req.query.category) ? req.query.category : [req.query.category];
+    console.log(category);
+      const allCategory = await Category.find({is_Listed:false})
+      const brands = await Product.distinct('brand');
+      const categories = await Category.find();
+  
+      // Get the current page from the query parameters, default to 1 if not provided
+      const page = parseInt(req.query.page, 10) || 1;
+      const productsPerPage = 12; // Number of products per page
+  
+      // Use async.parallel to fetch productdata and totalProducts concurrently
+      const results = await async.parallel({
+        productdata: async function () {
+          return Product.find()
+            .skip((page - 1) * productsPerPage)
+            .limit(productsPerPage)
+            .exec();
+        },
+        totalProducts: async function () {
+          return Product.countDocuments().exec();
+        },
+      });
+  
+      const { productdata, totalProducts } = results;
+  
+      // Render your view with the fetched productdata, categories, brands, and pagination information
+      res.render('productsView', {
+        productdata,
+        categories,
+        brands,
+        currentPage: page,
+        totalPages: Math.ceil(totalProducts / productsPerPage),
+        allCategory
+      });
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).send('Internal Server Error');
+    }
+  }
+  
+
+
+
+const product =async(req,res)=>{
+    try{
+
+    const category=await Category.find({})
+        var page = 1;
+        const categories = Array.isArray(req.query.category) ? req.query.category : [req.query.category];
+        console.log(categories);
+        const priceRange = req.query.price || 'all';
+        const colors = Array.isArray(req.query.color) ? req.query.color : [req.query.color];
+      var search = '';
+      if (req.query.search) {
+          search = req.query.search;
+          console.log(search);
+      }
+      const sortBy=req.query.sortBy || 'priceLowToHigh';
+    
+        const userId=req.session.user_id
+        const user=await User.findById(userId)
+        
+        let minPrice=0
+        let maxPrice=Number.MAX_VALUE;
+        switch(priceRange){
+            case 'under25':
+                maxPrice:20000;
+                break;
+            case '25to50':
+                minPrice:20000;
+                maxPrice:40000
+                break;
+            case '50to100':
+                minPrice:40000;
+                maxPrice:60000
+                break;
+            case '100to200':
+                minPrice:60000;
+                maxPrice:80000
+                break;
+            case '100above':
+                    minPrice:80000;  
+                    break;
+        }
+        let sortQuery = {};
+
+
+    if (sortBy === 'priceLowToHigh') {
+      sortQuery = { price: 1 };
+    } else if (sortBy === 'priceHighToLow') {
+      sortQuery = { price: -1 };
+    }
+       
+const filter={
+    $or:[
+        {category: { $in: categories.map(c => new RegExp(c, 'i')) } },
+
+      
+    ],
+    price: { $gte: minPrice, $lte: maxPrice },
+    productColor: { $in: colors.map(c => new RegExp(c, 'i')) },
+
+};
+const searchFilter = {
+    $or: [
+        { name: { $regex: '.*' + search + '.*', $options: 'i' } },
+        { category: { $regex: '.*' + search + '.*', $options: 'i' } },
+        { discountPrize: { $regex: '.*' + search + '.*', $options: 'i' } },
+    ],
+};
+const adminData = await Product.find({
+    $and: [
+        filter,
+        searchFilter,
+    ],
+}).sort(sortQuery);
+        const selectedCategories=categories;
+        const selectedPriceRange=priceRange;
+        selectedColor=colors
+        
+        res.render('productpage', {product: adminData,user,sortBy,category,selectedCategories,selectedPriceRange})
+
+
+    }catch(error){
+        console.log(error.message)
+    }
+
+}
+
+
+
+<% if (category.length > 0) {
+    for (let i = 0; i < category.length; i++) {
+        const isSelected = selectedCategories.includes(category[i].category); %>
+        <li>
+            <input type="checkbox" id="product-cat" name="category" value="<%= category[i].category %>" <%= isSelected ? 'checked' : '' %> style="width: 16px; height: 16px;">
+            <label for="product-cat"><%= category[i].category %></label>
+        </li>
+    <% } 
+} %>
+
+
+<%categories.forEach((category) => { %> 
+    <li>
+        <a href="#" class="filter-checkbox" data-type="category" data-value="<%= category.name %>"><%= category.name %></a>
+    </li>
+<% }) %>
+
+
+<% categories.forEach((category) => { %>
+    <li>
+        <% 
+            const isSelected = selectedCategories.includes(category.name);
+        %>
+        <input type="checkbox" id="product-cat-<%= category.name %>" name="category" value="<%= category.name %>" <%= isSelected ? 'checked' : '' %> style="width: 16px; height: 16px;">
+        <label for="product-cat-<%= category.name %>"><%= category.name %></label>
+    </li>
+<% }) %>
+
+
+
+<div class="sidebar-widget price_range range mb-30">
+                            <div class="widget-header position-relative mb-20 pb-10">
+                                <h5 class="widget-title mb-10">Price Range </h5>
+                                
+                                <div>
+                                    <input type="radio" id="priceAll" name="price" value="all" style="width: 14px;height:14px">
+                                       
+                                    <label for="priceAll">All Prices</label>
+                                </div>
+                                <div>
+                                <input type="radio" id="priceUnder25" name="price"
+                                value="under25" style="width: 14px;height:14px" <%=selectedPriceRange==='under25'
+                                ? 'checked' : '' %>>
+                                <label for="priceUnder25">Under ₹20,000</label></div>
+                                <div>
+                                <input type="radio" id="price25to50" name="price"
+                                value="25to50" style="width: 14px;height:14px" <%=selectedPriceRange==='25to50'
+                                ? 'checked' : '' %>>
+                                <label for="price25to50">₹20,000 to ₹40,000</label>
+                            </div>
+                            <div>
+                                <input type="radio" id="price50to100" name="price"
+                                value="50to100" style="width: 14px;height:14px"<%=selectedPriceRange==='50to100'
+                                ? 'checked' : '' %>>
+                                <label for="price25to50">₹40,000 to ₹60,000</label>
+                            </div>
+                            <div>
+                                <input type="radio" id="price50to100" name="price"
+                                value="100to200" style="width: 14px;height:14px" <%=selectedPriceRange==='100to200'
+                                ? 'checked' : '' %>>
+                                <label for="price100to200">₹60,000 to ₹80,000</label>
+                            </div>
+                            <div>
+                                <input type="radio" id="price200above" name="price"
+                                value="200above" style="width: 14px;height:14px" <%=selectedPriceRange==='200above'
+                                ? 'checked' : '' %>>
+                                <label for="price200above"> ₹80,000 & above</label>
+                            </div>
+                            <div class="price-filter">
+                                <div class="price-filter-inner">
+                                    <div id="slider-range"></div>
+                                    <div class="price_slider_amount">
+                                        <div class="label-input">
+                                           
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                                <section class="mt-50 mb-50">
+            <div class="container">
+          
+                    <div class="col-lg">
+                        <div class="product-detail accordion-detail">
+                            <div class="row mb-50">
+                                <div class="col-md-6 col-sm-12 col-xs-12">
+                                    <div class="detail-gallery">
+                                        <span class="zoom-icon"><i class="fi-rs-search"></i></span>
+                                        <!-- MAIN SLIDES -->
+                                        <div class="product-image-slider">
+                                            <figure class="border-radius-10">
+                                                <img src="/public/productImages/<%= product.productImages[3] %>" alt="product image">
+                                            </figure>
+                                            <figure class="border-radius-10">
+                                                <img src="/public/productImages/<%= product.productImages[1] %>"  alt="product image">
+                                            </figure>
+                                            <figure class="border-radius-10">
+                                                <img src="/public/productImages/<%= product.productImages[2] %>" alt="product image">
+                                            </figure>
+                                            <figure class="border-radius-10">
+                                                <img src="/public/productImages/<%= product.productImages[0] %>"  alt="product image">
+                                            </figure>
+                                       
+                                        </div>
+                                        <!-- THUMBNAILS  -->
+                                        <% if (product.productImages.length > 0) { %>
+                                         <div class="slider-nav-thumbnails pl-15 pr-15">
+                                            <div><img src="/public/productImages/<%= product.productImages[0] %>" class="img-fluid" alt="product image"></div>
+                                            <div><img src="/public/productImages/<%= product.productImages[1] %>" class="img-fluid" alt="product image"></div>
+                                            <div><img src="/public/productImages/<%= product.productImages[2] %>" class="img-fluid" alt="product image">></div>
+                                            <div><img src="/public/productImages/<%= product.productImages[3] %>" class="img-fluid" alt="product image">></div>
+                                          
+                                        
+                                        </div>
+                                    </div>
+                                    <div class="detail-gallery">
+                                        
+                                                <div class="image-container">
+                                                  <div class="row">
+                                                  </div>
+                                                </div>
+                                              <% } else { %>
+                                                <p>No images available for this product.</p>
+                                              <% } %>
+                                              
+                                            
+                                        <!-- THUMBNAILS  -->
+                                        <!-- <div class="slider-nav-thumbnails pl-15 pr-15">
+                                            <div><img src="assets/imgs/shop/thumbnail-3.jpg" alt="product image"></div>
+                                            <div><img src="assets/imgs/shop/thumbnail-4.jpg" alt="product image"></div>
+                                            <div><img src="assets/imgs/shop/thumbnail-5.jpg" alt="product image"></div>
+                                            <div><img src="assets/imgs/shop/thumbnail-6.jpg" alt="product image"></div>
+                                            <div><img src="assets/imgs/shop/thumbnail-7.jpg" alt="product image"></div>
+                                            <div><img src="assets/imgs/shop/thumbnail-8.jpg" alt="product image"></div>
+                                            <div><img src="assets/imgs/shop/thumbnail-9.jpg" alt="product image"></div>
+                                        </div> -->
+                                    </div>
+                                    <!-- End Gallery -->
+                                    <div class="social-icons single-share">
+                                        <ul class="text-grey-5 d-inline-block">
+                                            <li><strong class="mr-10">Share this:</strong></li>
+                                            <li class="social-facebook"><a href="#"><img src="assets/imgs/theme/icons/icon-facebook.svg" alt=""></a></li>
+                                            <li class="social-twitter"> <a href="#"><img src="assets/imgs/theme/icons/icon-twitter.svg" alt=""></a></li>
+                                            <li class="social-instagram"><a href="#"><img src="assets/imgs/theme/icons/icon-instagram.svg" alt=""></a></li>
+                                            <li class="social-linkedin"><a href="#"><img src="assets/imgs/theme/icons/icon-pinterest.svg" alt=""></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-sm-12 col-xs-12">
+                                    <div class="detail-info">
+                                        <h2 class="title-detail"><%= product.name %></h2>
+                                        <div class="product-detail-rating">
+                                            <div class="pro-details-brand">
+                                                
+                                            </div>
+                                            <div class="product-rate-cover text-end">
+                                                <div class="product-rate d-inline-block">
+                                                    <div class="product-rating" style="width:90%">
+                                                    </div>
+                                                </div>
+                                                <span class="font-small ml-5 text-muted"> (25 reviews)</span>
+                                            </div>
+                                        </div>
+                                        <div class="clearfix product-price-cover">
+                                            <div class="product-price primary-color float-left">
+                                                <ins><span class="text-brand"><%= product.discountPrice %></span></ins>
+                                                <ins><span class="old-price font-md ml-15"><%= product.price%></span></ins>
+                                               
+                                            </div>
+                                        </div>
+                                        <div class="bt-1 border-color-1 mt-15 mb-15"></div>
+                                        <div class="short-desc mb-30">
+                                            <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aliquam rem officia, corrupti reiciendis minima nisi modi, quasi, odio minus dolore impedit fuga eum eligendi? Officia doloremque facere quia. Voluptatum, accusantium!</p>
+                                        </div>
+                                        <div class="product_sort_info font-xs mb-30">
+                                            <ul>
+                                                <li class="mb-10"><i class="fi-rs-crown mr-5"></i> 1 Year  Brand Warranty</li>
+                                                <li class="mb-10"><i class="fi-rs-refresh mr-5"></i> 30 Day Return Policy</li>
+                                                <li><i class="fi-rs-credit-card mr-5"></i> Cash on Delivery available</li>
+                                            </ul>
+                                        </div>
+                                        
+                                        
+                                        <div class="bt-1 border-color-1 mt-30 mb-30"></div>
+                                        <div class="detail-extralink">
+                                            <div class="detail-qty border radius">
+                                                <a href="#" class="qty-down"><i class="fi-rs-angle-small-down"></i></a>
+                                                <span class="qty-val">1</span>
+                                                <a href="#" class="qty-up"><i class="fi-rs-angle-small-up"></i></a>
+                                            </div>
+                                            <div class="product-extra-link2">
+                                                <button type="submit" class="button button-add-to-cart">Add to cart</button>
+                                                </form>
+                                                <a aria-label="Add To Wishlist" class="action-btn hover-up" href="shop-wishlist.html"><i class="fi-rs-heart"></i></a>
+                                                <a aria-label="Compare" class="action-btn hover-up" href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                    <!-- Detail Info -->
+                                </div>
+                            </div>
+                            <div class="tab-style3">
+                                <ul class="nav nav-tabs text-uppercase">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" id="Description-tab" data-bs-toggle="tab" href="#Description">Description</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="Additional-info-tab" data-bs-toggle="tab" href="#Additional-info">Additional info</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="Reviews-tab" data-bs-toggle="tab" href="#Reviews">Reviews (3)</a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content shop_info_tab entry-main-content">
+                                    <div class="tab-pane fade show active" id="Description">
+                                        <div class="">
+                                            <p>Uninhibited carnally hired played in whimpered dear gorilla koala depending and much yikes off far quetzal goodness and from for grimaced goodness unaccountably and meadowlark near unblushingly crucial scallop
+                                                tightly neurotic hungrily some and dear furiously this apart.</p>
+                                            <p>Spluttered narrowly yikes left moth in yikes bowed this that grizzly much hello on spoon-fed that alas rethought much decently richly and wow against the frequent fluidly at formidable acceptably flapped
+                                                besides and much circa far over the bucolically hey precarious goldfinch mastodon goodness gnashed a jellyfish and one however because.
+                                            </p>
+                                            <ul class="product-more-infor mt-30">
+                                                <li><span>Type Of Packing</span> Bottle</li>
+                                                <li><span>Color</span> Green, Pink, Powder Blue, Purple</li>
+                                                <li><span>Quantity Per Case</span> 100ml</li>
+                                                <li><span>Ethyl Alcohol</span> 70%</li>
+                                                <li><span>Piece In One</span> Carton</li>
+                                            </ul>
+                                            <hr class="wp-block-separator is-style-dots">
+                                            <p>Laconic overheard dear woodchuck wow this outrageously taut beaver hey hello far meadowlark imitatively egregiously hugged that yikes minimally unanimous pouted flirtatiously as beaver beheld above forward
+                                                energetic across this jeepers beneficently cockily less a the raucously that magic upheld far so the this where crud then below after jeez enchanting drunkenly more much wow callously irrespective limpet.</p>
+                                            <h4 class="mt-30">Packaging & Delivery</h4>
+                                            <hr class="wp-block-separator is-style-wide">
+                                            <p>Less lion goodness that euphemistically robin expeditiously bluebird smugly scratched far while thus cackled sheepishly rigid after due one assenting regarding censorious while occasional or this more crane
+                                                went more as this less much amid overhung anathematic because much held one exuberantly sheep goodness so where rat wry well concomitantly.
+                                            </p>
+                                            <p>Scallop or far crud plain remarkably far by thus far iguana lewd precociously and and less rattlesnake contrary caustic wow this near alas and next and pled the yikes articulate about as less cackled dalmatian
+                                                in much less well jeering for the thanks blindly sentimental whimpered less across objectively fanciful grimaced wildly some wow and rose jeepers outgrew lugubrious luridly irrationally attractively
+                                                dachshund.
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="Additional-info">
+                                        <table class="font-md">
+                                            <tbody>
+                                                <tr class="stand-up">
+                                                    <th>PRODUCT NAME</th>
+                                                    <td>
+                                                        <p ><%= product.name %></p>
+                                                    </td>
+                                                </tr>
+                                                <tr class="folded-wo-wheels">
+                                                    <th>PRODUCT CATEGORY</th>
+                                                    <td>
+                                                        <p><%= product.category %></p>
+                                                    </td>
+                                                </tr>
+                                                <tr class="folded-w-wheels">
+                                                    <th>PRODUCT PRICE</th>
+                                                    <td>
+                                                        <p><%= product.price %></p>
+                                                    </td>
+                                                </tr>
+                                                <tr class="door-pass-through">
+                                                    <th>DISCOUNT PRICE</th>
+                                                    <td>
+                                                        <p><%= product.discountPrice%></p>
+                                                    </td>
+                                                </tr>
+                                                <tr class="frame">
+                                                    <th>BATTERY</th>
+                                                    <td>
+                                                        <p><%= product.battery %></p>
+                                                    </td>
+                                                </tr>
+                                                <tr class="weight-wo-wheels">
+                                                    <th>FRONT CAM</th>
+                                                    <td>
+                                                        <p><%= product.frontCam%></p>
+                                                    </td>
+                                                </tr>
+                                                <tr class="weight-wo-wheels">
+                                                    <th>REAR CAM</th>
+                                                    <td>
+                                                        <p><%= product.rearCam%></p>
+                                                    </td>
+                                                </tr>
+                                                <tr class="weight-capacity">
+                                                    <th>RAM</th>
+                                                    <td>
+                                                        <p><%= product.ram %></p>
+                                                    </td>
+                                                </tr>
+                                                <tr class="width">
+                                                    <th>ROM</th>
+                                                    <td>
+                                                        <p><%= product.rom %></p>
+                                                    </td>
+                                                </tr>
+                                                <tr class="handle-height-ground-to-handle">
+                                                    <th>EXPANDABLE</th>
+                                                    <td>
+                                                        <p><%= product.expandable%></p>
+                                                    </td>
+                                                </tr>
+                                                
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="tab-pane fade" id="Reviews">
+                                        <!--Comments-->
+                                        <div class="comments-area">
+                                            <div class="row">
+                                                <div class="col-lg-8">
+                                                    <h4 class="mb-30">Customer questions & answers</h4>
+                                                    <div class="comment-list">
+                                                        <div class="single-comment justify-content-between d-flex">
+                                                            <div class="user justify-content-between d-flex">
+                                                                <div class="thumb text-center">
+                                                                    <img src="assets/imgs/page/avatar-6.jpg" alt="">
+                                                                    <h6><a href="#">Jacky Chan</a></h6>
+                                                                    <p class="font-xxs">Since 2012</p>
+                                                                </div>
+                                                                <div class="desc">
+                                                                    <div class="product-rate d-inline-block">
+                                                                        <div class="product-rating" style="width:90%">
+                                                                        </div>
+                                                                    </div>
+                                                                    <p>Thank you very fast shipping from Poland only 3days.</p>
+                                                                    <div class="d-flex justify-content-between">
+                                                                        <div class="d-flex align-items-center">
+                                                                            <p class="font-xs mr-30">December 4, 2020 at 3:12 pm </p>
+                                                                            <a href="#" class="text-brand btn-reply">Reply <i class="fi-rs-arrow-right"></i> </a>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <!--single-comment -->
+                                                        <div class="single-comment justify-content-between d-flex">
+                                                            <div class="user justify-content-between d-flex">
+                                                                <div class="thumb text-center">
+                                                                    <img src="assets/imgs/page/avatar-7.jpg" alt="">
+                                                                    <h6><a href="#">Ana Rosie</a></h6>
+                                                                    <p class="font-xxs">Since 2008</p>
+                                                                </div>
+                                                                <div class="desc">
+                                                                    <div class="product-rate d-inline-block">
+                                                                        <div class="product-rating" style="width:90%">
+                                                                        </div>
+                                                                    </div>
+                                                                    <p>Great low price and works well.</p>
+                                                                    <div class="d-flex justify-content-between">
+                                                                        <div class="d-flex align-items-center">
+                                                                            <p class="font-xs mr-30">December 4, 2020 at 3:12 pm </p>
+                                                                            <a href="#" class="text-brand btn-reply">Reply <i class="fi-rs-arrow-right"></i> </a>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <!--single-comment -->
+                                                        <div class="single-comment justify-content-between d-flex">
+                                                            <div class="user justify-content-between d-flex">
+                                                                <div class="thumb text-center">
+                                                                    <img src="assets/imgs/page/avatar-8.jpg" alt="">
+                                                                    <h6><a href="#">Steven Keny</a></h6>
+                                                                    <p class="font-xxs">Since 2010</p>
+                                                                </div>
+                                                                <div class="desc">
+                                                                    <div class="product-rate d-inline-block">
+                                                                        <div class="product-rating" style="width:90%">
+                                                                        </div>
+                                                                    </div>
+                                                                    <p>Authentic and Beautiful, Love these way more than ever expected They are Great earphones</p>
+                                                                    <div class="d-flex justify-content-between">
+                                                                        <div class="d-flex align-items-center">
+                                                                            <p class="font-xs mr-30">December 4, 2020 at 3:12 pm </p>
+                                                                            <a href="#" class="text-brand btn-reply">Reply <i class="fi-rs-arrow-right"></i> </a>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <!--single-comment -->
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-4">
+                                                    <h4 class="mb-30">Customer reviews</h4>
+                                                    <div class="d-flex mb-30">
+                                                        <div class="product-rate d-inline-block mr-15">
+                                                            <div class="product-rating" style="width:90%">
+                                                            </div>
+                                                        </div>
+                                                        <h6>4.8 out of 5</h6>
+                                                    </div>
+                                                    <div class="progress">
+                                                        <span>5 star</span>
+                                                        <div class="progress-bar" role="progressbar" style="width: 50%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">50%</div>
+                                                    </div>
+                                                    <div class="progress">
+                                                        <span>4 star</span>
+                                                        <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
+                                                    </div>
+                                                    <div class="progress">
+                                                        <span>3 star</span>
+                                                        <div class="progress-bar" role="progressbar" style="width: 45%;" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100">45%</div>
+                                                    </div>
+                                                    <div class="progress">
+                                                        <span>2 star</span>
+                                                        <div class="progress-bar" role="progressbar" style="width: 65%;" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100">65%</div>
+                                                    </div>
+                                                    <div class="progress mb-30">
+                                                        <span>1 star</span>
+                                                        <div class="progress-bar" role="progressbar" style="width: 85%;" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100">85%</div>
+                                                    </div>
+                                                    <a href="#" class="font-xs text-muted">How are ratings calculated?</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--comment form-->
+                                        <div class="comment-form">
+                                            <h4 class="mb-15">Add a review</h4>
+                                            <div class="product-rate d-inline-block mb-30">
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-lg-8 col-md-12">
+                                                    <form class="form-contact comment_form" action="#" id="commentForm">
+                                                        <div class="row">
+                                                            <div class="col-12">
+                                                                <div class="form-group">
+                                                                    <textarea class="form-control w-100" name="comment" id="comment" cols="30" rows="9" placeholder="Write Comment"></textarea>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-6">
+                                                                <div class="form-group">
+                                                                    <input class="form-control" name="name" id="name" type="text" placeholder="Name">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-6">
+                                                                <div class="form-group">
+                                                                    <input class="form-control" name="email" id="email" type="email" placeholder="Email">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-12">
+                                                                <div class="form-group">
+                                                                    <input class="form-control" name="website" id="website" type="text" placeholder="Website">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <button type="submit" class="button button-contactForm">Submit
+                                                                Review</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            </div>
+                            <div class="banner-img banner-big wow fadeIn f-none animated mt-50">
+                                <img class="border-radius-10" src="/public/logo/banner(4).jpg" alt="">
+                                <div class="banner-text">
+                                    <h4 class="mb-15 mt-40">Repair Services</h4>
+                                    <h2 class="fw-600 mb-20">We're an Apple <br>Authorised Service Provider</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 primary-sidebar sticky-sidebar">
+                        
+                        <!-- Fillter By Price -->
+                        
+                        <!-- Product sidebar Widget -->
+                        
+                        <div class="banner-img wow fadeIn mb-45 animated d-lg-block d-none">
+                           
+                            <div class="banner-text">
+                                <span></span>
+                                <h4 m><br></h4>
+                                <a href="shop-grid-right.html"><i class="fi-rs-arrow-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+               
+            </div>
+        </section>
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+const loadProductsView = async (req, res) => {
+  try {
+    const allCategory = await Category.distinct('name');
+    const brands = await Product.distinct('brand');
+    const categories = await Category.find();
+
+    // Get the current page from the query parameters, default to 1 if not provided
+    const page = parseInt(req.query.page, 10) || 1;
+    const productsPerPage = 12; // Number of products per page
+
+    // Construct the filter based on selected categories and brands
+    const selectedCategories = Array.isArray(req.query.categories) ? req.query.categories : [];
+    const selectedBrands = Array.isArray(req.query.brands) ? req.query.brands : [];
+
+    // Build the filter object based on selected categories and brands
+    const filter = {
+      $or: [
+        { category: { $in: selectedCategories } },
+        { brand: { $in: selectedBrands } }
+      ]
+    };
+
+    // Use async.parallel to fetch product data and totalProducts concurrently
+    const results = await async.parallel({
+      productdata: async function () {
+        const productData = await Product.find(filter)
+          .skip((page - 1) * productsPerPage)
+          .limit(productsPerPage)
+          .exec();
+        return productData;
+      },
+      totalProducts: async function () {
+        const total = await Product.countDocuments(filter).exec();
+        console.log("Total Products:", total);
+        return total;
+      },
+    });
+    
+
+    const { productdata, totalProducts } = results;
+
+    // Render your view with the fetched product data, categories, brands, and pagination information
+    res.render('productsView', {
+      productdata,
+      categories,
+      brands,
+      currentPage: page,
+      totalPages: Math.ceil(totalProducts / productsPerPage),
+      allCategory
+    });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send('Internal Server Error');
+  }
+};
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+ body {
+    font-family: Arial, sans-serif;
+ }
+ .container {
+    max-width: 300px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+ }
+ input[type=text] {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+ }
+ button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+ }
+ button:hover {
+    opacity: 0.8;
+ }
+</style>
+</head>
+<body>
+
+<div class="container">
+ <label for="otp"><b>Enter 4 Digits OTP</b></label>
+ <form action="/otp" method="post"> <!-- Add this form element -->
+   <input type="text" id="otp" name="otp" maxlength="4" required>
+   <button type="submit">Submit</button>
+ </form>
+</div>
+
+</body>
+</html>
