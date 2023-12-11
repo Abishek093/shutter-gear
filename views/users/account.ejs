@@ -46,12 +46,35 @@
 								</ul>
 	                		</aside><!-- End .col-lg-3 -->
 
-	                		<div class="col-md-8 col-lg-9">
-	                			<div class="tab-content">
-								    <div class="tab-pane fade show active" id="tab-dashboard" role="tabpanel" aria-labelledby="tab-dashboard-link">
-								    	<p>Hello <span class="font-weight-normal text-dark"><%= user.name %></span> <br>
-								    	From your account dashboard you can view your <a href="#tab-orders" class="tab-trigger-link link-underline">recent orders</a>, manage your <a href="#tab-address" class="tab-trigger-link">shipping and billing addresses</a>, and <a href="#tab-account" class="tab-trigger-link">edit your password and account details</a>.</p>
-								    </div><!-- .End .tab-pane -->
+							<div class="col-md-8 col-lg-9">
+								<div class="tab-content">
+
+									<div class="tab-pane fade show active" id="tab-dashboard" role="tabpanel"
+										aria-labelledby="tab-dashboard-link">
+										<p>Hello <span class="font-weight-normal text-dark">
+												<%=user.name%>
+											</span>
+										</p>
+										<ul>
+											<li>
+												<%=user.name%>
+											</li>
+											<li>
+												<%=user.email%>
+											</li>
+											<li>
+												<%=user.mobile%>
+											</li>
+
+										</ul>
+										<br>
+										From your account dashboard you can view your <a href="#tab-orders"
+											class="tab-trigger-link link-underline">recent orders</a>,
+										manage your <a href="#tab-address" class="tab-trigger-link">shipping
+											and billing addresses</a>, and <a href="#tab-account"
+											class="tab-trigger-link">edit your password and account
+											details</a>.
+									</div><!-- .End .tab-pane -->
                                     (not <span class="font-weight-normal text-dark">User</span>? <a href="#">Log out</a>) 
 								    	<br>
 										
@@ -237,42 +260,34 @@
 
 								</div><!-- .End .tab-pane -->
 
-								    <div class="tab-pane fade" id="tab-account" role="tabpanel" aria-labelledby="tab-account-link">
-								    	<form action="#">
-			                				<div class="row">
-			                					<div class="col-sm-6">
-			                						<label>First Name *</label>
-			                						<input type="text" class="form-control" required>
-			                					</div><!-- End .col-sm-6 -->
+									<div class="tab-pane fade" id="tab-account" role="tabpanel"
+									aria-labelledby="tab-account-link">
+									<form action="/editUserDetails" method="post">
 
-			                					<div class="col-sm-6">
-			                						<label>Last Name *</label>
-			                						<input type="text" class="form-control" required>
-			                					</div><!-- End .col-sm-6 -->
-			                				</div><!-- End .row -->
 
-		            						<label>Display Name *</label>
-		            						<input type="text" class="form-control" required>
-		            						<small class="form-text">This will be how your name will be displayed in the account section and in reviews</small>
+										<label>Display Name *</label>
 
-		                					<label>Email address *</label>
-		        							<input type="email" class="form-control" required>
+										<input type="text" class="form-control" value="<%=user.name%>"
+											name="displayName">
+										<small class="form-text">This will be how your name will be
+											displayed in the account section and in reviews</small>
 
-		            						<label>Current password (leave blank to leave unchanged)</label>
-		            						<input type="password" class="form-control">
+										<label>Phone Number</label>
+										<input type="number" class="form-control"
+											value="<%=user.mobile%>" name="phoneNumber">
 
-		            						<label>New password (leave blank to leave unchanged)</label>
-		            						<input type="password" class="form-control">
 
-		            						<label>Confirm new password</label>
-		            						<input type="password" class="form-control mb-2">
 
-		                					<button type="submit" class="btn btn-outline-primary-2">
-			                					<span>SAVE CHANGES</span>
-			            						<i class="icon-long-arrow-right"></i>
-			                				</button>
-			                			</form>
-								    </div><!-- .End .tab-pane -->
+										<label>Email</label>
+										<input type="email" class="form-control" value="<%=user.email%>" name="email">
+
+
+										<button type="submit" class="btn btn-outline-primary-2">
+											<span>SAVE CHANGES</span>
+											<i class="icon-long-arrow-right"></i>
+										</button>
+									</form>
+								</div><!-- .End .tab-pane -->
 								</div>
 	                		</div><!-- End .col-lg-9 -->
 	                	</div><!-- End .row -->

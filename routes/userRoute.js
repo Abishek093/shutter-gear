@@ -34,11 +34,12 @@ user_route.post('/otp', userController.verifyOtp);
 user_route.get('/resendOtp', userController.loadResendOtp);//
 user_route.post('/resendOtp', userController.verifyResendOtp);//
 
-user_route.get('/login', userController.loadLogin)
+user_route.get('/login',auth.isLogout, userController.loadLogin)
 user_route.post('/login', userController.verifyLogin)
 
-user_route.get('/landingHome',userController.loadLandingPage)
-user_route.get('/user',userController.loadUserProfile)
+user_route.get('/landingHome', auth.isLogin, auth.isUserBlocked, userController.loadLandingPage);
+user_route.get('/user',auth.isLogin, auth.isUserBlocked, userController.loadUserProfile)
+user_route.post('/editUserDetails',userController.updateUserProfile)
 
 user_route.post('/add-billing-address',addressController.addAddress)
 
@@ -49,6 +50,7 @@ user_route.get('/logout',userController.logout)
 user_route.get('/cart',cartController.loadCart)
 user_route.get('/add-to-cart/:id',cartController.addToCart)
 user_route.post('/updateCart',cartController.updateCart)
+user_route.get('/removeProduct',cartController.removeProduct);  
 
 user_route.get('/checkOut',orderController.loadCheckOut)
 

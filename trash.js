@@ -676,4 +676,22 @@ module.exports={
 
 
 
+/////////////////////////////////////////////before RAzorpay
+const response = await fetch('/confirm-order',{
+    method: 'POST',
+    headers: {
+        'Content-Type' : 'application/json'
+    },
+    body:JSON.stringify({ addressId , PaymentMethod })
+    
+})
 
+
+if (response.ok) {
+    await Swal.fire('Success' , 'Order Placed succesfully ',  'success')
+
+    window.location.href = '/success-page'
+}else{
+    await Swal.fire('error', 'Failed to place the order', 'error')
+}
+///////////////////////////////////////////////////////////////////////////////

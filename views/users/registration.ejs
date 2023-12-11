@@ -64,7 +64,7 @@
     }
 </style>
 
-<script>
+<!-- <script>
     function validateForm() {
         var name = document.getElementById('singin-name').value;
         var email = document.getElementById('singin-email').value;
@@ -112,22 +112,86 @@
     }
 
     function validateEmail(email) {
-        // Add your email validation regex here
         var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
     }
 
     function validatePhoneNumber(phoneNumber) {
-        // Add your phone number validation regex here
         var phoneRegex = /^\d{10}$/;
         return phoneRegex.test(phoneNumber);
     }
 
     function validatePassword(password) {
-        // Add your password validation regex here (at least 8 characters, one uppercase letter, one lowercase letter, one number, and one special character)
+        var passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        return passwordRegex.test(password);
+    }
+</script> -->
+
+<script>
+    function validateForm() {
+        var name = document.getElementById('singin-name').value;
+        var email = document.getElementById('singin-email').value;
+        var mno = document.getElementById('singin-mno').value;
+        var password = document.getElementById('singin-password').value;
+        var confirmPassword = document.getElementById('singin-confirm-password').value;
+
+        document.getElementById('nameError').innerText = '';
+        document.getElementById('emailError').innerText = '';
+        document.getElementById('mnoError').innerText = '';
+        document.getElementById('passwordError').innerText = '';
+        document.getElementById('confirmPasswordError').innerText = '';
+
+        var isValid = true;
+
+        if (name.trim() === '') {
+            document.getElementById('nameError').innerText = 'Please enter your username';
+            isValid = false;
+        }
+
+        if (email.trim() === '' || !validateEmail(email)) {
+            document.getElementById('emailError').innerText = 'Please enter a valid email address';
+            isValid = false;
+        }
+
+        if (mno.trim() === '' || !validatePhoneNumber(mno)) {
+            document.getElementById('mnoError').innerText = 'Please enter a valid mobile number';
+            isValid = false;
+        }
+
+        if (password.trim() === '' || !validatePassword(password)) {
+            document.getElementById('passwordError').innerText = 'Your password must be at least 8 characters long and include a combination of uppercase letters, numbers, and special characters.';
+            isValid = false;
+        }
+
+        if (confirmPassword.trim() === '') {
+            document.getElementById('confirmPasswordError').innerText = 'Please confirm your password';
+            isValid = false;
+        }
+
+        if (password !== confirmPassword) {
+            document.getElementById('confirmPasswordError').innerText = 'Passwords do not match';
+            isValid = false;
+        }
+
+        return isValid;
+    }
+
+    function validateEmail(email) {
+        var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    }
+
+    function validatePhoneNumber(phoneNumber) {
+        var phoneRegex = /^\d{10}$/;
+        return phoneRegex.test(phoneNumber);
+    }
+
+    function validatePassword(password) {
         var passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
         return passwordRegex.test(password);
     }
 </script>
+
+
 
 <%- include('../layouts/footer.ejs') %></br>

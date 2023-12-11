@@ -125,10 +125,55 @@ const updateCart = async (req, res) => {
 };
 
 
-
+const removeProduct = async (req, res) => {
+    try {
+      const productId = req.query.id;
+      const user = req.session.user_id;
+  
+      const userCart = await Cart.findOne({ user: user });
+  
+      if (userCart) {
+        const productIndex = userCart.products.findIndex((item) =>
+          item.product.toString() === productId
+        );
+  
+        if (productIndex !== -1) {
+          const removedProduct = userCart.products[productIndex];
+          console.log(removedProduct);
+  
+          const removedsubTotal = removedProduct.subTotal;
+          console.log(removedsubTotal);
+  
+          userCart.products.splice(productIndex, 1);
+  
+          // Check if removedsubTotal is a valid number
+          if (!isNaN(removedsubTotal)) {
+            userCart.total = userCart.total - removedsubTotal;
+          } else {
+            // Handle the case where removedsubTotal is not a number
+            console.error('Invalid removedsubTotal:', removedsubTotal);
+          }
+  
+          await userCart.save();
+  
+          res.redirect('/cart');
+        } else {
+          console.log('Product not found in the cart');
+          res.redirect('/cart');
+        }
+      } else {
+        console.log('Cart not found for the user');
+        res.redirect('/cart');
+      }
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+  };
 
 module.exports ={
     loadCart,
     addToCart,
     updateCart,
+    removeProduct
 }

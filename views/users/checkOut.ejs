@@ -129,7 +129,8 @@
                                                     <div class="card">
                                                         <div class="card-header" id="heading-3">
                                                             <h2 class="card-title">
-                                                                <a class="collapsed" role="button" data-toggle="collapse" href="#collapse-3" aria-expanded="false" aria-controls="collapse-3" onclick="selectPeyment('Cash On Delivery')" >
+                                                                <a class="collapsed" role="button" data-toggle="collapse" href="#collapse-3" 
+                                                                aria-expanded="false" aria-controls="collapse-3" onclick="selectPeyment('Cash On Delivery')" >
                                                                     Cash on delivery
                                                                 </a>
                                                             </h2>
@@ -149,9 +150,9 @@
                                                             <h2 class="card-title">
                                                                 <a class="collapsed" role="button"
                                                                     data-toggle="collapse" href="#collapse-4"
-                                                                    aria-expanded="false" aria-controls="collapse-4">
-                                                                    PayPal <small class="float-right paypal-link">What
-                                                                        is PayPal?</small>
+                                                                    aria-expanded="false" aria-controls="collapse-4" onclick="selectPeyment('Razorpay')">
+                                                                    Razorpay <small class="float-right paypal-link">What
+                                                                        is Razorpay?</small>
                                                                 </a>
                                                             </h2>
                                                         </div><!-- End .card-header -->
@@ -159,9 +160,8 @@
                                                             aria-labelledby="heading-4"
                                                             data-parent="#accordion-payment">
                                                             <div class="card-body">
-                                                                Nullam malesuada erat ut turpis. Suspendisse urna nibh,
-                                                                viverra non, semper suscipit, posuere a, pede. Donec nec
-                                                                justo eget felis facilisis fermentum.
+                                                                Razorpay is a payment gateway that allows 
+                                                                businesses to accept and disburse payments online
                                                             </div><!-- End .card-body -->
                                                         </div><!-- End .collapse -->
                                                     </div><!-- End .card -->
@@ -549,24 +549,33 @@
 
 </script> -->
 
+       
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script> 
+
 <script>
         let addressId='';
         let PaymentMethod='';
 
         function selectAddress(id){
-
             addressId=id;
+            console.log(addressId);
         }
 
         function selectPeyment(payment) {
-
             PaymentMethod=payment;
-            
+            console.log(PaymentMethod);
         }
 
 async function orderConfirm(){
 
-        
+    if(PaymentMethod === ''){
+        const confirmed = await Swal.fire({
+        title : 'Select a payment method',
+        text : "You cant proceed without selecting a payment ",
+        icon : 'warning',
+        confirmButtonText : 'ok ',
+    });
+    }else{
     const confirmed = await Swal.fire({
         title : 'Confirm Order',
         text : "are you sure you want procced with the order ",
@@ -574,9 +583,8 @@ async function orderConfirm(){
         showCancelButton : true,
         confirmButtonText : 'Yes ',
         cancelButtonText : 'No, cancel',
-
     });
-
+}   
     
     if (confirmed.isConfirmed){
         

@@ -625,7 +625,24 @@ const loadUserProfile = async (req, res) => {
   }
 }
 
+const updateUserProfile = async(req,res) => {
+  try {
+      const userId = req.session.user_id;
+      const {displayName, email, phoneNumber } = req.body;
+      console.log(displayName, email, phoneNumber);
+      const user = await User.findById(userId);
 
+      user.name = displayName;
+      user.mobile = phoneNumber;
+      user.email = email
+
+      await user.save();
+      res.redirect('/user');
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+}
 
 
 module.exports = {
@@ -642,5 +659,6 @@ module.exports = {
   loadProductsView,
   logout,
   loadUserProfile,
+  updateUserProfile
   // LoadfilterProducts
 };

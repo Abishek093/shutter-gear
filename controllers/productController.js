@@ -55,7 +55,7 @@ const loadNewProduct = async(req, res)=>{
 
 const addProduct = async (req, res) => {
     try {
-        const { title, category, brand, model, regular_price, sales_price, quantity, stock_status, description } = req.body;
+        const { title, category, brand, model, regular_price, sales_price, quantity, description } = req.body;
         const category_id = await Category.findOne({ name: category }, {});
         const fileNames = req.files.map(file => file.filename);
 
@@ -67,7 +67,6 @@ const addProduct = async (req, res) => {
             regular_price,
             sales_price,
             quantity,
-            stock_status,
             description,
             images: fileNames
         });
@@ -164,7 +163,7 @@ const loadEditProduct = async(req, res)=>{
 const editProduct = async (req, res) => {
     try {
         let product_id = req.params.id;
-        const { title, category, brand, model, regular_price, sales_price, quantity, stock_status, description } = req.body;
+        const { title, category, brand, model, regular_price, sales_price, quantity, description } = req.body;
         const category_id = await Category.findOne({ name: category }, {});
         const fileNames = req.files.map(file => file.filename);
 
@@ -180,7 +179,6 @@ const editProduct = async (req, res) => {
                     regular_price,
                     sales_price,
                     quantity,
-                    stock_status,
                     description,
                     images: fileNames,
                 }
@@ -225,7 +223,6 @@ const editProduct = async (req, res) => {
                     regular_price,
                     sales_price,
                     quantity,
-                    stock_status,
                     description,
                 }
             );

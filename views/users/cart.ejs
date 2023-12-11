@@ -66,7 +66,11 @@
                                                         </div><!-- End .product -->
                                                     </td>                                                                                             
                                                     <td id="subtotal" class="total-col">$<%= productItem.subtotal %></td>
-                                                    <td class="remove-col"><button class="btn-remove"><i class="icon-close"></i></button></td>
+                                                    <td class="remove-col">
+                                                        <a href="/removeProduct?id=<%= productItem.product._id %>"> 
+                                                            <button class="btn-remove"><i class="icon-close"></i>
+                                                            </button></a>
+                                                    </td>
                                                 </tr>
                                             <% }) %>
                                         <% }) %>

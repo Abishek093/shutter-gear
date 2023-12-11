@@ -97,17 +97,6 @@
                                                           </div>
                                                       </div>
 
-                                                      
-                                                      <div class="mb-4 row align-items-center">
-                                                          <label class="form-label-title col-sm-3 mb-0">Stock status</label>
-                                                          <div class="col-sm-9">
-                                                              <input type="radio" id="html" name="stock_status" value="Available" checked="checked"4>
-                                                              <label for="html" >Yes</label>
-                                                              <input type="radio" id="css" name="stock_status" value="Not Available">
-                                                              <label for="css">No</label>
-                                                          </div>
-                                                      </div>
-
                                                       <div class="mb-4 row align-items-center">
                                                           <label
                                                               class="form-label-title col-sm-3 mb-0">Description</label>
@@ -207,7 +196,8 @@
   <!-- Theme js -->
   <script src="/assetsb/js/script.js"></script>
 
-  <script src="/path/to/cropper.min.js"></script>
+  <link src="path/to/croppr.css" rel="stylesheet"/>
+  <script src="path/to/croppr.js"></script>
 
 
 
@@ -259,13 +249,3 @@ if (window.File && window.FileList && window.FileReader) {
 });
 </script>
 
-<script>
-var image = document.getElementById('image');
-var myCropper = new Cropper(image, {
-    viewMode: 0, // 0, 1, 2, 3
-    dragMode: DRAG_MODE_CROP, // 'crop', 'move' or 'none'
-    initialAspectRatio: NaN,
-    aspectRatio: NaN,
-    data: null,
-});
-</script>

@@ -4,13 +4,13 @@ const Category = require('../models/categoryModel')
 const Cart = require('../models/cartModel');
 const Address = require('../models/address')
 const Order = require('../models/Order')
+const Razorpay = require('razorpay');  
 
 
 const loadCheckOut = async (req, res) => {
     try {
         const user = req.session.user_id;
         const userCart = await Cart.findOne({ user: user }).populate("products.product");
-        console.log("ppppppppppppppppppppppppppppppppp", userCart);
         const address = await Address.find({ user: user })
         res.render('checkOut', { user, address, userCart })
     } catch (error) {
@@ -41,16 +41,14 @@ const confirmOrder = async (req, res) => {
                     quantity: item.quantity,
                     price: item.product.sales_price,
                     total: item.subTotal,
-
                 }
             }),
             grandTotal: cart.total
         }
-        await Order.insertMany(order);
+        const orderSuccess = await Order.insertMany(order);
         await Cart.findOneAndUpdate({ user: userId }, { $set: { products: [], total: 0 } });
         res.status(200).json({ message: "success" });
-
-
+        
     } catch (error) {
         console.log(error);
     }
