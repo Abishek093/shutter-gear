@@ -33,9 +33,11 @@
 
 
    <script>
+      var timerInterval; 
+
       function startTimer(duration, display) {
          var timer = duration, minutes, seconds;
-         setInterval(function () {
+         timerInterval = setInterval(function () {
             minutes = parseInt(timer / 60, 10);
             seconds = parseInt(timer % 60, 10);
 
@@ -51,19 +53,20 @@
          }, 1000);
       }
 
-      // Call this function when the page loads or when the OTP is sent
       function initializeTimer() {
-         var timerDuration = 60; // Set the duration in seconds (1 minute in this example)
+         var timerDuration = 60;
          var display = document.getElementById('otp-timer');
          startTimer(timerDuration, display);
       }
 
-      // Call initializeTimer when the page loads
       window.onload = function () {
          initializeTimer();
       };
 
       function resendOtp() {
+      // Clear the old timer
+         clearInterval(timerInterval);
+
          // Make an AJAX request to resend OTP
          var xhr = new XMLHttpRequest();
          xhr.open("GET", "/resendOtp", true);

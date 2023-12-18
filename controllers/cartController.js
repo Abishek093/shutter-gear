@@ -4,10 +4,10 @@ const Category = require('../models/categoryModel')
 const Cart = require('../models/cartModel');
 const Address = require('../models/address')
 
-
 const loadCart = async (req, res) => {
     try {
         const user = req.session.user_id;
+        const cartQuantity = req.session.cartQuantity; // Include cart quantity in the rendering
         console.log(user);
         const userCart = await Cart.find({ user: user }).populate("products.product");
         console.log(userCart);
@@ -31,6 +31,7 @@ const loadCart = async (req, res) => {
             user,
             userCart,
             total,
+            cartQuantity
         });
     } catch (error) {
         console.log(error.message);
@@ -78,6 +79,8 @@ const addToCart = async (req, res) => {
         }, 0);
 
         await userCart.save();
+        req.session.cartQuantity = userCart.products.length;
+
         res.redirect('/cart');
     } catch (error) {
         console.log(error.message);
@@ -155,7 +158,8 @@ const removeProduct = async (req, res) => {
           }
   
           await userCart.save();
-  
+          req.session.cartQuantity = userCart.products.length;
+
           res.redirect('/cart');
         } else {
           console.log('Product not found in the cart');

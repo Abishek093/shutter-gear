@@ -282,11 +282,99 @@
 										<input type="email" class="form-control" value="<%=user.email%>" name="email">
 
 
+										<label>Current password (leave blank to leave unchanged)</label>
+										<input type="password" class="form-control" name="currPass">
+
+										<label>New password (leave blank to leave unchanged)</label>
+										<input type="password" class="form-control" name="newPass">
+
+										<label>Confirm new password</label>
+										<input type="password" class="form-control mb-2"
+											name="confirmNewPassword">
+
 										<button type="submit" class="btn btn-outline-primary-2">
 											<span>SAVE CHANGES</span>
 											<i class="icon-long-arrow-right"></i>
 										</button>
 									</form>
+									<script>
+										function validateForm() {
+											// Reset error messages
+											resetErrorMessages();
+								
+											// Validate each field
+											if (!validateDisplayName()) return false;
+											if (!validatePhoneNumber()) return false;
+											if (!validateEmail()) return false;
+											if (!validateNewPassword()) return false;
+											if (!validateConfirmNewPassword()) return false;
+								
+											return true; // Form is valid
+										}
+								
+										function resetErrorMessages() {
+											var errorMessages = document.querySelectorAll('.error-message');
+											errorMessages.forEach(function (errorMessage) {
+												errorMessage.textContent = '';
+											});
+										}
+								
+										function validateDisplayName() {
+											var displayName = document.getElementById('displayName').value;
+											var displayNameError = document.getElementById('displayNameError');
+								
+											if (!displayName.trim()) {
+												displayNameError.textContent = 'Display Name is required';
+												return false;
+											}
+								
+											return true;
+										}
+								
+										function validatePhoneNumber() {
+											var phoneNumber = document.getElementById('phoneNumber').value;
+											var phoneNumberError = document.getElementById('phoneNumberError');
+								
+											// Add your validation logic for phone number here
+											// Example: Check if the phone number is a valid format
+								
+											return true;
+										}
+								
+										function validateEmail() {
+											var email = document.getElementById('email').value;
+											var emailError = document.getElementById('emailError');
+								
+											// Add your validation logic for email here
+											// Example: Check if the email is a valid format using the pattern attribute
+								
+											return true;
+										}
+								
+										function validateNewPassword() {
+											var newPassword = document.getElementById('newPass').value;
+											var newPasswordError = document.getElementById('newPassError');
+								
+											// Add your validation logic for new password here
+											// Example: Check if the new password meets the required criteria
+								
+											return true;
+										}
+								
+										function validateConfirmNewPassword() {
+											var confirmNewPassword = document.getElementById('confirmNewPassword').value;
+											var newPassword = document.getElementById('newPass').value;
+											var confirmNewPasswordError = document.getElementById('confirmNewPasswordError');
+								
+											if (newPassword.trim() && newPassword !== confirmNewPassword) {
+												confirmNewPasswordError.textContent = 'Passwords do not match';
+												return false;
+											}
+								
+											return true;
+										}
+									</script>
+
 								</div><!-- .End .tab-pane -->
 								</div>
 	                		</div><!-- End .col-lg-9 -->

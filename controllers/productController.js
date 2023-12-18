@@ -165,10 +165,20 @@ const editProduct = async (req, res) => {
         let product_id = req.params.id;
         const { title, category, brand, model, regular_price, sales_price, quantity, description } = req.body;
         const category_id = await Category.findOne({ name: category }, {});
+        const existingProduct = await Product.findById(product_id);
+
+        // Get existing images from the database
+        const existingImages = existingProduct.images || [];
         const fileNames = req.files.map(file => file.filename);
 
         if (req.files.length) {
-            // Update product information
+            // Check if the total number of images (existing + new) exceeds the limit of 4
+            if (existingImages.length + fileNames.length > 4) {
+                console.log("Error: Exceeded the maximum allowed images limit (4).");
+                return res.redirect('/admin/products');
+            }
+
+            // Update product information with both existing and new images
             await Product.findByIdAndUpdate(
                 { _id: product_id },
                 {
@@ -180,7 +190,7 @@ const editProduct = async (req, res) => {
                     sales_price,
                     quantity,
                     description,
-                    images: fileNames,
+                    images: [...existingImages, ...fileNames],
                 }
             );
 
@@ -211,28 +221,28 @@ const editProduct = async (req, res) => {
 
         console.log("Success");
         res.redirect('/admin/products');
-        } else {
-            // Update product information without changing images
-            await Product.findByIdAndUpdate(
-                { _id: product_id },
-                {
-                    title,
-                    category,
-                    brand,
-                    model,
-                    regular_price,
-                    sales_price,
-                    quantity,
-                    description,
-                }
-            );
-        }
-
+    } else {
+        // Update product information without changing images
+        await Product.findByIdAndUpdate(
+            { _id: product_id },
+            {
+                title,
+                category,
+                brand,
+                model,
+                regular_price,
+                sales_price,
+                quantity,
+                description,
+            }
+        );
         console.log('Success');
         res.redirect('/admin/products');
-    } catch (error) {
-        console.log(error.message);
     }
+} catch (error) {
+    console.log(error.message);
+    res.redirect('/admin/products'); // Redirect in case of an error
+}
 };
 
 

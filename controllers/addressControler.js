@@ -52,6 +52,59 @@ const addAddress = async(req, res)=>{
     }
   }
 
+
+
+const addAddressChekout= async(req, res)=>{
+  try {
+    const userId = req.session.user_id
+
+    const {
+      name,
+      state,
+      district,
+      street,
+      address,
+      city,
+      county,
+      pincode,
+      mobile
+    }=req.body
+
+    console.log(
+      name,
+      state,
+      district,
+      street,
+      address,
+      city,
+      county,
+      pincode,
+      mobile
+    );
+
+    const newAddress = new Address({     
+      user: userId,
+      name,
+      state,
+      district,
+      street,
+      address,
+      city,
+      county,
+      pin : parseInt(pincode),
+      mobile : parseInt(mobile)});
+      console.log(newAddress);
+
+      await newAddress.save()
+      res.redirect('/checkOut')
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+
+
 module.exports = {
-    addAddress
+    addAddress,
+    addAddressChekout
 }

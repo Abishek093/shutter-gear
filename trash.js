@@ -677,21 +677,124 @@ module.exports={
 
 
 /////////////////////////////////////////////before RAzorpay
-const response = await fetch('/confirm-order',{
-    method: 'POST',
-    headers: {
-        'Content-Type' : 'application/json'
-    },
-    body:JSON.stringify({ addressId , PaymentMethod })
+<script>
+        let addressId='';
+        let PaymentMethod='';
+
+        function selectAddress(id){
+            addressId=id;
+            console.log(addressId);
+        }
+
+        function selectPeyment(payment) {
+            PaymentMethod=payment;
+            console.log(PaymentMethod);
+        }
+
+async function orderConfirm(){
+
+        
+    const confirmed = await Swal.fire({
+        title : 'Confirm Order',
+        text : "are you sure you want procced with the order ",
+        icon : 'question',
+        showCancelButton : true,
+        confirmButtonText : 'Yes ',
+        cancelButtonText : 'No, cancel',
+
+    });
+
     
-})
+    if (confirmed.isConfirmed){
+        
+        try {
+            const response = await fetch('/confirm-order',{
+            method: 'POST',
+            headers: {
+                'Content-Type' : 'application/json'
+            },
+            body:JSON.stringify({ addressId , PaymentMethod })
+            
+        })
+        
 
+        if (response.ok) {
+            await Swal.fire('Success' , 'Order Placed succesfully ',  'success')
 
-if (response.ok) {
-    await Swal.fire('Success' , 'Order Placed succesfully ',  'success')
+            window.location.href = '/success-page'
+        }else{
+            await Swal.fire('error', 'Failed to place the order', 'error')
+        }
+            
+        } catch (error) {
+            console.log(error);
+        }
+    }  
+        }
 
-    window.location.href = '/success-page'
-}else{
-    await Swal.fire('error', 'Failed to place the order', 'error')
-}
+    
+
+</script>
 ///////////////////////////////////////////////////////////////////////////////
+
+const confirmOrder = async (req, res) => {
+    try {
+        const userId = req.session.user_id;
+        const addressId = req.body.addressId;
+        const paymentMethod = req.body.PaymentMethod;
+
+        if (!addressId || !paymentMethod) {
+            return res.status(400).json({ error: 'AddressId and PaymentMethod are required' });
+        }
+
+        const cart = await Cart.findOne({ user: userId }).populate('products.product');
+
+        if (!cart || cart.products.length === 0) {
+            return res.status(400).json({ error: 'Cart is empty or not found' });
+        }
+
+        const order = {
+            user: req.session.user_id,
+            address: addressId,
+            paymentMethod: paymentMethod,
+            products: cart.products.map((item) => {
+                return {
+                    product: item.product,
+                    quantity: item.quantity,
+                    price: item.product.sales_price,
+                    total: item.subTotal
+                };
+            }),
+            grandTotal: cart.total
+        };
+
+        await Order.insertMany(order);
+        await Cart.findOneAndUpdate({ user: userId }, { $set: { products: [], total: 0 } });
+        
+        if (order.paymentMethod === 'Cash On Delivery') {
+            res.status(200).json({ message: 'success' });
+        } else if (order.paymentMethod === 'Razorpay') {
+            const total = cart.total;
+            const generateOrder = generateOrderRazorpay(total);
+            res.status(200).send({
+                status: 'razorpay',
+                success: true,
+                msg: 'order created',
+                order_id: generateOrder.orderId,
+                amount: generateOrder.amount,
+                key_id: process.env.RAZORPAY_KEY_ID,
+                contact: '8943759719',
+                name: 'admin',
+                email: 'admin@gmail.com'
+            });
+        } else {
+            res.status(400).send({
+                success: false,
+                msg: 'Invalid payment method',
+            });
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};

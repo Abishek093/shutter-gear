@@ -4,30 +4,29 @@ const Category = require('../models/categoryModel')
 const Cart = require('../models/cartModel');
 const Address = require('../models/address')
 const Order = require('../models/Order')
-const Razorpay = require('razorpay');  
+const razorpay = require('../helper/razorPay');
 
 
 const loadCheckOut = async (req, res) => {
     try {
+        const cartQuantity = req.session.cartQuantity; // Include cart quantity in the rendering
         const user = req.session.user_id;
         const userCart = await Cart.findOne({ user: user }).populate("products.product");
         const address = await Address.find({ user: user })
-        res.render('checkOut', { user, address, userCart })
+        res.render('checkOut', { user, address, userCart,cartQuantity })
     } catch (error) {
         console.log(error.message);
     }
 }
 
 
+
+
 const confirmOrder = async (req, res) => {
     try {
-
-        console.log(req.body);
         const userId = req.session.user_id;
         const addressId = req.body.addressId;
         const paymentMethod = req.body.PaymentMethod;
-
-        console.log(addressId, paymentMethod);
 
         const cart = await Cart.findOne({ user: userId }).populate('products.product')
 
@@ -45,10 +44,29 @@ const confirmOrder = async (req, res) => {
             }),
             grandTotal: cart.total
         }
-        const orderSuccess = await Order.insertMany(order);
+        await Order.insertMany(order);
         await Cart.findOneAndUpdate({ user: userId }, { $set: { products: [], total: 0 } });
+
+        if(order.paymentMethod === 'Cash On Delivery'){
         res.status(200).json({ message: "success" });
-        
+
+        }else if(order.paymentMethod === 'Razorpay'){
+            const razorpayOrder = await razorpay.orders.create({
+                amount: order.grandTotal * 100, // Amount in paise
+                currency: 'INR',
+                receipt: 'orderId',
+                payment_capture: 1, // Auto-capture payment
+            });
+            console.log("////////////////////",razorpayOrder);
+            res.status(200).json({
+                message: 'success',
+                razorpayOrder: {
+                    id: razorpayOrder.id,
+                    amount: razorpayOrder.amount,
+                    currency: razorpayOrder.currency,
+                },
+            });        
+        }
     } catch (error) {
         console.log(error);
     }
@@ -57,8 +75,9 @@ const confirmOrder = async (req, res) => {
 
 const loadSuccess = async (req, res) => {
     try {
+        const cartQuantity = req.session.cartQuantity; // Include cart quantity in the rendering
         const user = req.session.user_id;
-        res.render('successPage', { user })
+        res.render('successPage', { user,cartQuantity })
     } catch (error) {
         console.log(error.message);
     }
@@ -117,10 +136,11 @@ const loadOrderDetails = async(req,res) => {
 //user side
 async function orderdetails(req,res){
     try {
+      const cartQuantity = req.session.cartQuantity; // Include cart quantity in the rendering
       const user = req.session.user_id;
       const orderId = req.query.orderId;
       const orderDetails = await Order.findById(orderId).populate('address').populate('products.product')
-      res.render('orderDetails',{orderDetails , user})
+      res.render('orderDetails',{orderDetails , user, cartQuantity})
 
 
     } catch (error) {
@@ -129,6 +149,7 @@ async function orderdetails(req,res){
 }
 
 
+ 
 module.exports = {
     loadCheckOut,
     loadSuccess,
@@ -136,5 +157,6 @@ module.exports = {
     loadOrderDetails,
     loadOrderList,
     orderStatus,
-    orderdetails
+    orderdetails,
+    
 }

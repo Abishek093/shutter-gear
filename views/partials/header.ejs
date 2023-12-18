@@ -236,15 +236,15 @@
                     </div><!-- End .compare-dropdown -->
     
                     <div class="dropdown cart-dropdown">
-                        <a href="cart" class="dropdown-toggle" role="button" 
-                             aria-expanded="false" data-display="static">
+                        <a href="/cart" class="dropdown-toggle" role="button" aria-expanded="false" data-display="static">
                             <div class="icon">
-                                <i class="icon-shopping-cart" ></i>
-                                <span class="cart-count">1</span>
+                                <i class="icon-shopping-cart"></i>
+                                <span class="cart-count" id="cartCount"><%= cartQuantity !== undefined ? cartQuantity : '!' %></span>
                             </div>
                             <p>Cart</p>
                         </a>
                     </div>
+                    
                     <!-- End .cart-dropdown -->
                 </div><!-- End .header-right -->
             </div><!-- End .container -->

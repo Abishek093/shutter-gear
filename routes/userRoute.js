@@ -42,6 +42,8 @@ user_route.get('/user',auth.isLogin, auth.isUserBlocked, userController.loadUser
 user_route.post('/editUserDetails',userController.updateUserProfile)
 
 user_route.post('/add-billing-address',addressController.addAddress)
+user_route.post('/addAddress',addressController.addAddressChekout)
+
 
 user_route.get('/productsView',userController.loadProductsView)
 user_route.get('/productDetails/:id',userController.loadProduct)

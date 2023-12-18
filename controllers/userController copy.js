@@ -200,12 +200,19 @@ const verifyLogin = async (req, res) => {
           res.render('login', { message: 'Please verify your mail.' });
         } else {
           req.session.user_id = userData._id
+          const userCart = await Cart.findOne({ user: req.session.user_id });
+          if (userCart) {
+              req.session.cartQuantity = userCart.products.length;
+          } else {
+              req.session.cartQuantity = 0;
+          }
           console.log("login Successfull");
           const newArrivals = await Product.find({ is_Listed: true }).sort({ createdAt: -1 }).limit(6)
           const allCategory = await Category.find({ is_Listed: false }).limit(6)
           const allProduct = await Product.find({ is_Listed: true }).sort({ createdAt: -1 }).limit(8)
           const user = req.session.user_id;
-          res.render("landingHome", { newArrivals, allCategory, allProduct, user })
+          const cartQuantity = req.session.cartQuantity; // Include cart quantity in the rendering
+          res.render("landingHome", { newArrivals, allCategory, allProduct, user, cartQuantity })
         }
       } else {
         console.log("Invalid Credentials");

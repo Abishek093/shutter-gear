@@ -6,6 +6,8 @@ const Product = require('../models/productModel')
 const Category = require('../models/categoryModel')
 const Address = require('../models/address')
 const Order = require('../models/Order')
+const Cart = require('../models/cartModel')
+
 const async = require('async');
 const session = require("express-session");
 const escapeRegExp = (string) => {
@@ -70,12 +72,18 @@ const verifyLogin = async (req, res) => {
           res.render('login', { message: 'Please verify your mail.' });
         } else {
           req.session.user_id = userData._id
-          console.log("login Successfull");
+          const userCart = await Cart.findOne({ user: req.session.user_id });
+          if (userCart) {
+            req.session.cartQuantity = userCart.products.length;
+        } else {
+            req.session.cartQuantity = 0;
+        }
           const newArrivals = await Product.find({ is_Listed: true }).sort({ createdAt: -1 }).limit(6)
           const allCategory = await Category.find({ is_Listed: false }).limit(6)
           const allProduct = await Product.find({ is_Listed: true }).sort({ createdAt: -1 }).limit(8)
           const user = req.session.user_id;
-          res.render("landingHome", { newArrivals, allCategory, allProduct, user })
+          const cartQuantity = req.session.cartQuantity; // Include cart quantity in the rendering
+          res.render("landingHome", { newArrivals, allCategory, allProduct, user,cartQuantity })
         }
       } else {
         console.log("Invalid Credentials");
@@ -157,11 +165,16 @@ const loadRegister = async (req, res) => {
 
 const insertUser = async (req, res) => {
   try {
-    const existingUser = await User.findOne({ email: req.body.email });
+    // const existingUser = await User.findOne({ email: req.body.email });
 
-    if (existingUser) {
-      return res.render('registration', { err: 'User already exists. Please login.' });
-    }
+    // if (existingUser) {
+    //   return res.render('registration', {
+    //     err: 'User already exists. Please login.',
+    //     name: req.body.name,
+    //     email: req.body.email,
+    //     mno: req.body.mno,
+    //   });
+    // }
 
     const otp = generateOTP();
     req.session.otp = otp;
@@ -250,6 +263,7 @@ const verifyOtp = async (req, res) => {
 
 const loadResendOtp = async (req, res) => {
   try {
+    req.session.otp = null;
     const OTP = generateOTP();
     const userData = req.session.userData;
     console.log("new otp", OTP);
@@ -370,6 +384,7 @@ const loadProductsView = async (req, res) => {
     const brands = await Product.distinct('brand');
     const categories = await Category.find();
     const user = req.session.user_id;
+    const cartQuantity = req.session.cartQuantity; // Include cart quantity in the rendering
 
     // Extract category, brand, and search query from query parameters
     const selectedCategory = req.query.category;
@@ -432,6 +447,7 @@ const loadProductsView = async (req, res) => {
       selectedBrand,
       searchQuery,
       sortBy,
+      cartQuantity
     });
   } catch (error) {
     console.error(error.message);
@@ -591,8 +607,10 @@ const loadProduct = async (req, res) => {
     const id = req.params.id
     const products = await Product.findById(id)
     const user = req.session.user_id;
+    const cartQuantity = req.session.cartQuantity; // Include cart quantity in the rendering
 
-    res.render('productDetails', { products,user })
+
+    res.render('productDetails', { products,user,cartQuantity })
   } catch (error) {
     console.log(error.message);
   }
@@ -613,12 +631,13 @@ const logout = async (req, res) => {
 
 const loadUserProfile = async (req, res) => {
   try {
+    const cartQuantity = req.session.cartQuantity; // Include cart quantity in the rendering
     const user_id = req.session.user_id
     const address = await Address.find({user:user_id})
     const orderDetails = await Order.find({user:user_id})
     if (user_id) {
       const user = await User.findById(user_id)
-      res.render('account', { user, address, orderDetails })
+      res.render('account', { user, address, orderDetails,cartQuantity })
     }
   } catch (error) {
     console.log(error.message);
@@ -628,13 +647,29 @@ const loadUserProfile = async (req, res) => {
 const updateUserProfile = async(req,res) => {
   try {
       const userId = req.session.user_id;
-      const {displayName, email, phoneNumber } = req.body;
+      const {displayName, email, phoneNumber, currPass , newPass, confirmNewPassword } = req.body;
       console.log(displayName, email, phoneNumber);
       const user = await User.findById(userId);
+      if (currPass && !bcrypt.compareSync(currPass, user.password)) {
+        return res.status(400).json({ success: false, message: 'Current password is incorrect' });
+    }
 
       user.name = displayName;
       user.mobile = phoneNumber;
       user.email = email
+
+      if (newPass) {
+        if (newPass !== confirmNewPassword) {
+        return res.status(400).json({ success: false, message: 'New password and confirm password do not match' });
+      }
+
+      // Hash the new password
+      const hashedPassword = bcrypt.hashSync(newPass, 10);
+        user.password = hashedPassword;
+      }
+
+      const hashedPassword = bcrypt.hashSync(newPass, 10);
+      user.password = hashedPassword;
 
       await user.save();
       res.redirect('/user');
@@ -643,7 +678,6 @@ const updateUserProfile = async(req,res) => {
       res.status(500).json({ success: false, message: 'Internal server error' });
   }
 }
-
 
 module.exports = {
   loadResendOtp,

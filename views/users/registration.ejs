@@ -9,19 +9,19 @@
                     <form id="regForm" action="" method="post" onsubmit="return validateForm()">
                         <div class="form-group">
                             <label for="singin-name">Username *</label>
-                            <input type="text" class="form-control" id="singin-name" name="name">
+                            <input type="text" class="form-control" id="singin-name" name="name" value="<%= typeof name !== 'undefined' ? name : '' %>">
                             <div class="error" id="nameError"></div>
                         </div>
 
                         <div class="form-group">
                             <label for="singin-email">Email address *</label>
-                            <input type="email" class="form-control" id="singin-email" name="email">
+                            <input type="email" class="form-control" id="singin-email" name="email" value="<%= typeof email !== 'undefined' ? email : '' %>">
                             <div class="error" id="emailError"></div>
                         </div>
 
                         <div class="form-group">
                             <label for="singin-mobile">Mobile *</label>
-                            <input type="text" class="form-control" id="singin-mno" name="mno">
+                            <input type="text" class="form-control" id="singin-mno" name="mno" value="<%= typeof mno !== 'undefined' ? mno : '' %>">
                             <div class="error" id="mnoError"></div>
                         </div>
 

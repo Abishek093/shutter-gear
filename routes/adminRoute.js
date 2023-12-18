@@ -12,7 +12,7 @@ const categoryController = require("../controllers/categoryController");
 const productController = require('../controllers/productController')
 const customerController = require('../controllers/customerController')
 const orderController = require('../controllers/orderController')
-
+const salesReportController = require('../controllers/salesReoportController')
 admin_route.use(express.json());
 admin_route.use(express.urlencoded({ extended: true }));
 
@@ -58,5 +58,7 @@ admin_route.get('/orderList',orderController.loadOrderList)
 admin_route.get('/orderDetails',orderController.loadOrderDetails)
 admin_route.post('/ChangeOrderStatus',orderController.orderStatus);
 
+//sales report
+admin_route.get('/salesReport',salesReportController.loadReport)
 
 module.exports = admin_route;

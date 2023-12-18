@@ -55,7 +55,91 @@
                                             <!-- End .col-lg-6 -->
                                 
                                
-
+                                    <div id="ModalLoginForm" class="modal fade">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h2 class="checkout-title">Billing Details</h2>
+                                                </div>
+                                                <div class="modal-body">
+                                                    
+                                                    <form id="addressForm" role="form" method="POST" action="/address">
+                                                        <input type="hidden" name="_token" value="">
+                                                        <div class="form-group">
+                                                             
+                                                            <div class="p-5">
+                                    
+                                    
+                                    
+                                                                <div class="row">
+                                                                    <div class="col-sm-6">
+                                                                        <label>First Name *</label>
+                                                                        <input name="name" type="text" class="form-control" required>
+                                                                    </div><!-- End .col-sm-6 -->
+                                    
+                                                                    <div class="col-sm-6">
+                                                                        <label>Phone *</label>
+                                                                        <input name="phone" type="text" class="form-control" required>
+                                                                    </div><!-- End .col-sm-6 -->
+                                                                </div><!-- End .row -->
+                                    
+                                                                
+                                                                <label>Street address *</label>
+                                                                <input name="street" type="text" class="form-control" placeholder="Street name" required>
+                                                                <label>House Number *</label>
+                                                                <input name="houseNum" type="text" class="form-control" placeholder="House number " required>
+                                    
+                                                                <div class="row">
+                                                                    <div class="col-sm-6">
+                                                                        <label>Town / City *</label>
+                                                                        <input name="city" type="text" class="form-control" required>
+                                                                    </div><!-- End .col-sm-6 -->
+                                    
+                                                                    <div class="col-sm-6">
+                                                                        <label>State / Country *</label>
+                                                                        <input name="country" type="text" class="form-control" required>
+                                                                    </div><!-- End .col-sm-6 -->
+                                                                </div><!-- End .row -->
+                                    
+                                                                <div class="row">
+                                                                    <div class="col-sm-6">
+                                                                        <label>Postcode / ZIP *</label>
+                                                                        <input name="pincode" type="text" class="form-control" required>
+                                                                    </div><!-- End .col-sm-6 -->
+                                    
+                                                                    <div class="col-sm-6">
+                                                                        <label>Landmark *</label>
+                                                                        <input name="landmark" type="tel" class="form-control" required>
+                                                                    </div><!-- End .col-sm-6 -->
+                                                                </div><!-- End .row -->
+                                    
+                                                     
+                                    
+                                                                <label>Email address *</label>
+                                                                <input name="email" type="email" class="form-control" required>
+                                    
+                                                                <div class="custom-control custom-checkbox">
+                                                                    <input type="checkbox" class="custom-control-input" id="checkout-create-acc">
+                                                                    <label class="custom-control-label" for="checkout-create-acc">Create an account?</label>
+                                                                </div><!-- End .custom-checkbox -->
+                                                                
+                                                            <div>
+                                                                <button  type="submit" class="btn btn-success">
+                                                                    Add
+                                                                </button>
+                                                            </div>
+                                    
+                                                            </div>
+                                    
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div><!-- /.modal-content -->
+                                        </div><!-- /.modal-dialog -->
+                                    </div><!-- /.modal -->
+                                    <button type="button" class="btn btn-outline-primary btn-rounded" data-toggle="modal" data-target="#ModalLoginForm">
+                                        Add new address
+                                    </button>
 
                                             <div class="row" style="gap: 10px ;">
                                                 
@@ -88,6 +172,9 @@
                                                     </div>
                                                 </label>
                                                     <% }) %><!-- End .col-lg-9 -->
+
+
+                                                    
                                         <aside class="col-lg-3">
                                             <div class="summary">
                                                 <h3 class="summary-title">Your Order</h3><!-- End .summary-title -->
@@ -513,6 +600,9 @@
                 </div><!-- End .modal-dialog -->
             </div><!-- End .modal -->
 
+
+            <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
             <!-- Add this style in your HTML or in your CSS file -->
 <!-- 
 <script>
@@ -548,9 +638,7 @@
 });
 
 </script> -->
-
-       
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script> 
+    
 
 <script>
         let addressId='';
@@ -568,14 +656,7 @@
 
 async function orderConfirm(){
 
-    if(PaymentMethod === ''){
-        const confirmed = await Swal.fire({
-        title : 'Select a payment method',
-        text : "You cant proceed without selecting a payment ",
-        icon : 'warning',
-        confirmButtonText : 'ok ',
-    });
-    }else{
+        
     const confirmed = await Swal.fire({
         title : 'Confirm Order',
         text : "are you sure you want procced with the order ",
@@ -583,35 +664,71 @@ async function orderConfirm(){
         showCancelButton : true,
         confirmButtonText : 'Yes ',
         cancelButtonText : 'No, cancel',
+
     });
-}   
+
     
-    if (confirmed.isConfirmed){
-        
+    if (confirmed.isConfirmed) {
         try {
-                    const response = await fetch('/confirm-order',{
-                    method: 'POST',
-                    headers: {
-                        'Content-Type' : 'application/json'
-                    },
-                    body:JSON.stringify({ addressId , PaymentMethod })
-                    
-                })
-                
+            const response = await fetch('/confirm-order', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ addressId, PaymentMethod }),
+            });
 
-                if (response.ok) {
-                    await Swal.fire('Success' , 'Order Placed succesfully ',  'success')
+            if (response.ok) {
+                const responseData = await response.json();
+                console.log(responseData);
 
-                    window.location.href = '/success-page'
-                }else{
-                    await Swal.fire('error', 'Failed to place the order', 'error')
+                if (PaymentMethod === 'Cash On Delivery') {
+                    await Swal.fire('Success', 'Order Placed successfully', 'success');
+                    window.location.href = '/success-page';
+                } else if (PaymentMethod === 'Razorpay') {
+                    // Initialize Razorpay checkout
+                    const options = {             
+                        key: 'rzp_test_RZUMY3LMpsKLSW',
+                        amount: responseData.razorpayOrder.amount,
+                        currency: 'INR',
+                        order_id: responseData.razorpayOrder.id,
+                        name: 'Your Store',
+                        description: 'Payment for Your Order',
+                        image: '',
+                        handler: async function (response) {
+                            // Handle the Razorpay success callback
+                            console.log('Razorpay Payment ID:', response.razorpay_payment_id);
+                            console.log('Razorpay Order ID:', response.razorpay_order_id);
+                            console.log('Razorpay Signature:', response.razorpay_signature);
+
+                            // Perform any additional actions (e.g., update order status)
+                            // Redirect to success page
+                            window.location.href = '/success-page';
+                        },
+                        prefill: {
+                            name: 'Your Name',
+                            email: 'your.email@example.com',
+                            contact: 'Your Contact Number',
+                        },
+                        notes: {
+                            address: 'Your Delivery Address',
+                        },
+                        theme: {
+                            color: '#F37254',
+                        },
+                    };
+
+                    const rzp = new Razorpay(options);
+                    rzp.open();
                 }
-            
+            } else {
+                await Swal.fire('Error', 'Failed to place the order', 'error');
+            }
         } catch (error) {
             console.log(error);
         }
-    }  
-        }
+    }
+}
 
     
 
