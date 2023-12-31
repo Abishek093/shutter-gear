@@ -25,6 +25,7 @@
                                                 <div class="col-sm-9">
                                                     <input class="form-control" type="text" placeholder="Category Name"
                                                         name="name">
+                                                        <small class="error" id="nameError"></small> 
                                                 </div>
                                             </div>
 
@@ -39,16 +40,16 @@
                                                         </div>
                                                         <input type="file" name="image">
                                                     </div>
+                                                    <small class="error" id="imageError"></small>
                                                 </div>
                                             </div>
 
 
                                             <div class="mb-4 row align-items-center">
-                                                <label class="form-label-title col-sm-3 mb-0">Category
-                                                    Description</label>
+                                                <label class="form-label-title col-sm-3 mb-0">Category Description</label>
                                                 <div class="col-sm-9">
-                                                    <input name="description" class="form-control" type="text"
-                                                        placeholder="Category Description">
+                                                    <input name="description" class="form-control" type="text" placeholder="Category Description">
+                                                    <small class="error text-danger" id="descriptionError"></small>
                                                 </div>
                                             </div>
 
@@ -63,7 +64,7 @@
                                         <!-- Your existing form HTML -->
 
                                         <% if (errorMessage) { %>
-                                            <p class="error-message"><%= errorMessage %></p>
+                                            <p class="error-message" style="color: rgb(255, 0, 0);"><%= errorMessage %></p>
                                         <% } %>
                                         
                                     </div>
@@ -154,6 +155,60 @@
 
         <!-- Theme js -->
         <script src="/assetsb/js/script.js"></script>
+
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const form = document.querySelector('.mega-form');
+        
+                form.addEventListener('submit', function (event) {
+                    const nameInput = form.querySelector('input[name="name"]');
+                    const imageInput = form.querySelector('input[name="image"]');
+                    const descriptionInput = form.querySelector('input[name="description"]');
+        
+                    const nameErrorContainer = form.querySelector('#nameError');
+                    const imageErrorContainer = form.querySelector('#imageError');
+                    const descriptionErrorContainer = form.querySelector('#descriptionError');
+        
+                    const name = nameInput.value.trim();
+                    const image = imageInput.files[0];
+                    const description = descriptionInput.value.trim();
+        
+                    const nameRegex = /^[a-zA-Z0-9_]+$/;
+        
+                    // Check if the category name is valid
+                    if (!nameRegex.test(name)) {
+                        event.preventDefault();
+                        nameErrorContainer.textContent = 'Category name is invalid. Please use only alphanumeric characters and underscores.';
+                    } else {
+                        nameErrorContainer.textContent = ''; // Clear error message
+                    }
+        
+                    // Check if an image is selected
+                    if (!image) {
+                        event.preventDefault();
+                        imageErrorContainer.textContent = 'Please select an image.';
+                    } else {
+                        imageErrorContainer.textContent = ''; // Clear error message
+                    }
+        
+                    // Check if the description is not empty
+                    if (description === '') {
+                        event.preventDefault();
+                        descriptionErrorContainer.textContent = 'Category description is required.';
+                    } else {
+                        descriptionErrorContainer.textContent = ''; // Clear error message
+                    }
+                });
+            });
+        </script>
+        
+        <style>
+            .error {
+                color: red;
+                margin-top: 5px;
+            }
+        </style>        
 
         </body>
 

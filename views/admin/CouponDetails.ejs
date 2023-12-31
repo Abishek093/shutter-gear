@@ -1,0 +1,177 @@
+<%- include('../partials/adminHeader') %>
+
+    <%- include('../partials/adminSidebar') %>
+
+            <!-- Create Coupon Table start -->
+            <div class="page-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="title-header option-title">
+                                                <h5>Create Coupon</h5>
+                                            </div>
+
+                                            <div class="tab-content" id="pills-tabContent">
+                                                <div class="tab-pane fade show active" id="pills-home" role="tabpanel">
+                                                    <form class="theme-form theme-form-2 mega-form" method="post">
+                                                        <div class="card-header-1">
+                                                            <h5>General</h5>
+                                                        </div>
+
+                                                        <div class="row">
+                                                            <div class="mb-4 row align-items-center">
+                                                                <label
+                                                                    class="form-label-title col-lg-2 col-md-3 mb-0">Coupon
+                                                                    Title</label>
+                                                                <div class="col-md-9 col-lg-10">
+                                                                    <input class="form-control" type="text" name="name" id="name" value="<%= coupon.name %>">
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="mb-4 row align-items-center">
+                                                                <label
+                                                                    class="col-lg-2 col-md-3 col-form-label form-label-title">Coupon
+                                                                    Code</label>
+                                                                <div class="col-md-9 col-lg-10">
+                                                                    <input class="form-control" type="text" name="code" id="code" value="<%= coupon.code %>">
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="mb-4 row align-items-center">
+                                                                <label
+                                                                    class="col-lg-2 col-md-3 col-form-label form-label-title">Start
+                                                                    Date</label>
+                                                                <div class="col-md-9 col-lg-10">
+                                                                    <input class="form-control" type="date" name="createdAt" id="createdAt" value="<%= coupon.createdAt %>">
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="mb-4 row align-items-center">
+                                                                <label
+                                                                    class="col-lg-2 col-md-3 col-form-label form-label-title">End
+                                                                    Date</label>
+                                                                <div class="col-md-9 col-lg-10">
+                                                                    <input class="form-control" type="date" name="expiryDate" id="expiryDate" value="<%= coupon.expiryDate %>">
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="mb-4 row align-items-center">
+                                                                <label
+                                                                    class="form-label-title col-lg-2 col-md-3 mb-0">Minimum
+                                                                    Spend</label>
+                                                                <div class="col-md-9 col-lg-10">
+                                                                    <input class="form-control" type="text"  name="minimumAmount" id="minimumAmount" value="<%= coupon.minimumAmount %>">
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="mb-4 row align-items-center">
+                                                                <label
+                                                                    class="form-label-title col-lg-2 col-md-3 mb-0">Discount 
+                                                                    Percentage</label>
+                                                                <div class="col-md-9 col-lg-10">
+                                                                    <input class="form-control" type="text" name="percentageDiscount" id="percentageDiscount" value="<%= coupon.percentageDiscount %>">
+                                                                </div>
+                                                            </div>
+                                                            
+                                                        </div>
+                                                        <div class="col-6 col-lg-4 col-xl-2 mx-auto p-5" >
+                                                            <div class="btn-wrap"></div>
+                                                            <button type="submit " class="btn btn-primary btn-round">submit</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Create Coupon Table End -->
+
+            <!-- footer start-->
+            <div class="container-fluid">
+                <footer class="footer">
+                    <div class="row">
+                        <div class="col-md-12 footer-copyright text-center">
+                            <p class="mb-0">Copyright 2022 © Fastkart theme by pixelstrap</p>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+            <!-- footer end-->
+        </div>
+    </div>
+    <!-- page-wrapper end-->
+
+    <!-- Modal start -->
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog  modal-dialog-centered">
+            <div class="modal-content">
+
+                <div class="modal-body">
+                    <h5 class="modal-title" id="staticBackdropLabel">Logging Out</h5>
+                    <p>Are you sure you want to log out?</p>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                    <div class="button-box">
+                        <button type="button" class="btn btn--no" data-bs-dismiss="modal">No</button>
+                        <button type="button" class="btn  btn--yes btn-primary">Yes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal end -->
+
+    <!-- latest js -->
+    <script src="/assetsb/js/jquery-3.6.0.min.js"></script>
+
+    <!-- Bootstrap js -->
+    <script src="/assetsb/js/bootstrap/bootstrap.bundle.min.js"></script>
+
+    <!-- feather icon js -->
+    <script src="/assetsb/js/icons/feather-icon/feather.min.js"></script>
+    <script src="/assetsb/js/icons/feather-icon/feather-icon.js"></script>
+
+    <!-- scrollbar simplebar js -->
+    <script src="/assetsb/js/scrollbar/simplebar.js"></script>
+    <script src="/assetsb/js/scrollbar/custom.js"></script>
+
+    <!-- customizer js -->
+    <script src="/assetsb/js/customizer.js"></script>
+
+    <!-- Sidebar js -->
+    <script src="/assetsb/js/config.js"></script>
+
+    <!-- Plugins JS -->
+    <script src="/assetsb/js/notify/bootstrap-notify.min.js"></script>
+    <script src="/assetsb/js/notify/index.js"></script>
+
+    <!--Dropzon js -->
+    <script src="/assetsb/js/dropzone/dropzone.js"></script>
+    <script src="/assetsb/js/dropzone/dropzone-script.js"></script>
+
+    <!-- select 2 js -->
+    <script src="/assetsb/js/select2.min.js"></script>
+    <script src="/assetsb/js/select2-custom.js"></script>
+
+    <!-- sidebar effect -->
+    <script src="/assetsb/js/sidebareffect.js"></script>
+
+    <!-- Theme js -->
+    <script src="/assetsb/js/script.js"></script>
+    
+    
+</body>
+
+
+<!-- Mirrored from themes.pixelstrap.com/fastkart/back-end/create-coupon.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 04 Sep 2023 05:49:48 GMT -->
+</html>

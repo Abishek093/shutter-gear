@@ -1,5 +1,5 @@
 <%- include('../partials/adminHeader') %>
-<%- include('../partials/adminSidebar') %>
+    <%- include('../partials/adminSidebar') %>
 
         <body>
             <!-- tap on top start -->
@@ -25,18 +25,23 @@
                                     <div class="card">
                                         <div class="card-body">
                                             <div class="title-header title-header-block package-card">
-                                                
+
                                                 <div>
-                                                    <h5><%=orderDetails._id%></h5>
+                                                    <h5>
+                                                        <%=orderDetails._id%>
+                                                    </h5>
                                                 </div>
                                                 <div class="card-order-section">
                                                     <ul>
-                                                        <li><%=orderDetails.createdAt%></li>
+                                                        <li>
+                                                            <%=orderDetails.createdAt%>
+                                                        </li>
                                                         <li>items</li>
-                                                        <li>₹<%=orderDetails.grandTotal%></li>
+                                                        <li>₹<%=orderDetails.grandTotal%>
+                                                        </li>
                                                     </ul>
                                                 </div>
-                                          
+
                                             </div>
                                             <div class="bg-inner cart-section order-details-table">
                                                 <div class="row g-4">
@@ -56,30 +61,88 @@
                                                                 </thead>
 
                                                                 <tbody>
-                                                                    <% orderDetails.products.map((items) => { %> 
-                                                                    <tr class="table-order">
-                                                                        <td>
-                                                                            <a href="javascript:void(0)">
-                                                                                <img src="/productImageS/<%=items.product.images[0]%>"
-                                                                                    class="img-fluid blur-up lazyload"
-                                                                                    alt="">
-                                                                            </a>
-                                                                        </td>
-                                                                        <td>
-                                                                            <p><%=items.product.name%></p>
-                                                                            <!-- <h5>Outwear & Coats</h5> -->
-                                                                        </td>
-                                                                        <td>
-                                                                            <p>Quantity</p>
-                                                                            <h5><%=items.quantity%></h5>
-                                                                        </td>
-                                                                        <td>
-                                                                            <p>Price</p>
-                                                                            <h5>₹<%=items.total%></h5>
-                                                                        </td>
-                                                                    </tr>
-                                                             <%   }) %>
-                                                                   
+                                                                    <% orderDetails.products.map((items)=> { %>
+                                                                        <tr class="table-order">
+                                                                            <td>
+                                                                                <a href="javascript:void(0)">
+                                                                                    <img src="/productImageS/<%=items.product.images[0]%>"
+                                                                                        class="img-fluid blur-up lazyload"
+                                                                                        alt="">
+                                                                                </a>
+                                                                            </td>
+                                                                            <td>
+                                                                                <p>
+                                                                                    <%=items.product.name%>
+                                                                                </p>
+                                                                                <!-- <h5>Outwear & Coats</h5> -->
+                                                                            </td>
+                                                                            <td>
+                                                                                <p>Quantity</p>
+                                                                                <h5>
+                                                                                    <%=items.quantity%>
+                                                                                </h5>
+                                                                            </td>
+                                                                            <td>
+                                                                                <p>Price</p>
+                                                                                <h5>₹<%=items.total%>
+                                                                                </h5>
+                                                                            </td>
+                                                                            <td>
+                                                                                <p>status</p>
+                                                                                <h5 data-status="<%=items.status%>"><%=items.status%></h5>
+                                                                            </td>
+                                                                            <td>
+                                                                                <div class="dropdown" id="statusDropdown">
+                                                                                    <button
+                                                                                        class="btn btn-secondary dropdown-toggle"
+                                                                                        id="statusDropdownBtn" type="button"
+                                                                                        data-bs-toggle="dropdown"
+                                                                                        aria-expanded="false"
+                                                                                        style="background-color: #0da487 !important;" 
+                                                                                        <% if(items.status === 'Cancelled') { %> disabled <% } %>>
+                                                                                        Select Status
+                                                                                    </button>
+                                                                                    <ul class="dropdown-menu"
+                                                                                        aria-labelledby="statusDropdown"
+                                                                                        id="statusId">
+                                                                                        <li>
+                                                                                            <a class="dropdown-item" data-product-id="<%= items.product._id %>"
+                                                                                                data-status="Order confirmed">Order
+                                                                                                confirmed</a>
+                                                                                        </li>
+                                                                                        <li>
+                                                                                            <a class="dropdown-item" data-product-id="<%= items.product._id %>"
+                                                                                                data-status="Pending">Pending</a>
+                                                                                        </li>
+                                                                                        <li>
+                                                                                            <a class="dropdown-item" data-product-id="<%= items.product._id %>"
+                                                                                                data-status="Out of delivery">Out
+                                                                                                of delivery</a>
+                                                                                        </li>
+                                                                                        <li>
+                                                                                            <a class="dropdown-item" data-product-id="<%= items.product._id %>"
+                                                                                                data-status="Shipped">Shipped</a>
+                                                                                        </li>
+                                                                                        <li>
+                                                                                            <a class="dropdown-item" data-product-id="<%= items.product._id %>"
+                                                                                                data-status="Return confirmed">Return
+                                                                                                confirmed</a>
+                                                                                        </li>
+                                                                                        <li>
+                                                                                            <a class="dropdown-item" data-product-id="<%= items.product._id %>"
+                                                                                                data-status="Delivered">Delivered</a>
+                                                                                        </li>
+                                                                                    </ul>
+                                                                                </div>
+                                                                            </td>
+                                                                            <td>
+                                                                                <button data-status="<%=items.status%>" data-product-id="<%=items.product._id%>" class="btn btn-secondary cancel-btn" type="button" aria-expanded="false" style="background-color: #0da487 !important;" <% if(items.status === 'Cancelled') { %> disabled <% } %>>
+                                                                                    Cancel Order
+                                                                                </button>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <% }) %>
+
                                                                 </tbody>
 
                                                                 <tfoot>
@@ -88,7 +151,9 @@
                                                                             <h5>Subtotal :</h5>
                                                                         </td>
                                                                         <td>
-                                                                            <h4><%=orderDetails.grandTotal%></h4>
+                                                                            <h4>
+                                                                                <%=orderDetails.grandTotal%>
+                                                                            </h4>
                                                                         </td>
                                                                     </tr>
 
@@ -116,7 +181,8 @@
                                                                                 :</h4>
                                                                         </td>
                                                                         <td>
-                                                                            <h4 class="theme-color fw-bold"><%=orderDetails.grandTotal%>
+                                                                            <h4 class="theme-color fw-bold">
+                                                                                <%=orderDetails.grandTotal%>
                                                                             </h4>
                                                                         </td>
                                                                     </tr>
@@ -129,61 +195,40 @@
                                                         <div class="order-success">
                                                             <div class="row g-4">
 
+                                                                <ul class="order-details">
+                                                                    <br>
 
-                                                                
-
-                                                                <div class="dropdown" id="statusDropdown">
-                                                                    <button class="btn btn-secondary dropdown-toggle" id="statusDropdownBtn" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="background-color: #0da487 !important;">
-                                                                      Select Status
-                                                                    </button>
-                                                        <ul class="dropdown-menu" aria-labelledby="statusDropdown" id="statusId">
-                                                            <li>
-                                                                <a class="dropdown-item" href="#" data-status="Order confirmed">Order confirmed</a>
-                                                            </li>
-                                                            <li>
-                                                                <a class="dropdown-item" href="#" data-status="Cancel Order">Cancel order</a>
-                                                            </li>
-                                                            <li>
-                                                                <a class="dropdown-item" href="#" data-status="Pending">Pending</a>
-                                                            </li>
-                                                            <li>
-                                                                <a class="dropdown-item" href="#" data-status="Out of delivery">Out of delivery</a>
-                                                            </li>
-                                                            <li>
-                                                                <a class="dropdown-item" href="#" data-status="Shipped">Shipped</a>
-                                                            </li>
-                                                            <li>
-                                                                <a class="dropdown-item" href="#" data-status="Return confirmed">Return confirmed</a>
-                                                            </li>
-                                                            <li>
-                                                                <a class="dropdown-item" href="#" data-status="Delivered">Delivered</a>
-                                                            </li>                              
-                                                        </ul>
-                                                      </div>
-
-                                                      <ul class="order-details">
-                                                        <br>
-                                                            
-                                                            <li id="statusDetails"><%= orderDetails.status %></li>
-                                                            
-                                                        </ul>
+                                                                </ul>
                                                                 <h4>summery</h4>
                                                                 <ul class="order-details">
-                                                                    <li>Order ID: <%=orderDetails._id%></li>
+                                                                    <li>Order ID: <%=orderDetails._id%>
+                                                                    </li>
                                                                     <li>Order Date: October 22, 2018</li>
-                                                                    <li>Order Total:₹<%=orderDetails.grandTotal%></li>
+                                                                    <li>Order Total:₹<%=orderDetails.grandTotal%>
+                                                                    </li>
                                                                 </ul>
 
                                                                 <h4>shipping address</h4>
                                                                 <ul class="order-details">
-                                                                    <li><%=orderDetails.address.name%></li>
-                                                                    <li><%= orderDetails.address.houseno%>, <%= orderDetails.address.street %>.</li>
-                                                                    <li><%= orderDetails.address.country %>, <%= orderDetails.address.pincode %> Contact No: <%= orderDetails.address.phone %></li>
+                                                                    <li>
+                                                                        <%=orderDetails.address.name%>
+                                                                    </li>
+                                                                    <li>
+                                                                        <%= orderDetails.address.houseno%>, <%=
+                                                                                orderDetails.address.street %>.
+                                                                    </li>
+                                                                    <li>
+                                                                        <%= orderDetails.address.country %>, <%=
+                                                                                orderDetails.address.pincode %> Contact
+                                                                                No: <%= orderDetails.address.phone %>
+                                                                    </li>
                                                                 </ul>
 
                                                                 <div class="payment-mode">
                                                                     <h4>payment method</h4>
-                                                                    <p><%=orderDetails.paymentMethod%></p>
+                                                                    <p>
+                                                                        <%=orderDetails.paymentMethod%>
+                                                                    </p>
                                                                 </div>
 
                                                                 <div class="delivery-sec">
@@ -240,95 +285,6 @@
                 </div>
             </div>
             <!-- Modal end -->
-
-            <script>
-
-
-                const statusDropdwon = document.getElementById('statusDropdown');
-                const orderStatus = '<%=orderDetails.status%>';
-        
-                 if (orderStatus === 'Cancel Order') {
-                      statusDropdwon.style.display = 'none'
-                 }else{
-        
-                 }
-        
-               
-                const dropdownItems = document.querySelectorAll('.dropdown-item');
-                
-                dropdownItems.forEach(item => {
-                    item.addEventListener('click', function(event) {
-                        event.preventDefault(); 
-                
-                       
-                        const newStatus = this.getAttribute('data-status');
-                        const orderId = '<%= orderDetails._id%>'
-                        console.log(orderId);
-                        console.log(newStatus)
-                
-                        
-                        updateOrderStatus(orderId,newStatus);
-                    });
-                });
-                
-                function updateOrderStatus(orderId, status) {
-                    
-                    const url = `/admin/ChangeOrderStatus`;
-                
-                    fetch(url, {
-                        method: 'POST', 
-                        headers: {
-                            'Content-Type': 'application/json',
-                           
-                        },
-                        
-                        body: JSON.stringify({ orderId, status }),
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        
-                        const updatedStatus = status;
-                        console.log(updatedStatus);
-                        updateFrontendStatus(updatedStatus);
-                
-                        console.log('Order status updated successfully:', updatedStatus);
-                    })
-                    .catch(error => {
-                        console.error('Error updating order status:', error);
-                    });
-                }
-                
-                function updateFrontendStatus(status) {
-                    
-                    const statusDetailsDiv = document.getElementById('statusDetails');
-                    if (statusDetailsDiv) {
-                        statusDetailsDiv.innerHTML = `<strong></strong><br>${status}`;
-                    }
-                   
-                    console.log('Updating front-end with new status:', status);
-                }
-                
-                </script>
-
-                <script>
-                    document.addEventListener('DOMContentLoaded', function () {
-                    var statusDropdownBtn = document.getElementById('statusDropdownBtn');
-                    var statusDetails = document.getElementById('statusDetails');
-                    var statusDropdownItems = document.querySelectorAll('#statusId .dropdown-item');
-                
-                    statusDropdownItems.forEach(function (item) {
-                        item.addEventListener('click', function () {
-                        var selectedStatus = item.getAttribute('data-status');
-                        statusDetails.textContent = selectedStatus; // Update displayed status
-                
-                        // Disable the button if the selected status is "Cancel Order"
-                        statusDropdownBtn.disabled = selectedStatus === 'Cancel Order';
-                        });
-                    });
-                    });
-                </script>
-        
-
             <!-- latest js -->
             <script src="/assetsb/js/jquery-3.6.0.min.js"></script>
 
@@ -359,6 +315,71 @@
 
             <!-- Theme js -->
             <script src="/assetsb/js/script.js"></script>
+
+
+            <script>
+                const cancelButtons = document.querySelectorAll('.cancel-btn');
+                const returnButtons = document.querySelectorAll('.return-btn');
+            
+                cancelButtons.forEach(button => {
+                    button.addEventListener('click', function () {
+                        console.log('Cancel Order Clicked');
+            
+                        // Extracting data attributes
+                        const orderId = '<%= orderDetails._id %>';
+                        const status = this.getAttribute('data-status');
+                        const productId = this.getAttribute('data-product-id');
+                        const newStatus = 'Cancelled';
+            
+                        console.log('Order ID:', orderId);
+                        console.log('Status:', status);
+                        console.log('Product ID:', productId);
+            
+                        updateOrderStatus(orderId, newStatus, productId);
+                    });
+                });
+            
+                const dropdownItems = document.querySelectorAll('.dropdown-item');
+            
+                dropdownItems.forEach(item => {
+                    item.addEventListener('click', function () {
+                        const orderId = '<%= orderDetails._id %>';
+                        const productId = this.getAttribute('data-product-id');
+                        const newStatus = this.getAttribute('data-status');
+            
+                        updateOrderStatus(orderId, newStatus, productId);
+                    });
+                });
+            
+                returnButtons.forEach(button => {
+                    if (button.closest('td').querySelector('.cancel-btn[disabled]')) {
+                        button.disabled = true;
+                    }
+                });
+            
+                function updateOrderStatus(orderId, status, productId) {
+                    const url = `/admin/ChangeOrderStatus`;
+            
+                    fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ orderId, status, productId }),
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            const updatedStatus = status;
+                            console.log(updatedStatus);
+            
+                            console.log('Order status updated successfully:', updatedStatus);
+                            location.reload();
+                        })
+                        .catch(error => {
+                            console.error('Error updating order status:', error);
+                        });
+                }
+            </script>
         </body>
 
 

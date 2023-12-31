@@ -100,11 +100,12 @@ const verifyLogin = async (req, res) => {
 
 const loadLandingPage = async (req, res) => {
   try {
+    const cartQuantity = req.session.cartQuantity; 
     const newArrivals = await Product.find({ is_Listed: true }).sort({ createdAt: -1 }).limit(6)
     const allCategory = await Category.find({ is_Listed: false }).limit(6)
     const allProduct = await Product.find({ is_Listed: true }).sort({ createdAt: -1 }).limit(8)
     const user = req.session.user_id;
-    res.render('landingHome', { allProduct, allCategory, newArrivals, user })
+    res.render('landingHome', { allProduct, allCategory, newArrivals, user, cartQuantity })
   } catch (error) {
     console.log(error.message);
   }
@@ -165,16 +166,16 @@ const loadRegister = async (req, res) => {
 
 const insertUser = async (req, res) => {
   try {
-    // const existingUser = await User.findOne({ email: req.body.email });
+    const existingUser = await User.findOne({ email: req.body.email });
 
-    // if (existingUser) {
-    //   return res.render('registration', {
-    //     err: 'User already exists. Please login.',
-    //     name: req.body.name,
-    //     email: req.body.email,
-    //     mno: req.body.mno,
-    //   });
-    // }
+    if (existingUser) {
+      return res.render('registration', {
+        err: 'User already exists. Please login.',
+        name: req.body.name,
+        email: req.body.email,
+        mno: req.body.mno,
+      });
+    }
 
     const otp = generateOTP();
     req.session.otp = otp;
@@ -631,24 +632,26 @@ const logout = async (req, res) => {
 
 const loadUserProfile = async (req, res) => {
   try {
-    const cartQuantity = req.session.cartQuantity; // Include cart quantity in the rendering
-    const user_id = req.session.user_id
-    const address = await Address.find({user:user_id})
-    const orderDetails = await Order.find({user:user_id})
+    const cartQuantity = req.session.cartQuantity;
+    const user_id = req.session.user_id;
+    const address = await Address.find({ user: user_id });
+    const orderDetails = await Order.find({ user: user_id }).sort({ createdAt: -1 });
+
     if (user_id) {
-      const user = await User.findById(user_id)
-      res.render('account', { user, address, orderDetails,cartQuantity })
+      const user = await User.findById(user_id);
+      res.render('account', { user, address, orderDetails, cartQuantity });
     }
   } catch (error) {
     console.log(error.message);
   }
-}
+};
+
 
 const updateUserProfile = async(req,res) => {
   try {
       const userId = req.session.user_id;
       const {displayName, email, phoneNumber, currPass , newPass, confirmNewPassword } = req.body;
-      console.log(displayName, email, phoneNumber);
+      console.log(displayName, email, phoneNumber, currPass , newPass, confirmNewPassword);
       const user = await User.findById(userId);
       if (currPass && !bcrypt.compareSync(currPass, user.password)) {
         return res.status(400).json({ success: false, message: 'Current password is incorrect' });

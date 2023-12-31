@@ -63,7 +63,7 @@
                                                 </div>
                                                 <div class="modal-body">
                                                     
-                                                    <form id="addressForm" role="form" method="POST" action="/address">
+                                                    <form id="addressForm" role="form" method="POST" action="/addAddress">
                                                         <input type="hidden" name="_token" value="">
                                                         <div class="form-group">
                                                              
@@ -692,7 +692,7 @@ async function orderConfirm(){
                         amount: responseData.razorpayOrder.amount,
                         currency: 'INR',
                         order_id: responseData.razorpayOrder.id,
-                        name: 'Your Store',
+                        name: 'ShutterGear',
                         description: 'Payment for Your Order',
                         image: '',
                         handler: async function (response) {

@@ -100,19 +100,7 @@
                         <!-- Sales / Purchase chart end -->
 
                         <!-- Sales / Purchase Return star-->
-                        <div class="col-12">
-                            <div class="card o-hidden">
-                                <div class="card-header border-0 pb-1">
-                                    <div class="card-header-title">
-                                        <h4>Sales / Purchase Return</h4>
-                                    </div>
-                                </div>
-                                <div class="card-body p-0">
-                                    <div id="sales-purchase-return-cart"></div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Sales / Purchase Return end-->
+
 
                         <!-- Booking history start-->
                         <div class="row d-flex">
@@ -133,29 +121,29 @@
                                   <div class="row d-flex">
                                     <div class="col-md-12 text-right" style="
                                     display: flex;">
-                                            <button id="pdfButton" class="btn btn-secondary print ms-2" style="color: white;"><i class="icon material-icons md-print" ></i> Download PDF</button>
-                                            <a href="/admin/excelsalesreport" class="btn btn-secondary print ms-2" style="width: fit-content; color: white;"><i class="icon material-icons md-print" ></i>Download Excel</a>
+                                    <!-- Add these buttons where you want to trigger PDF and Excel downloads -->
+                                    <button id="downloadPdf" class="btn btn-secondary print ms-2" style="color: white;">
+                                        <i class="icon material-icons md-print"></i> Download PDF
+                                    </button>
+                                    <button id="downloadExcel" class="btn btn-secondary print ms-2" style="width: fit-content; color: white;">
+                                        <i class="icon material-icons md-print"></i> Download Excel
+                                      </button>
+
                 
                                  </div>
                                 </div>
                 
                                 <form action="" method="get" >
                                     <label for="paymentMethod" class="form-label" >Select Status:</label>
-                                <div class="col-md-3 col-12 me-auto mb-md-0 mb-3" style="display: flex;">
-                
-                                    
-                                    <select name="paymentMethod" class="form-select" style="height: 36px;width: 168px;" id="paymentMethod">
-                                        
-                                        <option value="" selected>All</option>
-                                        <option value="Online Payment">RazorPay</option>
-                                        <option value="Cash On Delivery">Cash On Delivery</option>
-                                       
-                
-                
-                                    </select>
-                                  
-                                  <input type="submit" class="btn btn-md rounded font-sm ms-2" value="Filter">
-                                </div>
+                                    <div class="col-md-3 col-12 me-auto mb-md-0 mb-3" style="display: flex;">
+                                        <form action="/admin/salesReport" method="get">
+                                            <select name="paymentMethod" class="form-select" style="height: 36px;width: 168px;" id="paymentMethod">                                                <option value="" selected>All</option>
+                                                <option value="Razorpay">Razorpay</option>
+                                                <option value="Cash On Delivery">Cash On Delivery</option>
+                                            </select>
+                                            <input type="submit" class="btn btn-md rounded font-sm ms-2" value="Filter">
+                                        </form>
+                                    </div>
                                 </div>
                                 <p>Total Revenue: <%=totalRevenue %></p>
                                 
@@ -194,10 +182,10 @@
                                                             <tr>
                                                                 <td><%= order.createdAt.toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' }) %></td>
                                                                 <td><%= order._id %></td>
-                                                                <td><%= order.user.name %></td>
+                                                                <td><%= order.user && order.user.name %></td>
                                                                 <td><%= product.product ? product.product.title : 'N/A' %></td>
                                                                 <td><%= product.product ? product.product.category : 'N/A' %></td>
-                                                                <td><%= order.status%></td>
+                                                                <td><%= product.status%></td>
                                                                 <td><%= product.quantity %></td>
                                                                 <td><%= product.total %></td>
                                                                 <td><%= order.paymentMethod %></td>
@@ -297,7 +285,21 @@
 
     <!-- Theme js -->
     <script src="/assetsb/js/script.js"></script>
+
+    <script>
+        document.getElementById('downloadPdf').addEventListener('click', function () {
+            const selectedValue = document.getElementById('paymentMethod').value;
+            const url = `/admin/salesReport?report=<%= reportOrder %>&paymentMethod=${selectedValue}&downloadPdf=true`;
+            window.location.href = url;
+        });
     
+        document.getElementById('downloadExcel').addEventListener('click', function () {
+            const selectedValue = document.getElementById('paymentMethod').value;
+            const url = `/admin/download-excel?paymentMethod=${selectedValue}`;
+            window.location.href = url;
+        });
+    </script>
+
 </body>
 
 

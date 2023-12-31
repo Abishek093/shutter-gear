@@ -55,10 +55,78 @@
     <!-- App css -->
     <link rel="stylesheet" type="text/css" href="/assetsb/css/style.css">
 
+    <!--Cropper.js-->
     <!-- Add these scripts before your existing scripts -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" integrity="sha512-3D8kkIerwbFjW0WeMg8yNWVi3AgpZEs19JOVNaQ4DHbBjQ4N3mwBl8pZkOFW00VO5fwNj+6nA+U9icowTqQU9w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js" integrity="sha512-U2m/WwoqkoNag8z95VAs09XehpKQhXu0T1KaR9Z86jzMTaUjNtRCKgTxZMav0Asj5R3sPfw68b1a8P7E0jwhgA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+
+
+
+
+<style>
+    .g-height-50 {
+        height: 50px;
+    }
+
+    .g-width-50 {
+        width: 50px !important;
+    }
+
+    @media (min-width: 0){
+        .g-pa-30 {
+            padding: 2.14286rem !important;
+        }
+    }
+
+    .g-bg-secondary {
+        background-color: #fafafa !important;
+    }
+
+    .u-shadow-v18 {
+        box-shadow: 0 5px 10px -6px rgba(0, 0, 0, 0.15);
+    }
+
+    .g-color-gray-dark-v4 {
+        color: #777 !important;
+    }
+
+    .g-font-size-12 {
+        font-size: 0.85714rem !important;
+    }
+
+    .media-comment {
+        margin-top:20px
+    }
+    .singleImageCanvasContainer{
+        overflow: hidden;
+        height: 200px;
+        width: 30%;
+        display: inline-block;
+        position: relative;
+        padding-right: 0px;
+        margin-right: 15px;
+        border: 2px solid #dfdfdf;
+        margin-bottom: 10px;
+        padding: 4px;
+        border-radius: .25rem;
+    }
+
+    .singleImageCanvasContainer .singleImageCanvasCloseBtn{
+        position: absolute;
+        right: 0;
+    }
+    .singleImageCanvasContainer .singleImageCanvas{
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+</style>
 </head>
 
 <body>
@@ -191,8 +259,8 @@
                                 </a>
                             </li>
                             <li>
-                                <a data-bs-toggle="modal" data-bs-target="#staticBackdrop"
-                                    href="javascript:void(0)">
+                                <a data-bs-target="#staticBackdrop"
+                                    href="/logout">
                                     <i data-feather="log-out"></i>
                                     <span>Log out</span>
                                 </a>

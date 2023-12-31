@@ -1,5 +1,5 @@
 const Category = require('../models/categoryModel')
-
+const Product = require('../models/productModel')
 
 const loadCategory = async(req, res)=>{
     try {
@@ -52,8 +52,17 @@ const loadNewCategory = async (req, res) => {
   const AddNewCategory = async (req, res) => {
     try {
       const name = req.body.name;
-      const image = req.file.filename;
+      const image = req.file;
       const description = req.body.description;
+  
+      // Check if the uploaded file is an image
+      if (!isValidImage(image)) {
+        res.render('add-new-category', { errorMessage: 'Invalid file format. Only images are allowed.',
+            name: req.body.name,
+            description: req.body.description
+        });
+        return;
+      }
   
       const existingCategory = await Category.findOne({ name });
   
@@ -63,9 +72,9 @@ const loadNewCategory = async (req, res) => {
       }
   
       // Category doesn't exist, create and save the new category
-      const category = Category({
+      const category = new Category({
         name,
-        image,
+        image: image.filename,
         description,
       });
   
@@ -76,27 +85,43 @@ const loadNewCategory = async (req, res) => {
       // Handle other errors as needed
     }
   };
+  
+  // Function to check if the file is a valid image
+  function isValidImage(file) {
+    // Add additional checks if needed
+    const allowedImageTypes = ['image/jpeg', 'image/png', 'image/gif'];
+    return allowedImageTypes.includes(file.mimetype)
+  }
+  
 
   
-const deleteCategory = async (req, res) => {
+
+  
+  const deleteCategory = async (req, res) => {
     try {
         const category_id = req.params.id;
         const category = await Category.findById(category_id);
-        console.log(category);
+        
         if (!category) {
             console.log("Category not found");
             res.status(404).send('Category not found');
             return;
         }
 
+        // Update category's is_Listed field
         category.is_Listed = !category.is_Listed;
         await category.save();
+
+        // Update is_Listed field for associated products based on category name
+        await Product.updateMany({ category: category.name }, { $set: { is_Listed: category.is_Listed } });
+
         res.redirect("/admin/category");
     } catch (error) {
         console.log(error.message);
         res.status(500).send('Internal Server Error');
     }
 };
+
 
 
 const loadEditCategory = async(req, res)=>{

@@ -52,8 +52,12 @@
                                             </div><!-- End .rating-container -->
 
                                             <div class="product-price">
-                                                <span class="new-price"><%=products.sales_price%></span>
-                                                <span class="old-price"><%=products.regular_price%></span>
+                                                <% if (products.sales_price !== products.regular_price) { %>
+                                                    <span class="new-price">₹<%= products.sales_price %></span>
+                                                    <span class="old-price">₹<%= products.regular_price %></span>
+                                                <% } else { %>
+                                                    <span class="new-price">₹<%= products.sales_price %></span>
+                                                <% } %>
                                             </div><!-- End .product-price -->
 
                                             <div class="product-content">
@@ -76,15 +80,20 @@
                                             </div><!-- End .details-filter-row -->
 
                                             <div class="product-details-action">
-                                                <div class="details-action-col">
-                                                    <label for="qty">Qty:</label>
-                                                    <div class="product-details-quantity">
-                                                        <input type="number" id="qty" class="form-control" value="1" min="1" max="10" step="1" data-decimals="0" required>
-                                                    </div><!-- End .product-details-quantity -->
-
-                                                    <a href="add-to-cart" class="btn-product btn-cart"><span>add to cart</span></a>
-                                                </div><!-- End .details-action-col -->
-
+                                                <% if(products.quantity === 0){%>
+                                                
+                                                        <a class="btn-product " disabled><span style="color: red;">Out of Stock</span></a>
+                                                    </div><!-- End .details-action-col -->
+                                                <% }else{ %>
+                                                    <div class="details-action-col">
+                                                        <label for="qty">Qty:</label>
+                                                        <div class="product-details-quantity">
+                                                            <input type="number" id="qty" class="form-control" value="1" min="1" max="10" step="1" data-decimals="0" required>
+                                                        </div><!-- End .product-details-quantity -->
+    
+                                                        <a href="/add-to-cart/<%=products._id%>" class="btn-product btn-cart"><span>add to cart</span></a>
+                                                    </div><!-- End .details-action-col -->
+                                                <% } %>
                                                 <div class="details-action-wrapper">
                                                     <a href="#" class="btn-product btn-wishlist" title="Wishlist"><span>Add to Wishlist</span></a>
                                                     <a href="#" class="btn-product btn-compare" title="Compare"><span>Add to Compare</span></a>

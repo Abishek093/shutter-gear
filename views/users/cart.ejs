@@ -383,6 +383,7 @@
     <!-- Main JS File -->
     <script src="assets/js/main.js"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
 
@@ -440,7 +441,13 @@
                     });
     
                     if (response.ok) {
-                        location.reload(); // Reload the page after successful update
+                        const responseData = await response.json();
+                        if(responseData.insufficientStock){
+                            await Swal.fire('Error', 'insufficientStock', 'error');
+                            location.reload(); // Reload the page after successful update
+                        }else{
+                            location.reload(); // Reload the page after successful update
+                        }
                     } else {
                         console.error('Failed to update product');
                         // Handle error response if needed

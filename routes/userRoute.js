@@ -39,28 +39,28 @@ user_route.post('/login', userController.verifyLogin)
 
 user_route.get('/landingHome', auth.isLogin, auth.isUserBlocked, userController.loadLandingPage);
 user_route.get('/user',auth.isLogin, auth.isUserBlocked, userController.loadUserProfile)
-user_route.post('/editUserDetails',userController.updateUserProfile)
+user_route.post('/editUserDetails',auth.isLogin, auth.isUserBlocked,userController.updateUserProfile)
 
-user_route.post('/add-billing-address',addressController.addAddress)
-user_route.post('/addAddress',addressController.addAddressChekout)
+user_route.post('/add-billing-address',auth.isLogin, auth.isUserBlocked, addressController.addAddress)
+user_route.post('/addAddress',auth.isLogin, auth.isUserBlocked,addressController.addAddressChekout)
 
 
 user_route.get('/productsView',userController.loadProductsView)
 user_route.get('/productDetails/:id',userController.loadProduct)
 user_route.get('/logout',userController.logout)
 
-user_route.get('/cart',cartController.loadCart)
-user_route.get('/add-to-cart/:id',cartController.addToCart)
-user_route.post('/updateCart',cartController.updateCart)
-user_route.get('/removeProduct',cartController.removeProduct);  
+user_route.get('/cart',auth.isLogin, auth.isUserBlocked,cartController.loadCart)
+user_route.get('/add-to-cart/:id',auth.isLogin, auth.isUserBlocked,cartController.addToCart)
+user_route.post('/updateCart',auth.isLogin, auth.isUserBlocked,cartController.updateCart)
+user_route.get('/removeProduct',auth.isLogin, auth.isUserBlocked,cartController.removeProduct);  
 
 user_route.get('/checkOut',orderController.loadCheckOut)
 
 //checkout
-user_route.get('/checkOut',orderController.loadCheckOut);
-user_route.post('/confirm-order', orderController.confirmOrder);
-user_route.get('/success-page',orderController.loadSuccess)
+user_route.get('/checkOut',auth.isLogin, auth.isUserBlocked,orderController.loadCheckOut);
+user_route.post('/confirm-order',auth.isLogin, auth.isUserBlocked,orderController.confirmOrder);
+user_route.get('/success-page',auth.isLogin, auth.isUserBlocked,orderController.loadSuccess)
 
-user_route.get('/orderdetails',orderController.orderdetails);
+user_route.get('/orderdetails',auth.isLogin, auth.isUserBlocked,orderController.orderdetails);
 
 module.exports = user_route;

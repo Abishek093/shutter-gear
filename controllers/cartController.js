@@ -89,6 +89,44 @@ const addToCart = async (req, res) => {
 
 
 
+// const updateCart = async (req, res) => {
+//     try {
+//         const userId = req.session.user_id;
+//         const { productId, newQuantity } = req.body;
+
+//         const userCart = await Cart.findOne({ user: userId }).populate('products.product');
+
+//         if (!userCart) {
+//             return res.status(404).json({ success: false, message: 'Cart not found for the user.' });
+//         }
+
+//         const productIndex = userCart.products.findIndex(item => item.product._id.toString() === productId);
+
+//         if (productIndex !== -1) {
+//             userCart.products[productIndex].quantity = parseInt(newQuantity, 10);//working
+//             userCart.products[productIndex].subTotal = userCart.products[productIndex].quantity * userCart.products[productIndex].product.sales_price;
+//             const productTotal = userCart.products[productIndex].subTotal;
+//             console.log(productTotal);
+
+
+//             const newTotal = userCart.products.reduce((acc, item) => {
+//                 const itemSubTotal = item.subTotal || 0; // Handle the case where item.subTotal is undefined or NaN
+//                 return acc + itemSubTotal;
+//             }, 0);
+//             userCart.total = newTotal
+//             console.log("//////////////", productTotal);
+//             console.log("?????????????", newTotal);
+
+//             await userCart.save();
+//             res.status(200).json({ success: true, total: newTotal, userCart, productTotal });
+//         } else {
+//             res.status(404).json({ success: false, message: 'Product not found in the cart.' });
+//         }
+//     } catch (error) {
+//         console.log(error.message);
+//     }
+// };
+
 const updateCart = async (req, res) => {
     try {
         const userId = req.session.user_id;
@@ -103,30 +141,32 @@ const updateCart = async (req, res) => {
         const productIndex = userCart.products.findIndex(item => item.product._id.toString() === productId);
 
         if (productIndex !== -1) {
-            userCart.products[productIndex].quantity = parseInt(newQuantity, 10);//working
-            userCart.products[productIndex].subTotal = userCart.products[productIndex].quantity * userCart.products[productIndex].product.sales_price;
-            const productTotal = userCart.products[productIndex].subTotal;
-            console.log(productTotal);
+            const product = userCart.products[productIndex].product;
+            const availableStock = product.quantity;
 
+            if (parseInt(newQuantity, 10) > availableStock) {
+                return res.status(200).json({ success: true, insufficientStock: true });
+            }
+
+            userCart.products[productIndex].quantity = parseInt(newQuantity, 10);
+            userCart.products[productIndex].subTotal = userCart.products[productIndex].quantity * userCart.products[productIndex].product.sales_price;
 
             const newTotal = userCart.products.reduce((acc, item) => {
-                const itemSubTotal = item.subTotal || 0; // Handle the case where item.subTotal is undefined or NaN
+                const itemSubTotal = item.subTotal || 0;
                 return acc + itemSubTotal;
             }, 0);
-            userCart.total = newTotal
-            console.log("//////////////", productTotal);
-            console.log("?????????????", newTotal);
+            userCart.total = newTotal;
 
             await userCart.save();
-            res.status(200).json({ success: true, total: newTotal, userCart, productTotal });
+            res.status(200).json({ success: true, total: newTotal, userCart });
         } else {
             res.status(404).json({ success: false, message: 'Product not found in the cart.' });
         }
     } catch (error) {
         console.log(error.message);
+        res.status(500).json({ success: false, message: 'Internal server error.' });
     }
 };
-
 
 const removeProduct = async (req, res) => {
     try {

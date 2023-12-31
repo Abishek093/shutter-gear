@@ -7,11 +7,6 @@ const categorySchema = new mongoose.Schema(
             required: true,
             unique: true,
         },
-        // subCategory:[],
-        // totalProducts:{
-        //     type:Number,
-        //     default:0
-        // },
         description:{
             type: String
         },

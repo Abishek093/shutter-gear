@@ -98,23 +98,20 @@
 																	</tr>
 																</thead>
 																<tbody class="table-body">
-																	<% orderDetails.forEach(order=>{ %>
-																	<tr class="cell-1">
-																		<td><%=order._id  %></td>
-																		<td><%= order.grandTotal %></td>
-																		<td><%=order.createdAt.toLocaleDateString() %></td>
-																		<td><%= order.status %></td>
-																		<td>
-																			<a href="/orderdetails?orderId=<%=order._id %>">
-										
-																				<button class="btn btn-success" style="font-size: 10px; padding: 5px 10px;">Details</button>
+																	<% orderDetails.forEach(order => { %>
+																		<tr class="cell-1">
+																		  <td><%= order._id %></td>
+																		  <td><%= order.grandTotal %></td>
+																		  <td><%= order.createdAt.toLocaleDateString() %></td>
+																		  <td class="order-status" data-total-products="<%= order.products.length %>" data-cancelled-products="<%= order.products.filter(product => product.status === 'Cancelled').length %>"><%= order.status %></td>
+																		  <td>
+																			<a href="/orderdetails?orderId=<%= order._id %>">
+																			  <button class="btn btn-success" style="font-size: 10px; padding: 5px 10px;">Details</button>
 																			</a>
-																		   
-																		</td>
-																		
-																		<td><i class="fa fa-ellipsis-h text-black-50"></i></td>
-																	</tr>
-																	<% }) %>
+																		  </td>
+																		  <td><i class="fa fa-ellipsis-h text-black-50"></i></td>
+																		</tr>
+																	  <% }) %>
 																	
 																</tbody>
 															</table>
@@ -123,6 +120,22 @@
 												</div>
 											</div>
 										</div>
+										<script>
+											document.addEventListener('DOMContentLoaded', function() {
+											  const orderStatusElements = document.querySelectorAll('.order-status');
+										  
+											  orderStatusElements.forEach(function(statusElement) {
+												const totalProductsCount = parseInt(statusElement.dataset.totalProducts);
+												const cancelledProductsCount = parseInt(statusElement.dataset.cancelledProducts);
+										  
+												if (totalProductsCount === cancelledProductsCount) {
+												  statusElement.textContent = 'Cancelled';
+												} else {
+												  statusElement.textContent = 'Order Placed';
+												}
+											  });
+											});
+										  </script>
 										<p>No order has been made yet.</p>
 										<a href="category.html" class="btn btn-outline-primary-2"><span>GO
 												SHOP</span><i class="icon-long-arrow-right"></i></a>
@@ -297,84 +310,6 @@
 											<i class="icon-long-arrow-right"></i>
 										</button>
 									</form>
-									<script>
-										function validateForm() {
-											// Reset error messages
-											resetErrorMessages();
-								
-											// Validate each field
-											if (!validateDisplayName()) return false;
-											if (!validatePhoneNumber()) return false;
-											if (!validateEmail()) return false;
-											if (!validateNewPassword()) return false;
-											if (!validateConfirmNewPassword()) return false;
-								
-											return true; // Form is valid
-										}
-								
-										function resetErrorMessages() {
-											var errorMessages = document.querySelectorAll('.error-message');
-											errorMessages.forEach(function (errorMessage) {
-												errorMessage.textContent = '';
-											});
-										}
-								
-										function validateDisplayName() {
-											var displayName = document.getElementById('displayName').value;
-											var displayNameError = document.getElementById('displayNameError');
-								
-											if (!displayName.trim()) {
-												displayNameError.textContent = 'Display Name is required';
-												return false;
-											}
-								
-											return true;
-										}
-								
-										function validatePhoneNumber() {
-											var phoneNumber = document.getElementById('phoneNumber').value;
-											var phoneNumberError = document.getElementById('phoneNumberError');
-								
-											// Add your validation logic for phone number here
-											// Example: Check if the phone number is a valid format
-								
-											return true;
-										}
-								
-										function validateEmail() {
-											var email = document.getElementById('email').value;
-											var emailError = document.getElementById('emailError');
-								
-											// Add your validation logic for email here
-											// Example: Check if the email is a valid format using the pattern attribute
-								
-											return true;
-										}
-								
-										function validateNewPassword() {
-											var newPassword = document.getElementById('newPass').value;
-											var newPasswordError = document.getElementById('newPassError');
-								
-											// Add your validation logic for new password here
-											// Example: Check if the new password meets the required criteria
-								
-											return true;
-										}
-								
-										function validateConfirmNewPassword() {
-											var confirmNewPassword = document.getElementById('confirmNewPassword').value;
-											var newPassword = document.getElementById('newPass').value;
-											var confirmNewPasswordError = document.getElementById('confirmNewPasswordError');
-								
-											if (newPassword.trim() && newPassword !== confirmNewPassword) {
-												confirmNewPasswordError.textContent = 'Passwords do not match';
-												return false;
-											}
-								
-											return true;
-										}
-									</script>
-
 								</div><!-- .End .tab-pane -->
 								</div>
 	                		</div><!-- End .col-lg-9 -->

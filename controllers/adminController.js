@@ -3,7 +3,8 @@ const Order = require('../models/Order')
 const User = require('../models/userModel')
 const Product = require('../models/productModel')
 const path = require('path')
-
+const numeral = require("numeral");
+const moment = require("moment");
 
 const loadLogin = async (req, res) => {
     try {
@@ -19,7 +20,6 @@ const verifyLogin = async (req, res) => {
         const email = req.body.email;
         const password = req.body.password;
         const adminData = await Admin.findOne({ email });
-        console.log(adminData);
 
         if (adminData) {
             if (adminData.password === password) {
@@ -130,12 +130,139 @@ const loadDashboard = async (req, res) => {
 
 
 
+const getSalesData = async (req, res) => {
+  try {
+    const pipeline = [
+      {
+        $project: {
+          year: { $year: "$createdAt" }, 
+          month: { $month: "$createdAt" }, 
+          totalSales: "$grandTotal", 
+        },
+      },
+      {
+        $group: {
+          _id: { year: "$year", month: "$month" },
+          sales: { $sum: "$totalSales" },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          month: {
+            $concat: [
+              { $toString: "$_id.year" },
+              "-",
+              {
+                $cond: {
+                  if: { $lt: ["$_id.month", 10] },
+                  then: { $concat: ["0", { $toString: "$_id.month" }] },
+                  else: { $toString: "$_id.month" },
+                },
+              },
+            ],
+          },
+          sales: "$sales",
+        },
+      },
+    ];
 
+    const monthlySalesArray = await Order.aggregate(pipeline);
+    console.log(monthlySalesArray);
 
+    res.json(monthlySalesArray);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
 
+const getSalesDataYearly = async (req, res) => {
+  try {
+    const yearlyPipeline = [
+      {
+        $project: {
+          year: { $year: "$createdAt" }, 
+          totalSales: "$grandTotal", 
+        },
+      },
+      {
+        $group: {
+          _id: { year: "$year" },
+          sales: { $sum: "$totalSales" },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          year: { $toString: "$_id.year" },
+          sales: "$sales",
+        },
+      },
+    ];
+
+    const yearlySalesArray = await Order.aggregate(yearlyPipeline);
+    console.log(yearlySalesArray);
+    res.json(yearlySalesArray);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+const getSalesDataWeekly = async (req, res) => {
+  try {
+    const weeklySalesPipeline = [
+      {
+        $project: {
+          week: { $week: "$createdAt" }, 
+          totalSales: "$grandTotal", 
+        },
+      },
+      {
+        $group: {
+          _id: { week: { $mod: ["$week", 7] } },
+          sales: { $sum: "$totalSales" },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          week: { $toString: "$_id.week" },
+          dayOfWeek: { $add: ["$_id.week", 1] },
+          sales: "$sales",
+        },
+      },
+      {
+        $sort: { dayOfWeek: 1 },
+      },
+    ];
+
+    const weeklySalesArray = await Order.aggregate(weeklySalesPipeline);
+    console.log(weeklySalesArray);
+
+    res.json(weeklySalesArray);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+const logout = async (req, res) => {
+  try {
+    req.session.admin_id = null;
+    res.redirect('/admin')
+  } catch (error) {
+    console.log(error.message);
+  }
+}
 
 module.exports={
     loadLogin,
     verifyLogin,
     loadDashboard,
+    getSalesData,
+    getSalesDataWeekly,
+    getSalesDataYearly,
+    logout
 };
