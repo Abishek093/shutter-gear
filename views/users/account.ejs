@@ -40,9 +40,6 @@
 								    <li class="nav-item">
 								        <a class="nav-link" id="tab-account-link" data-toggle="tab" href="#tab-account" role="tab" aria-controls="tab-account" aria-selected="false">Account Details</a>
 								    </li>
-								    <li class="nav-item">
-								        <a class="nav-link" href="#">Sign Out</a>
-								    </li>
 								</ul>
 	                		</aside><!-- End .col-lg-3 -->
 
@@ -163,38 +160,53 @@
 														<div class="col-sm-6">
 															<label>Name *</label>
 															<input type="text" class="form-control"
-																name="name" required>
+																name="name" >
+																<small id="nameError" class="error-message"></small>
 														</div><!-- End .col-sm-6 -->
 
 
 													</div><!-- End .row -->
+													<div>
+														<label>State *</label>
+														<input type="text" class="form-control" name="state" >
+														<small id="stateError" class="error-message"></small>
+													</div>
 
-													<label>State *</label>
-													<input type="text" class="form-control" name="state" required>
+													<div>
+														<label>District *</label>
+														<input type="text" class="form-control" name="district" >
+														<small id="districtError" class="error-message"></small>
+													</div>
 
-													<label>District *</label>
-													<input type="text" class="form-control"
-														name="district" required>
+													<div>
+														<label>Street address *</label>
+														<input type="text" class="form-control"
+															placeholder="House number and Street name"
+															name="street" >
+															<small id="streetError" class="error-message"></small>
+													</div>
 
-													<label>Street address *</label>
-													<input type="text" class="form-control"
-														placeholder="House number and Street name"
-														name="street" required>
+													<div>
+														<label>Address *</label>
+														<input type="text" class="form-control" name="address"
+															placeholder="Appartments, suite, unit etc ..." >
+															<small id="addressError" class="error-message"></small>
+													</div>
 
-													<label>Address *</label>
-													<input type="text" class="form-control" name="address"
-														placeholder="Appartments, suite, unit etc ..." required>
+
 													<div class="row">
 														<div class="col-sm-6">
 															<label>Town / City *</label>
 															<input type="text" class="form-control"
-																name="city" required>
-														</div><!-- End .col-sm-6 -->
+																name="city" >
+																<small id="cityError" class="error-message"></small>
+													</div><!-- End .col-sm-6 -->
 
 														<div class="col-sm-6">
 															<label>County *</label>
 															<input type="text" class="form-control"
-																name="county" required>
+																name="county" >
+																<small id="countyError" class="error-message"></small>
 														</div><!-- End .col-sm-6 -->
 													</div><!-- End .row -->
 
@@ -202,13 +214,15 @@
 														<div class="col-sm-6">
 															<label>Postcode / ZIP *</label>
 															<input type="text" class="form-control"
-																name="pincode" required>
+																name="pincode" >
+																<small id="pincodeError" class="error-message"></small>
 														</div><!-- End .col-sm-6 -->
 
 														<div class="col-sm-6">
 															<label>Phone *</label>
 															<input type="tel" class="form-control"
-																name="mobile" required>
+																name="mobile" >
+																<small id="mobileError" class="error-message"></small>
 														</div><!-- End .col-sm-6 -->
 													</div><!-- End .row -->
 
@@ -228,7 +242,95 @@
 
 										</form>
 									</div>
-
+									<style>
+										.error-message {
+											color: red;
+										}
+									</style>
+									<script>
+										document.addEventListener('DOMContentLoaded', function () {
+											const billingForm = document.getElementById('billingForm');
+											const addAddressButton = document.getElementById('addAddressButton');
+									
+											billingForm.addEventListener('submit', function (event) {
+												// Prevent the default form submission
+												event.preventDefault();
+									
+												// Validate the form fields
+												if (validateForm()) {
+													// If the form is valid, submit the form
+													billingForm.submit();
+												}
+											});
+									
+											function validateForm() {
+												// Reset error messages
+												resetErrorMessages();
+									
+												const name = validateInput('name', 'Name is required.');
+												const state = validateInput('state', 'State is required.');
+												const district = validateInput('district', 'District is required.');
+												const street = validateInput('street', 'Street is required.');
+												const address = validateInput('address', 'Address is required.');
+												const city = validateInput('city', 'City is required.');
+												const county = validateInput('county', 'County is required.');
+												const pincode = validatePincode('pincode');
+												const mobile = validateMobile('mobile');
+									
+												// You can add more specific validations for each field as needed
+									
+												return name && state && district && street && address && city && county && pincode && mobile;
+											}
+									
+											function validateInput(fieldName, errorMessage) {
+												const inputElement = document.querySelector(`input[name="${fieldName}"]`);
+												const errorElement = document.getElementById(`${fieldName}Error`);
+									
+												if (!inputElement.value.trim()) {
+													errorElement.textContent = errorMessage;
+													return false;
+												}
+									
+												return true;
+											}
+									
+											function validatePincode(fieldName) {
+												const inputElement = document.querySelector(`input[name="${fieldName}"]`);
+												const errorElement = document.getElementById(`${fieldName}Error`);
+												const pincodeRegex = /^[0-9]{6}$/;
+									
+												if (!pincodeRegex.test(inputElement.value.trim())) {
+													errorElement.textContent = 'Invalid pincode. Please enter a 6-digit number.';
+													return false;
+												}
+									
+												return true;
+											}
+									
+											function validateMobile(fieldName) {
+												const inputElement = document.querySelector(`input[name="${fieldName}"]`);
+												const errorElement = document.getElementById(`${fieldName}Error`);
+												const mobileRegex = /^[0-9]{10}$/;
+									
+												if (!mobileRegex.test(inputElement.value.trim())) {
+													errorElement.textContent = 'Invalid mobile number. Please enter a 10-digit number.';
+													return false;
+												}
+									
+												return true;
+											}
+									
+											function resetErrorMessages() {
+												const errorElements = document.querySelectorAll('.error-message');
+												errorElements.forEach((element) => {
+													element.textContent = '';
+												});
+											}
+										});
+									</script>
+									
+									<!-- Your HTML form goes here -->
+									
 								<!-- Display billing address -->
 								<div class="row">
 									<% address.map((item)=> { %>
@@ -273,44 +375,99 @@
 
 								</div><!-- .End .tab-pane -->
 
-									<div class="tab-pane fade" id="tab-account" role="tabpanel"
-									aria-labelledby="tab-account-link">
-									<form action="/editUserDetails" method="post">
-
-
+								<div class="tab-pane fade" id="tab-account" role="tabpanel" aria-labelledby="tab-account-link">
+									<form action="/editUserDetails" method="post" onsubmit="return validateForm()">
+								
 										<label>Display Name *</label>
+										<input type="text" class="form-control" value="<%=user.name%>" name="displayName">
+										<small class="form-text">This will be how your name will be displayed in the account section and in reviews</small>
+										<small id="displayNameError" class="error-message"></small>
+										<div>
+											<label>Phone Number</label>
+											<input type="number" class="form-control" value="<%=user.mobile%>" name="phoneNumber" id="phoneNumber">
+											<small id="phoneNumberError" class="error-message"></small>
+										</div>
 
-										<input type="text" class="form-control" value="<%=user.name%>"
-											name="displayName">
-										<small class="form-text">This will be how your name will be
-											displayed in the account section and in reviews</small>
-
-										<label>Phone Number</label>
-										<input type="number" class="form-control"
-											value="<%=user.mobile%>" name="phoneNumber">
-
-
-
-										<label>Email</label>
-										<input type="email" class="form-control" value="<%=user.email%>" name="email">
-
-
-										<label>Current password (leave blank to leave unchanged)</label>
-										<input type="password" class="form-control" name="currPass">
-
+										<div>
+											<label>Current password (leave blank to leave unchanged)</label>
+											<input type="password" class="form-control" name="currPass">
+										</div>
+										
 										<label>New password (leave blank to leave unchanged)</label>
 										<input type="password" class="form-control" name="newPass">
-
+								
 										<label>Confirm new password</label>
-										<input type="password" class="form-control mb-2"
-											name="confirmNewPassword">
+										<input type="password" class="form-control mb-2" name="confirmNewPassword">
+										<small id="passwordMatchError" class="error-message"></small>
+										<div>
+											<button type="submit" class="btn btn-outline-primary-2">
+												<span>SAVE CHANGES</span>
+												<i class="icon-long-arrow-right"></i>
+											</button>
+										</div>
+										<% if (errorMessage) { %>
+                                            <div class="alert alert-danger" role="alert">
+                                                <%= errorMessage %>
+                                            </div>
+                                        <% } %>
+										<input type="hidden" id="errorType" value="<%= errorType %>">
 
-										<button type="submit" class="btn btn-outline-primary-2">
-											<span>SAVE CHANGES</span>
-											<i class="icon-long-arrow-right"></i>
-										</button>
 									</form>
-								</div><!-- .End .tab-pane -->
+									<script>
+										document.addEventListener('DOMContentLoaded', function () {
+											// Get the error type from the hidden input
+											const errorType = document.getElementById('errorType').value;
+									
+											// Activate the corresponding tab based on the error type
+											if (errorType) {
+												const tabLink = document.querySelector(`#tab-${errorType}-link`);
+												if (tabLink) {
+													tabLink.click(); // Activate the tab
+												}
+											}
+										});
+									</script>
+									<script>
+										function validateForm() {
+											resetErrorMessages();
+											const displayName = document.querySelector('input[name="displayName"]').value;
+											const phoneNumber = document.getElementById('phoneNumber').value;
+											const newPassword = document.querySelector('input[name="newPass"]').value;
+											const confirmNewPassword = document.querySelector('input[name="confirmNewPassword"]').value;
+									
+											// Validate name
+											if (!displayName.trim()) {
+												document.getElementById('displayNameError').textContent = 'Display Name is required.';
+												return false;
+											}
+									
+											// Validate phone number
+											if (!phoneNumber.match(/^\d{10}$/)) {
+												document.getElementById('phoneNumberError').textContent = 'Invalid phone number. Please enter a 10-digit number.';
+												return false;
+											}
+									
+											// Validate passwords if any of them is non-empty
+											if (newPassword || confirmNewPassword) {
+												// Check if passwords match
+												if (newPassword !== confirmNewPassword) {
+													document.getElementById('passwordMatchError').textContent = 'Passwords do not match.';
+													return false;
+												}
+											}
+									
+											// If all validations pass, submit the form
+											return true;
+										}
+									
+										function resetErrorMessages() {
+											document.getElementById('displayNameError').textContent = '';
+											document.getElementById('phoneNumberError').textContent = '';
+											document.getElementById('passwordMatchError').textContent = '';
+										}
+									</script>
+									
+								</div>
 								</div>
 	                		</div><!-- End .col-lg-9 -->
 	                	</div><!-- End .row -->

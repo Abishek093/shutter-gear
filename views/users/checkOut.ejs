@@ -43,16 +43,18 @@
                     <div class="page-content mt-5">
                         <div class="checkout">
                             <div class="container">
-                                <div class="checkout-discount">
-                                    <form action="#">
-                                        <input type="text" class="form-control" required id="checkout-discount-input">
-                                        <label for="checkout-discount-input" class="text-truncate">Have a coupon?
-                                            <span>Click here to enter your code</span></label>
-                                    </form>
-                                </div><!-- End .checkout-discount -->
 
-                              
-                                            <!-- End .col-lg-6 -->
+                                <div class="cart-bottom">
+                                    <div class="cart-discount">
+                                            <!-- Display the input field for entering a coupon code -->
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" id="couponCodeInput" required placeholder="coupon code">
+                                                <div class="input-group-append">
+                                                    <button class="btn btn-primary-2 icon-long-arrow-right" id="apply" onclick="applyCoupon()"></button>
+                                                </div><!-- .End .input-group-append -->
+                                            </div><!-- End .input-group -->
+                                    </div><!-- End .cart-discount -->
+                                </div><!-- End .cart-bottom -->
                                 
                                
                                     <div id="ModalLoginForm" class="modal fade">
@@ -202,7 +204,7 @@
                                                         </tr>
                                                         <tr class="summary-total">
                                                             <td>Total:</td>
-                                                            <td><%=userCart.total%></td>
+                                                            <td id="total-price"><%=userCart.total%></td>
                                                         </tr><!-- End .summary-total -->
                                                  
                                                     </tbody>
@@ -653,6 +655,8 @@
             PaymentMethod=payment;
             console.log(PaymentMethod);
         }
+        let couponCodeInput = document.getElementById("couponCodeInput");
+        var totalPriceElement = document.getElementById('total-price');
 
 async function orderConfirm(){
 
@@ -670,67 +674,119 @@ async function orderConfirm(){
     
     if (confirmed.isConfirmed) {
         try {
+            let couponCode = couponCodeInput.value;
+            let totalPrice = totalPriceElement.textContent;
+
             const response = await fetch('/confirm-order', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ addressId, PaymentMethod }),
+                body: JSON.stringify({ addressId, PaymentMethod, couponCode, totalPrice}),
             });
 
             if (response.ok) {
                 const responseData = await response.json();
                 console.log(responseData);
+                if (responseData.error && responseData.error.includes('Cart is empty')) {
+                    await Swal.fire('Error', responseData.error, 'error');
+                } else {
+                    if (PaymentMethod === 'Cash On Delivery') {
+                        await Swal.fire('Success', 'Order Placed successfully', 'success');
+                        window.location.href = '/success-page';
+                    } else if (PaymentMethod === 'Razorpay') {
+                        // Initialize Razorpay checkout
+                        const options = {             
+                            key: 'rzp_test_RZUMY3LMpsKLSW',
+                            amount: responseData.razorpayOrder.amount,
+                            currency: 'INR',
+                            order_id: responseData.razorpayOrder.id,
+                            name: 'ShutterGear',
+                            description: 'Payment for Your Order',
+                            image: '',
+                            handler: async function (response) {
+                                // Handle the Razorpay success callback
+                                console.log('Razorpay Payment ID:', response.razorpay_payment_id);
+                                console.log('Razorpay Order ID:', response.razorpay_order_id);
+                                console.log('Razorpay Signature:', response.razorpay_signature);
 
-                if (PaymentMethod === 'Cash On Delivery') {
-                    await Swal.fire('Success', 'Order Placed successfully', 'success');
-                    window.location.href = '/success-page';
-                } else if (PaymentMethod === 'Razorpay') {
-                    // Initialize Razorpay checkout
-                    const options = {             
-                        key: 'rzp_test_RZUMY3LMpsKLSW',
-                        amount: responseData.razorpayOrder.amount,
-                        currency: 'INR',
-                        order_id: responseData.razorpayOrder.id,
-                        name: 'ShutterGear',
-                        description: 'Payment for Your Order',
-                        image: '',
-                        handler: async function (response) {
-                            // Handle the Razorpay success callback
-                            console.log('Razorpay Payment ID:', response.razorpay_payment_id);
-                            console.log('Razorpay Order ID:', response.razorpay_order_id);
-                            console.log('Razorpay Signature:', response.razorpay_signature);
+                                // Perform any additional actions (e.g., update order status)
+                                // Redirect to success page
+                                window.location.href = '/success-page';
+                            },
+                            prefill: {
+                                name: 'Your Name',
+                                email: 'your.email@example.com',
+                                contact: 'Your Contact Number',
+                            },
+                            notes: {
+                                address: 'Your Delivery Address',
+                            },
+                            theme: {
+                                color: '#F37254',
+                            },
+                        };
 
-                            // Perform any additional actions (e.g., update order status)
-                            // Redirect to success page
-                            window.location.href = '/success-page';
-                        },
-                        prefill: {
-                            name: 'Your Name',
-                            email: 'your.email@example.com',
-                            contact: 'Your Contact Number',
-                        },
-                        notes: {
-                            address: 'Your Delivery Address',
-                        },
-                        theme: {
-                            color: '#F37254',
-                        },
-                    };
-
-                    const rzp = new Razorpay(options);
-                    rzp.open();
+                        const rzp = new Razorpay(options);
+                        rzp.open();
+                    }
                 }
             } else {
                 await Swal.fire('Error', 'Failed to place the order', 'error');
             }
+            
         } catch (error) {
             console.log(error);
         }
     }
 }
 
-    
+async function applyCoupon(){
+
+
+    const confirmed = await Swal.fire({
+        title : 'Confirm Coupon',
+        text : "are you sure you want to apply coupon ",
+        icon : 'question',
+        showCancelButton : true,
+        confirmButtonText : 'Yes ',
+        cancelButtonText : 'No, cancel',
+    });
+
+    if(confirmed.isConfirmed){
+        try {
+            let couponCode = couponCodeInput.value;
+            var totalPrice = totalPriceElement.textContent;
+            const response = await fetch('/applyCoupon', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ couponCode, totalPrice}),
+            });
+            if(response.ok){
+                const responseData = await response.json();
+                if(responseData.status === true){
+                    console.log(responseData);
+                    document.getElementById("total-price").innerText = responseData.totalAmount
+                    document.getElementById("couponCodeInput").innerText = responseData.coupon
+                    let apply = document.getElementById('apply').disabled = true
+                    let couponCodeInput = document.getElementById('couponCodeInput').disabled = true
+                }else{
+                    Swal.fire({
+                        title: 'Enter valid coupon',
+                        text: 'Please enter a valid coupon',
+                        icon: 'warning',
+                        confirmButtonText: 'OK', // Use confirmButtonText instead of cancelButtonText
+                    });
+                }
+            }
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+}   
 
 </script>
         

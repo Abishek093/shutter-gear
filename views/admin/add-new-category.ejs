@@ -64,7 +64,9 @@
                                         <!-- Your existing form HTML -->
 
                                         <% if (errorMessage) { %>
-                                            <p class="error-message" style="color: rgb(255, 0, 0);"><%= errorMessage %></p>
+                                            <div class="alert alert-danger" role="alert">
+                                                <%= errorMessage %>
+                                            </div>
                                         <% } %>
                                         
                                     </div>

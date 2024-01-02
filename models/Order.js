@@ -32,7 +32,7 @@ const orderSchema = new mongoose.Schema({
             type:String,
             enum:['Pending', 'Shipped', 'Delivered','Cancelled','Out for Delivery','Confirmed'],
             default:'Pending'
-        },
+        }
     }],
     paymentMethod:{
         type:String,
@@ -47,6 +47,10 @@ const orderSchema = new mongoose.Schema({
         default:Date.now
     },
     grandTotal:Number,
+    coupon:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Coupon'
+    },
     cancelRequest:{
       type:Boolean,
       default:false,

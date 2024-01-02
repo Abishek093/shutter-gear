@@ -128,7 +128,8 @@ const loadEditCategory = async(req, res)=>{
     try {
         const category_id = req.params.id
         const category = await Category.findById(category_id)
-        res.render('editCategory',{category})
+        const errorMessage = ''
+        res.render('editCategory',{category, errorMessage})
     } catch (error) {
         console.log(error.message);
     }
@@ -173,36 +174,50 @@ const loadEditCategory = async(req, res)=>{
 // }    
 
 const editCategory = async (req, res) => {
-    try {
-        let category_id = req.params.id;
-        // const { name, description } = req.body;
-        const name = req.body.name
-        const description = req.body.name
-        const updateData = { name, description };
-        console.log(name);
+  try {
+    let category_id = req.params.id;
+    const name = req.body.name;
+    const description = req.body.description;
+    const updateData = { name, description };
+    const category = await Category.findById(category_id)
 
-        if (req.file) {
-            updateData.image = req.file.filename;
-        }
+    const existingCategory = await Category.findOne({ name });
 
-        const updatedCategory = await Category.findOneAndUpdate(
-            { _id: category_id },
-            updateData,
-            { new: true }
-        );
-
-        if (updatedCategory) {
-            console.log('Category Updated:', updatedCategory);
-            res.redirect('/admin/category');
-        } else {
-            console.log('Category not found or update failed.');
-            res.status(404).send('Category not found');
-        }
-    } catch (error) {
-        console.error('Error updating category:', error);
-        res.status(500).send('Internal Server Error');
+    if (existingCategory && existingCategory._id.toString() !== category_id) {
+      res.render('editCategory', {category, errorMessage: 'Category already exists.' });
+      return;
     }
+
+    if (req.file) {
+      // Validate if the uploaded file is an image
+      const validImageTypes = ['image/jpeg', 'image/png'];
+      if (!validImageTypes.includes(req.file.mimetype)) {
+        res.render('editCategory', {category, errorMessage: 'Invalid file type. Only JPEG or PNG images are allowed.'});
+        return;
+      }
+
+      updateData.image = req.file.filename;
+    }
+
+    const updatedCategory = await Category.findOneAndUpdate(
+      { _id: category_id },
+      updateData,
+      { new: true }
+    );
+
+    if (updatedCategory) {
+      console.log('Category Updated:', updatedCategory);
+      res.redirect('/admin/category');
+    } else {
+      console.log('Category not found or update failed.');
+      res.status(404).send('Category not found');
+    }
+  } catch (error) {
+    console.error('Error updating category:', error);
+    res.status(500).send('Internal Server Error');
+  }
 };
+
 
 
 

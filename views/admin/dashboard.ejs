@@ -385,15 +385,16 @@
                                             <table class="best-selling-table table border-0">
                                                 <tbody>
                                                     <% recentOrders.forEach(order => { %>
-                                                        <tr>
-                                                            <td>
-                                                                <div class="best-product-box">
-                                                                    <div class="product-name">
-                                                                        <h5><%= order.products[0].product.title %></h5>
-                                                                        <h6>#<%= order._id %></h6>
+                                                        <% if (order.products && order.products.length > 0 && order.products[0].product) { %>
+                                                            <tr>
+                                                                <td>
+                                                                    <div class="best-product-box">
+                                                                        <div class="product-name">
+                                                                            <h5><%= order.products[0].product.title %></h5>
+                                                                            <h6>#<%= order._id %></h6>
+                                                                        </div>
                                                                     </div>
-                                                                </div>
-                                                            </td>
+                                                                </td>
                                                 
                                                             <td>
                                                                 <div class="product-detail-box">
@@ -423,6 +424,7 @@
                                                                 </div>
                                                             </td>
                                                         </tr>
+                                                        <% } %>
                                                     <% }); %>
                                                 </tbody>
                                                 

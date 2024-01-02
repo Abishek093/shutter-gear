@@ -50,6 +50,9 @@
                         <% if(typeof message !=='undefined' ){ %>
                             <p style="color: rgb(0, 255, 21);"><%=message%></p>
                         <% } %>
+                    </div><!-- End .form-footer -->
+                        <a href="/login" class="forgot-link">Login?</a>
+                    <div>
                     </form>
                 </div>
             </div>
@@ -129,68 +132,77 @@
 
 <script>
     function validateForm() {
-        var name = document.getElementById('singin-name').value;
-        var email = document.getElementById('singin-email').value;
-        var mno = document.getElementById('singin-mno').value;
-        var password = document.getElementById('singin-password').value;
-        var confirmPassword = document.getElementById('singin-confirm-password').value;
+        var title = document.querySelector('[name="title"]').value;
+        var category = document.querySelector('[name="category"]').value;
+        var brand = document.querySelector('[name="brand"]').value;
+        var model = document.querySelector('[name="model"]').value;
+        var regularPrice = document.querySelector('[name="regular_price"]').value;
+        var salesPrice = document.querySelector('[name="sales_price"]').value;
+        var quantity = document.querySelector('[name="quantity"]').value;
+        var description = document.querySelector('[name="description"]').value;
+        var image = document.querySelector('[name="image"]').value;
 
         document.getElementById('nameError').innerText = '';
-        document.getElementById('emailError').innerText = '';
-        document.getElementById('mnoError').innerText = '';
-        document.getElementById('passwordError').innerText = '';
-        document.getElementById('confirmPasswordError').innerText = '';
+        document.getElementById('categoryError').innerText = '';
+        document.getElementById('brandError').innerText = '';
+        document.getElementById('modelError').innerText = '';
+        document.getElementById('regularPriceError').innerText = '';
+        document.getElementById('salesPriceError').innerText = '';
+        document.getElementById('quantityError').innerText = '';
+        document.getElementById('descriptionError').innerText = '';
+        document.getElementById('imageError').innerText = '';
 
         var isValid = true;
 
-        if (name.trim() === '') {
-            document.getElementById('nameError').innerText = 'Please enter your username';
+        if (title.trim() === '') {
+            document.getElementById('nameError').innerText = 'Please enter the product name';
             isValid = false;
         }
 
-        if (email.trim() === '' || !validateEmail(email)) {
-            document.getElementById('emailError').innerText = 'Please enter a valid email address';
+        if (category.trim() === '' || category === 'Select category') {
+            document.getElementById('categoryError').innerText = 'Please select a valid category';
             isValid = false;
         }
 
-        if (mno.trim() === '' || !validatePhoneNumber(mno)) {
-            document.getElementById('mnoError').innerText = 'Please enter a valid mobile number';
+        if (brand.trim() === '') {
+            document.getElementById('brandError').innerText = 'Please enter the brand name';
             isValid = false;
         }
 
-        if (password.trim() === '' || !validatePassword(password)) {
-            document.getElementById('passwordError').innerText = 'Your password must be at least 8 characters long and include a combination of uppercase letters, numbers, and special characters.';
+        if (model.trim() === '') {
+            document.getElementById('modelError').innerText = 'Please enter the model name';
             isValid = false;
         }
 
-        if (confirmPassword.trim() === '') {
-            document.getElementById('confirmPasswordError').innerText = 'Please confirm your password';
+        if (regularPrice.trim() === '') {
+            document.getElementById('regularPriceError').innerText = 'Please enter the regular price';
             isValid = false;
         }
 
-        if (password !== confirmPassword) {
-            document.getElementById('confirmPasswordError').innerText = 'Passwords do not match';
+        if (salesPrice.trim() === '') {
+            document.getElementById('salesPriceError').innerText = 'Please enter the sales price';
+            isValid = false;
+        }
+
+        if (quantity.trim() === '') {
+            document.getElementById('quantityError').innerText = 'Please enter the quantity';
+            isValid = false;
+        }
+
+        if (description.trim() === '') {
+            document.getElementById('descriptionError').innerText = 'Please enter the product description';
+            isValid = false;
+        }
+
+        if (image.trim() === '') {
+            document.getElementById('imageError').innerText = 'Please select at least one image file';
             isValid = false;
         }
 
         return isValid;
     }
-
-    function validateEmail(email) {
-        var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
-    }
-
-    function validatePhoneNumber(phoneNumber) {
-        var phoneRegex = /^\d{10}$/;
-        return phoneRegex.test(phoneNumber);
-    }
-
-    function validatePassword(password) {
-        var passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-        return passwordRegex.test(password);
-    }
 </script>
+
 
 
 

@@ -63,9 +63,9 @@ module.exports = {
 
 
 
-module.exports = {
-    isLogin,
-    isLogout,
-    isUserBlocked
+// module.exports = {
+//     isLogin,
+//     isLogout,
+//     isUserBlocked
     
-}
+// }

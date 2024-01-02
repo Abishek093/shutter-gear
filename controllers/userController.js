@@ -7,6 +7,7 @@ const Category = require('../models/categoryModel')
 const Address = require('../models/address')
 const Order = require('../models/Order')
 const Cart = require('../models/cartModel')
+const { v4: uuidv4 } = require('uuid');
 
 const async = require('async');
 const session = require("express-session");
@@ -86,10 +87,10 @@ const verifyLogin = async (req, res) => {
           res.render("landingHome", { newArrivals, allCategory, allProduct, user,cartQuantity })
         }
       } else {
-        console.log("Invalid Credentials");
+        return res.render('login', { err: "Invalid username or password!" })
       }
     } else {
-      console.log("No user found");
+      return res.render('login', { err: "No user found" })
     }
   } catch (error) {
     console.log(error.message);
@@ -636,10 +637,11 @@ const loadUserProfile = async (req, res) => {
     const user_id = req.session.user_id;
     const address = await Address.find({ user: user_id });
     const orderDetails = await Order.find({ user: user_id }).sort({ createdAt: -1 });
-
+    const errorType = ""
+    const errorMessage = ""
     if (user_id) {
       const user = await User.findById(user_id);
-      res.render('account', { user, address, orderDetails, cartQuantity });
+      res.render('account', { user, address, orderDetails, cartQuantity, errorType, errorMessage });
     }
   } catch (error) {
     console.log(error.message);
@@ -649,21 +651,26 @@ const loadUserProfile = async (req, res) => {
 
 const updateUserProfile = async(req,res) => {
   try {
+      const cartQuantity = req.session.cartQuantity;
+      const errorType = ""
+      const errorMessage = ""
       const userId = req.session.user_id;
-      const {displayName, email, phoneNumber, currPass , newPass, confirmNewPassword } = req.body;
-      console.log(displayName, email, phoneNumber, currPass , newPass, confirmNewPassword);
+      const address = await Address.find({ user: userId});
+      const orderDetails = await Order.find({ user: userId }).sort({ createdAt: -1 });
+      const {displayName, phoneNumber, currPass , newPass, confirmNewPassword } = req.body;
+      console.log(displayName, phoneNumber, currPass , newPass, confirmNewPassword);
       const user = await User.findById(userId);
       if (currPass && !bcrypt.compareSync(currPass, user.password)) {
-        return res.status(400).json({ success: false, message: 'Current password is incorrect' });
+        return res.status(400).render('account', { user, address, orderDetails, cartQuantity, errorType, errorType: 'account',errorMessage: 'Current password incorrect' });
     }
 
       user.name = displayName;
       user.mobile = phoneNumber;
-      user.email = email
 
       if (newPass) {
         if (newPass !== confirmNewPassword) {
-        return res.status(400).json({ success: false, message: 'New password and confirm password do not match' });
+          return res.status(400).render('account', { user, address, orderDetails, cartQuantity, errorType, errorType: 'account',errorMessage: 'New password and confirm password do not match' });
+        // return res.status(400).json({ success: false, message: 'New password and confirm password do not match' });
       }
 
       // Hash the new password
@@ -673,7 +680,7 @@ const updateUserProfile = async(req,res) => {
 
       const hashedPassword = bcrypt.hashSync(newPass, 10);
       user.password = hashedPassword;
-
+      
       await user.save();
       res.redirect('/user');
   } catch (error) {
@@ -681,6 +688,134 @@ const updateUserProfile = async(req,res) => {
       res.status(500).json({ success: false, message: 'Internal server error' });
   }
 }
+
+
+const loadforgotPass = async (req,res) => {
+  try {
+      res.render('forgot-password',{errorMessage:""})
+  } catch (error) {
+      console.log(error.message);
+  }
+};
+
+
+function generateUniqueToken() {
+  return uuidv4();
+}
+
+
+const forgotPass = async (req,res) =>{
+  const email = req.body.email;
+
+  try {
+      const user = await User.findOne({ email });
+
+      if (!user) {
+          return res.render('forgot-password', { errorMessage: 'User not found' });
+      }
+
+      const resetToken = generateUniqueToken();
+      const resetTokenExpiration = Date.now() + 60 * 60 * 1000; // 1 hour
+
+      user.resetToken = resetToken;
+      user.resetTokenExpiration = resetTokenExpiration;
+      await user.save();
+
+      sendPasswordResetEmail(user.email, resetToken);
+
+      // Render the confirmation page with the user's email
+      return res.render('passConfirmation', { email: user.email });
+  } catch (error) {
+      console.error('Error in forgot-password route:', error);
+  }
+};
+
+
+function sendPasswordResetEmail(email, resetToken) {
+  // Implement logic to send an email with a link containing the resetToken
+  // Example: Use a library like nodemailer
+  // You need to set up nodemailer and configure it with your email provider
+  
+
+  const transporter = nodemailer.createTransport({
+      // Set up your email transport configuration here
+      // For example, you can use SMTP or a service like Gmail
+      service:'gmail',
+      auth:{
+          user:'fileshare543@gmail.com',
+          pass:'tnqy gssz ebji wars'
+      }
+  });
+
+  const resetLink = `http://localhost:3000/resetPassword/${resetToken}`;
+
+  const mailOptions = {
+      from: 'your@email.com',
+      to: email,
+      subject: 'Password Reset',
+      text: `Click the following link to reset your password: ${resetLink}`,
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+          console.error(error);
+      } else {
+          console.log('Email sent: ' + info.response);
+      }
+  });
+};
+
+const loadResestPass = async (req,res) =>{
+  const token = req.params.token;
+  const user = req.session.user_id
+  try {
+      res.render('resetPassword',{token ,user })
+  } catch (error) {
+      console.log(error.message);
+      res.redirect('/login'); // Redirect to login or another page on error
+  }
+};
+
+
+const resetPass = async (req, res) => {
+  const { token, newPassword } = req.body;
+  const users = req.session.user_id;
+  const newArrivals = await Product.find();
+
+  try {
+      // Find the user with the given token
+      const user = await User.findOne({ resetToken: token });
+      const allProduct = await Product.find()
+
+      if (!user) {
+          // Token is not valid or expired
+          return res.render('resetPassword', { message: 'Invalid or expired token' , token ,user });
+      }
+
+      
+      
+
+      // Update the user's password with the new hashed password
+      const hashedPassword = await bcrypt.hash(newPassword, 10); // 10 is the number of salt rounds
+      user.password = hashedPassword;
+
+      // Clear the resetToken and resetTokenExpiration in the database
+      user.resetToken = undefined;
+      user.resetTokenExpiration = undefined;
+
+      // Save the updated user information
+      await user.save();
+
+      // Redirect to the login page with a success message
+      res.render('login', { message: 'Password reset successful. You can now log in with your new password.' });
+  } catch (error) {
+      console.error('Error in resetPass:', error);
+      // res.render('error-page', { errorMessage: 'Error processing password reset request' });
+  }
+};
+
+
+
 
 module.exports = {
   loadResendOtp,
@@ -696,6 +831,10 @@ module.exports = {
   loadProductsView,
   logout,
   loadUserProfile,
-  updateUserProfile
+  updateUserProfile,
   // LoadfilterProducts
+  loadforgotPass,
+  forgotPass,
+  loadResestPass,
+  resetPass
 };

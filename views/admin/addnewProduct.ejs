@@ -31,8 +31,9 @@
                                                           <label class="form-label-title col-sm-3 mb-0">Product
                                                               Name</label>
                                                           <div class="col-sm-9">
-                                                              <input required name="title" class="form-control"
+                                                              <input name="title" class="form-control"
                                                                   type="text" placeholder="Product Name">
+                                                                  <small id="titleError" style="color: red;"></small>
                                                           </div>
                                                       </div>
 
@@ -40,7 +41,7 @@
                                                           <label
                                                               class="col-sm-3 col-form-label form-label-title">Category</label>
                                                           <div class="col-sm-9">
-                                                              <select required name="category"
+                                                              <select name="category"
                                                                   class="js-example-basic-single w-100" name="state">
                                                                   <option disabled selected>Select category</option>
                                                                   <% allCategories.forEach(category=> { %>
@@ -49,6 +50,7 @@
                                                                       </option>
                                                                       <% }) %>
                                                               </select>
+                                                              <small id="stateError" style="color: red;"></small>
                                                           </div>
                                                       </div>
 
@@ -57,8 +59,9 @@
                                                           <label
                                                               class="col-sm-3 col-form-label form-label-title">Brand</label>
                                                           <div class="col-sm-9">
-                                                              <input required name="brand" class="form-control"
+                                                              <input name="brand" class="form-control"
                                                                   type="text" placeholder="Brand name">
+                                                                  <small id="brandError" style="color: red;"></small>
                                                           </div>
                                                       </div>
 
@@ -66,8 +69,9 @@
                                                           <label
                                                               class="col-sm-3 col-form-label form-label-title">Model</label>
                                                           <div class="col-sm-9">
-                                                              <input required name="model" class="form-control"
+                                                              <input name="model" class="form-control"
                                                                   type="text" placeholder="Model name">
+                                                                  <small id="modelError" style="color: red;"></small>
                                                           </div>
                                                       </div>
 
@@ -75,8 +79,9 @@
                                                       <div class="mb-4 row align-items-center">
                                                           <label class="form-label-title col-sm-3 mb-0">Regular Price</label>
                                                           <div class="col-sm-9">
-                                                              <input required name="regular_price" class="form-control"
+                                                              <input name="regular_price" class="form-control"
                                                                   type="text" placeholder="Enter regular price">
+                                                                  <small id="regular_priceError" style="color: red;"></small>
                                                           </div>
                                                       </div>
 
@@ -84,16 +89,18 @@
                                                       <div class="mb-4 row align-items-center">
                                                           <label class="form-label-title col-sm-3 mb-0">Sales Price</label>
                                                           <div class="col-sm-9">
-                                                              <input required name="sales_price" class="form-control"
+                                                              <input name="sales_price" class="form-control"
                                                                   type="text" placeholder="Enter sales price">
+                                                                  <small id="sales_priceError" style="color: red;"></small>
                                                           </div>
                                                       </div>
 
                                                       <div class="mb-4 row align-items-center">
                                                           <label class="form-label-title col-sm-3 mb-0">Quantity</label>
                                                           <div class="col-sm-9">
-                                                              <input required name="quantity" class="form-control"
+                                                              <input name="quantity" class="form-control"
                                                                   type="text" placeholder="Quantity of products">
+                                                                  <small id="quantityError" style="color: red;"></small>
                                                           </div>
                                                       </div>
 
@@ -104,14 +111,16 @@
                                                               <textarea class="form-control" rows="4"
                                                                   name="description"
                                                                   placeholder="Type here"></textarea>
+                                                                  <small id="descriptionError" style="color: red;"></small>
                                                           </div>
                                                       </div>
 
                                                       <div class="mb-4 row align-items-center">
                                                         <label class="col-sm-3 col-form-label form-label-title">Images</label>
                                                         <div class="col-sm-9">
-                                                            <input required type="file" id="files" name="image" accept="image/*" multiple />
+                                                            <input type="file" id="files" name="image" accept="image/*" multiple />
                                                             <div class="image-preview"></div>
+                                                            <small id="imageError" style="color: red;"></small>
                                                         </div>
                                                     </div>
 
@@ -243,3 +252,94 @@ if (window.File && window.FileList && window.FileReader) {
 });
 </script>
 
+<!-- ... (previous HTML code) ... -->
+
+<script>
+    function validateAndSubmit() {
+        var title = document.forms["productForm"]["title"].value;
+        var category = document.forms["productForm"]["category"].value;
+        var brand = document.forms["productForm"]["brand"].value;
+        var model = document.forms["productForm"]["model"].value;
+        var regularPrice = document.forms["productForm"]["regular_price"].value;
+        var salesPrice = document.forms["productForm"]["sales_price"].value;
+        var quantity = document.forms["productForm"]["quantity"].value;
+        var description = document.forms["productForm"]["description"].value;
+        var image = document.forms["productForm"]["image"].value;
+
+        var titleError = document.getElementById("titleError");
+        var categoryError = document.getElementById("categoryError");
+        var brandError = document.getElementById("brandError");
+        var modelError = document.getElementById("modelError");
+        var regularPriceError = document.getElementById("regular_priceError");
+        var salesPriceError = document.getElementById("sales_priceError");
+        var quantityError = document.getElementById("quantityError");
+        var descriptionError = document.getElementById("descriptionError");
+        var imageError = document.getElementById("imageError");
+
+        // Reset all error messages
+        titleError.innerHTML = "";
+        categoryError.innerHTML = "";
+        brandError.innerHTML = "";
+        modelError.innerHTML = "";
+        regularPriceError.innerHTML = "";
+        salesPriceError.innerHTML = "";
+        quantityError.innerHTML = "";
+        descriptionError.innerHTML = "";
+        imageError.innerHTML = "";
+
+        var isValid = true;
+
+        // Validate each field with regex and additional checks
+        if (!/^[a-zA-Z0-9\s]+$/.test(title)) {
+            titleError.innerHTML = "Title must contain only letters, numbers, and spaces";
+            isValid = false;
+        }
+
+        if (!/^[a-zA-Z\s]+$/.test(category)) {
+            categoryError.innerHTML = "Category must contain only letters and spaces";
+            isValid = false;
+        }
+
+        if (!/^[a-zA-Z0-9\s]+$/.test(brand)) {
+            brandError.innerHTML = "Brand must contain only letters, numbers, and spaces";
+            isValid = false;
+        }
+
+        if (!/^[a-zA-Z0-9\s]+$/.test(model)) {
+            modelError.innerHTML = "Model must contain only letters, numbers, and spaces";
+            isValid = false;
+        }
+
+        if (!/^\d*\.?\d+$/.test(regularPrice) || parseFloat(regularPrice) <= 0) {
+            regularPriceError.innerHTML = "Regular Price must be a valid positive number";
+            isValid = false;
+        }
+
+        if (!/^\d*\.?\d+$/.test(salesPrice) || parseFloat(salesPrice) <= 0) {
+            salesPriceError.innerHTML = "Sales Price must be a valid positive number";
+            isValid = false;
+        }
+
+        if (!/^\d+$/.test(quantity) || parseInt(quantity) < 0) {
+            quantityError.innerHTML = "Quantity must be a valid non-negative integer";
+            isValid = false;
+        }
+
+        if (description.trim() === "") {
+            descriptionError.innerHTML = "Description must be filled out";
+            isValid = false;
+        }
+
+        if (image.trim() === "") {
+            imageError.innerHTML = "Image must be selected";
+            isValid = false;
+        }
+
+        if (isValid) {
+            // If all validations pass, you can submit the form
+            document.getElementById("productForm").submit();
+        }
+    }
+</script>
+
+<!-- ... (remaining HTML code) ... -->

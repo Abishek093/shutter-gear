@@ -7,6 +7,8 @@ const auth = require("../middleware/auth")
 const cartController = require('../controllers/cartController')
 const orderController = require ('../controllers/orderController')
 const addressController = require('../controllers/addressControler')
+const couponController = require('../controllers/couponController')
+
 user_route.use(express.json());
 user_route.use(express.urlencoded({ extended: true }));
 
@@ -54,7 +56,7 @@ user_route.get('/add-to-cart/:id',auth.isLogin, auth.isUserBlocked,cartControlle
 user_route.post('/updateCart',auth.isLogin, auth.isUserBlocked,cartController.updateCart)
 user_route.get('/removeProduct',auth.isLogin, auth.isUserBlocked,cartController.removeProduct);  
 
-user_route.get('/checkOut',orderController.loadCheckOut)
+user_route.get('/checkOut',auth.isLogin,orderController.loadCheckOut)
 
 //checkout
 user_route.get('/checkOut',auth.isLogin, auth.isUserBlocked,orderController.loadCheckOut);
@@ -62,5 +64,14 @@ user_route.post('/confirm-order',auth.isLogin, auth.isUserBlocked,orderControlle
 user_route.get('/success-page',auth.isLogin, auth.isUserBlocked,orderController.loadSuccess)
 
 user_route.get('/orderdetails',auth.isLogin, auth.isUserBlocked,orderController.orderdetails);
+user_route.post('/applyCoupon', auth.isLogin, couponController.applyCoupon);
+
+
+//change password
+user_route.get('/forgot-password',userController.loadforgotPass)
+user_route.post('/forgot-password',userController.forgotPass)
+
+user_route.get('/resetPassword/:token',userController.loadResestPass);
+user_route.post('/resetPassword',userController.resetPass)
 
 module.exports = user_route;
