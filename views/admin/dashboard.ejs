@@ -386,47 +386,46 @@
                                                 <tbody>
                                                     <% recentOrders.forEach(order => { %>
                                                         <% if (order.products && order.products.length > 0 && order.products[0].product) { %>
-                                                            <tr>
-                                                                <td>
-                                                                    <div class="best-product-box">
-                                                                        <div class="product-name">
-                                                                            <h5><%= order.products[0].product.title %></h5>
-                                                                            <h6>#<%= order._id %></h6>
+                                                            <% order.products.forEach(product => { %>
+                                                                <tr>
+                                                                    <td>
+                                                                        <div class="best-product-box">
+                                                                            <div class="product-name">
+                                                                                <h5><%= product.product.title %></h5>
+                                                                                <h6>#<%= order._id %></h6>
+                                                                            </div>
                                                                         </div>
-                                                                    </div>
-                                                                </td>
-                                                
-                                                            <td>
-                                                                <div class="product-detail-box">
-                                                                    <h6>Date Placed</h6>
-                                                                    <h5><%= order.createdAt.toLocaleDateString() %></h5>
-                                                                </div>
-                                                            </td>
-                                                
-                                                            <td>
-                                                                <div class="product-detail-box">
-                                                                    <h6>Price</h6>
-                                                                    <h5>$<%= order.grandTotal %></h5>
-                                                                </div>
-                                                            </td>
-                                                
-                                                            <td>
-                                                                <div class="product-detail-box">
-                                                                    <h6>Order Status</h6>
-                                                                    <h5><%= order.status %></h5>
-                                                                </div>
-                                                            </td>
-                                                
-                                                            <td>
-                                                                <div class="product-detail-box">
-                                                                    <h6>Payment</h6>
-                                                                    <h5 class="text-danger"><%= order.payment_status ? "Paid" : "Unpaid" %></h5>
-                                                                </div>
-                                                            </td>
-                                                        </tr>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="product-detail-box">
+                                                                            <h6>Date Placed</h6>
+                                                                            <h5><%= order.createdAt.toLocaleDateString() %></h5>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="product-detail-box">
+                                                                            <h6>Price</h6>
+                                                                            <h5>$<%= order.grandTotal %></h5>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="product-detail-box">
+                                                                            <h6>Order Status</h6>
+                                                                            <h5><%= product.status || 'N/A' %></h5>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="product-detail-box">
+                                                                            <h6>Payment</h6>
+                                                                            <h5 class="text-danger"><%= order.payment_status ? "Paid" : "Unpaid" %></h5>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            <% }); %>
                                                         <% } %>
                                                     <% }); %>
                                                 </tbody>
+                                                
                                                 
                                             </table>
                                         </div>
@@ -439,33 +438,33 @@
                         <!-- Earning chart star-->
 <!-- Graph -->
         
-<div class="col-lg-8">
+<div class="col-xl-6" style="width: 1000%;">
     <div class="col-xl-12 col-lg-12">
-      <div class="card mb-4" >
+    <div class="card mb-4" >
         <article class="card-body">
-          <h5 class="card-title">Sale statistics</h5>
-          <div>
+        <h5 class="card-title">Sale statistics</h5>
+        <div>
             <canvas id="saleChart" height="100px"></canvas>
-          </div>
-          <div class="graph-options ml-3">
+        </div>
+        <div class="graph-options ml-3" style="display: flex;">
             <button
-              id="monthlyBtn"
-              class="btn btn-white shadow border btn-sm mt-2"
+            id="monthlyBtn"
+            class="btn btn-white shadow border btn-sm mt-2"
             >
-              Monthly
+            Monthly
             </button>
-            <button id="weeklyBtn" class="btn  btn-white shadow border btn-sm mt-2">Weekly</button>
+            <button id="weeklyBtn" class="btn  btn-white shadow border btn-sm mt-2" style="margin-left: 10px;">Weekly</button>
             <button
-              id="yearlyBtn"
-              class="btn btn-white shadow border btn-sm mt-2"
+            id="yearlyBtn"
+            class="btn btn-white shadow border btn-sm mt-2" style="margin-left: 10px;"
             >
-              Yearly
+            Yearly
             </button>
-          </div>
+        </div>
         </article>
-      </div>
     </div>
-  </div>
+    </div>
+</div>
 <!-- Graph End -->
                         <!-- Earning chart end-->
 

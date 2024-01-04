@@ -32,8 +32,9 @@
                                                           <label class="form-label-title col-sm-3 mb-0">Product
                                                               Name</label>
                                                           <div class="col-sm-9">
-                                                              <input required name="title" class="form-control"
+                                                              <input required id="title" name="title" class="form-control"
                                                                   type="text" value="<%= product.title %>">
+                                                                  <small class="text-danger" id="titleError"></small>
                                                           </div>
                                                       </div>
 
@@ -41,7 +42,7 @@
                                                           <label
                                                               class="col-sm-3 col-form-label form-label-title">Category</label>
                                                           <div class="col-sm-9">
-                                                              <select required name="category"
+                                                              <select required name="category" id="category"
                                                                   class="js-example-basic-single w-100" name="state">
                                                                   <option selected> <%= product.category %></option>
                                                                   <% allCategories.forEach(category=> { %>
@@ -50,6 +51,7 @@
                                                                       </option>
                                                                       <% }) %>
                                                               </select>
+                                                              <small class="text-danger" id="categoryError"></small>
                                                           </div>
                                                       </div>
 
@@ -60,7 +62,8 @@
                                                               class="col-sm-3 col-form-label form-label-title">Brand</label>
                                                           <div class="col-sm-9">
                                                               <input required name="brand" class="form-control"
-                                                                  type="text" value="<%= product.brand %>">
+                                                                  type="text" id="brand" value="<%= product.brand %>">
+                                                                  <small class="text-danger" id="brandError"></small>
                                                           </div>
                                                       </div>
 
@@ -70,7 +73,8 @@
                                                               class="col-sm-3 col-form-label form-label-title">Model</label>
                                                           <div class="col-sm-9">
                                                               <input required name="product_type" class="form-control"
-                                                                  type="text" value="<%= product.model %>">
+                                                                  type="text" id="model" value="<%= product.model %>">
+                                                                  <small class="text-danger" id="modelError"></small>
                                                           </div>
                                                       </div>
 
@@ -79,7 +83,8 @@
                                                           <label class="form-label-title col-sm-3 mb-0">Regular Price</label>
                                                           <div class="col-sm-9">
                                                               <input required name="regular_price" class="form-control"
-                                                                  type="text" value="<%= product.regular_price %>">
+                                                                  type="text" id="regular_price" value="<%= product.regular_price %>">
+                                                                  <small class="text-danger" id="regular_priceError"></small>
                                                           </div>
                                                       </div>
 
@@ -87,16 +92,18 @@
                                                       <div class="mb-4 row align-items-center">
                                                           <label class="form-label-title col-sm-3 mb-0">Sales Price</label>
                                                           <div class="col-sm-9">
-                                                              <input required name="sales_price" class="form-control"
+                                                              <input required name="sales_price" id="sales_price" class="form-control"
                                                                   type="text" value="<%= product.sales_price%>">
+                                                                  <small class="text-danger" id="sales_priceError"></small>
                                                           </div>
                                                       </div>
 
                                                       <div class="mb-4 row align-items-center">
                                                           <label class="form-label-title col-sm-3 mb-0">Quantity</label>
                                                           <div class="col-sm-9">
-                                                              <input required name="quantity" class="form-control"
+                                                              <input required name="quantity" id="quantity" class="form-control"
                                                                   type="text" value="<%= product.quantity %>">
+                                                                  <small class="text-danger" id="quantityError"></small>
                                                           </div>
                                                       </div>                                    
                                                       
@@ -106,8 +113,9 @@
                                                               class="form-label-title col-sm-3 mb-0">Description</label>
                                                           <div class="col-sm-9">
                                                               <textarea class="form-control" rows="4"
-                                                                  name="description"
+                                                                  name="description" id="description"
                                                                   ><%= product.description %></textarea>
+                                                                  <small class="text-danger" id="descriptionError"></small>
                                                           </div>
                                                       </div>
                                                       <div class="card-header">
@@ -252,3 +260,92 @@ newImagesInput.addEventListener("change", function () {
   <!-- Theme js -->
   <script src="/assetsb/js/script.js"></script>
 
+
+<!-- Include this script at the end of your HTML body or in a separate script file -->
+<!-- Include this script at the end of your HTML body or in a separate script file -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const form = document.querySelector('.theme-form');
+  
+      form.addEventListener('submit', function (e) {
+        let isValid = true;
+  
+        // Reset previous error messages
+        document.querySelectorAll('.text-danger').forEach(function (errorElement) {
+          errorElement.textContent = '';
+        });
+  
+        // Validation for Product Name
+        const title = document.getElementById('title').value.trim();
+        if (!title) {
+          document.getElementById('titleError').textContent = 'Product Name is required';
+          isValid = false;
+        }
+  
+        // Validation for Category
+        const category = document.getElementById('category').value.trim();
+        if (!category) {
+          document.getElementById('categoryError').textContent = 'Category is required';
+          isValid = false;
+        }
+  
+        // Validation for Brand
+        const brand = document.getElementById('brand').value.trim();
+        if (!brand) {
+          document.getElementById('brandError').textContent = 'Brand is required';
+          isValid = false;
+        }
+  
+        // Validation for Model
+        const model = document.getElementById('model').value.trim();
+        if (!model) {
+          document.getElementById('modelError').textContent = 'Model is required';
+          isValid = false;
+        }
+  
+        // Validation for Regular Price
+        const regularPrice = document.getElementById('regular_price').value.trim();
+        if (!regularPrice) {
+          document.getElementById('regular_priceError').textContent = 'Regular Price is required';
+          isValid = false;
+        }
+  
+        // Validation for Sales Price
+        const salesPrice = document.getElementById('sales_price').value.trim();
+        if (!salesPrice) {
+          document.getElementById('sales_priceError').textContent = 'Sales Price is required';
+          isValid = false;
+        }
+  
+        // Validation for Quantity
+        const quantity = document.getElementById('quantity').value.trim();
+        if (!quantity) {
+          document.getElementById('quantityError').textContent = 'Quantity is required';
+          isValid = false;
+        }
+  
+        // Validation for Description
+        const description = document.getElementById('description').value.trim();
+        if (!description) {
+          document.getElementById('descriptionError').textContent = 'Description is required';
+          isValid = false;
+        }
+  
+        // Validation for Images (considering it's a file input)
+        // const imageInput = document.getElementById('image');
+        // const image = imageInput.files && imageInput.files.length > 0;
+        // if (!image) {
+        //   document.getElementById('imageError').textContent = 'Image is required';
+        //   isValid = false;
+        // }
+  
+        if (!isValid) {
+          e.preventDefault(); // Prevent form submission if validation fails
+        }
+      });
+    });
+  </script>
+  
+  
+
+ 

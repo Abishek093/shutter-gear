@@ -44,6 +44,57 @@
                         <div class="checkout">
                             <div class="container">
 
+                                <div class="checkout-discount">
+                                    <button type="button" class="btn text-warning" data-toggle="modal" data-target=".bd-example-modal-lg">Click here to see your available coupons</button>
+                                    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-lg">
+                                          <div class="modal-content">
+                                            <div class="modal-header">
+                                              <h5 class="modal-title">Available Coupons</h5>
+                                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                              </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="p-4 pt-0">
+        
+                                                    <table class="table">
+                                                        <thead>
+                                                          <tr>
+                                                            <th>Coupon Code</th>
+                                                            <th>Discount Price</th>
+                                                            <th>Expire Date</th>
+                                                          </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            
+                                                            <% coupon.forEach((coupon)=>{ %>
+                                                                
+                                                                <%if(!coupon){ %>
+                                                                    <p>coupon is empty</p>
+                                                                    <%  }%>
+                
+                                                          <tr>
+                                                            <td><%=coupon.code%></td>
+                                                            <td>₹<%=coupon.percentageDiscount%> off</td>
+                                                            <td><%=coupon.expiryDate.toLocaleDateString('en-US') %></td>
+                                                          </tr>
+                                                         
+                                                          <!-- Add more coupon details as needed -->
+                                                          <% })%>
+                                                        
+                                                        </tbody>
+                                                      </table>
+        
+                                                </div>
+                                              
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+
+                                </div><!-- End .checkout-discount -->
+
                                 <div class="cart-bottom">
                                     <div class="cart-discount">
                                             <!-- Display the input field for entering a coupon code -->
@@ -52,10 +103,12 @@
                                                 <div class="input-group-append">
                                                     <button class="btn btn-primary-2 icon-long-arrow-right" id="apply" onclick="applyCoupon()"></button>
                                                 </div><!-- .End .input-group-append -->
+                                               
                                             </div><!-- End .input-group -->
-                                    </div><!-- End .cart-discount -->
+                                            <button class="btn btn-primary-2" id="removeCoupon" onclick="removeCoupon()">Remove Coupon</button>
+                                        </div><!-- End .cart-discount -->
                                 </div><!-- End .cart-bottom -->
-                                
+
                                
                                     <div id="ModalLoginForm" class="modal fade">
                                         <div class="modal-dialog" role="document">
@@ -657,21 +710,17 @@
         }
         let couponCodeInput = document.getElementById("couponCodeInput");
         var totalPriceElement = document.getElementById('total-price');
-
-async function orderConfirm(){
-
         
+        async function orderConfirm() {
     const confirmed = await Swal.fire({
-        title : 'Confirm Order',
-        text : "are you sure you want procced with the order ",
-        icon : 'question',
-        showCancelButton : true,
-        confirmButtonText : 'Yes ',
-        cancelButtonText : 'No, cancel',
-
+        title: 'Confirm Order',
+        text: "Are you sure you want to proceed with the order?",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Yes',
+        cancelButtonText: 'No, cancel',
     });
 
-    
     if (confirmed.isConfirmed) {
         try {
             let couponCode = couponCodeInput.value;
@@ -682,21 +731,21 @@ async function orderConfirm(){
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ addressId, PaymentMethod, couponCode, totalPrice}),
+                body: JSON.stringify({ addressId, PaymentMethod, couponCode, totalPrice }),
             });
 
             if (response.ok) {
                 const responseData = await response.json();
                 console.log(responseData);
-                if (responseData.error && responseData.error.includes('Cart is empty')) {
-                    await Swal.fire('Error', responseData.error, 'error');
-                } else {
+
+                if (responseData.message === 'success') {
+                    // Process success
                     if (PaymentMethod === 'Cash On Delivery') {
                         await Swal.fire('Success', 'Order Placed successfully', 'success');
                         window.location.href = '/success-page';
                     } else if (PaymentMethod === 'Razorpay') {
                         // Initialize Razorpay checkout
-                        const options = {             
+                        const options = {
                             key: 'rzp_test_RZUMY3LMpsKLSW',
                             amount: responseData.razorpayOrder.amount,
                             currency: 'INR',
@@ -730,11 +779,14 @@ async function orderConfirm(){
                         const rzp = new Razorpay(options);
                         rzp.open();
                     }
-                }
+                } 
             } else {
-                await Swal.fire('Error', 'Failed to place the order', 'error');
+                const errorData = await response.json();
+                console.log(errorData);
+
+                // Display error message using Swal
+                await Swal.fire('Error', errorData.error, 'error');
             }
-            
         } catch (error) {
             console.log(error);
         }
@@ -787,26 +839,34 @@ async function applyCoupon(){
         }
     }
 }   
+function removeCoupon() {
+    // Reset the coupon input field
+    document.getElementById('couponCodeInput').value = '';
 
+    // Enable the apply button and coupon input field
+    document.getElementById('apply').disabled = false;
+    document.getElementById('couponCodeInput').disabled = false;
+    location.reload();
+}
 </script>
         
 
 
 
 
-            <!-- Plugins JS File -->
-            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-            <script src="/assets/js/jquery.min.js"></script>
-            <script src="/assets/js/bootstrap.bundle.min.js"></script>
-            <script src="/assets/js/jquery.hoverIntent.min.js"></script>
-            <script src="/assets/js/jquery.waypoints.min.js"></script>
-            <script src="/assets/js/superfish.min.js"></script>
-            <script src="/assets/js/owl.carousel.min.js"></script>
-            <!-- Main JS File -->
-            <script src="/assets/js/main.js"></script>
-        </body>
+    <!-- Plugins JS File -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/assets/js/jquery.min.js"></script>
+    <script src="/assets/js/bootstrap.bundle.min.js"></script>
+    <script src="/assets/js/jquery.hoverIntent.min.js"></script>
+    <script src="/assets/js/jquery.waypoints.min.js"></script>
+    <script src="/assets/js/superfish.min.js"></script>
+    <script src="/assets/js/owl.carousel.min.js"></script>
+    <!-- Main JS File -->
+    <script src="/assets/js/main.js"></script>
+</body>
 
 
-        <!-- molla/checkout.html  22 Nov 2019 09:55:06 GMT -->
+<!-- molla/checkout.html  22 Nov 2019 09:55:06 GMT -->
 
-        </html>
+</html>

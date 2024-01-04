@@ -71,9 +71,8 @@
                                                                 <td>Jul 20, 2022</td> -->
 
                                                                
-
-                                                                <td class="order-success">
-                                                                    <span><%=items.status%></span>
+                                                                <td class="order-status" data-total-products="<%= items.products.length %>" data-cancelled-products="<%= items.products.filter(product => product.status === 'Cancelled').length %>">
+                                                                    <%= items.status %>
                                                                 </td>
 
                                                                 <td><%=items.grandTotal%></td>
@@ -111,6 +110,22 @@
                                                             </tr>
 
                                                         </tbody>
+                                                        <script>
+                                                            document.addEventListener('DOMContentLoaded', function() {
+                                                                const orderStatusElements = document.querySelectorAll('.order-status');
+                                                            
+                                                                orderStatusElements.forEach(function(statusElement) {
+                                                                    const totalProductsCount = parseInt(statusElement.dataset.totalProducts);
+                                                                    const cancelledProductsCount = parseInt(statusElement.dataset.cancelledProducts);
+                                                                  
+                                                                    if (totalProductsCount === cancelledProductsCount) {
+                                                                        statusElement.textContent = 'Cancelled';
+                                                                    } else {
+                                                                        statusElement.textContent = 'Order Placed';
+                                                                    }
+                                                                });
+                                                            });
+                                                        </script>
                                                     </table>
                                                 </div>
                                             </div>

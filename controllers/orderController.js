@@ -13,11 +13,12 @@ const mongoose = require('mongoose')
 
 const loadCheckOut = async (req, res) => {
   try {
+      const coupon = await Coupon.find({isDeleted: false}).sort({createdAt: -1})
       const cartQuantity = req.session.cartQuantity;
       const user = req.session.user_id;
       const userCart = await Cart.findOne({ user }).populate("products.product");
       const address = await Address.find({ user });
-      const coupon =  await Coupon.findById(userCart.coupon)
+      // const coupon =  await Coupon.findById(userCart.coupon)
       res.render('checkOut', { user, address, userCart, cartQuantity, coupon });
   } catch (error) {
       console.log(error.message);
@@ -40,7 +41,11 @@ const confirmOrder = async (req, res) => {
       if (!cart || cart.products.length === 0) {
           return res.status(400).json({ error: 'Cart is empty. Add products to the cart before checkout.' });
       }
-
+        // Check if any product in the cart has quantity 0
+        const hasZeroQuantity = cart.products.some(item => item.product.quantity === 0);
+        if (hasZeroQuantity) {
+            return res.status(400).json({ error: 'Some products in the cart have quantity 0. Remove or update them before checkout.' });
+        }
       const coupon = await Coupon.findOne({ code: req.body.couponCode });
       let couponId;
       if (!coupon) {
@@ -244,64 +249,114 @@ const loadOrderDetails = async(req,res) => {
 //   };
   
   
+// const orderStatus = async (req, res) => {
+//   try {
+//       const { orderId, status, productId } = req.body;
+//       console.log("Request Payload:", { orderId, status, productId });
+
+//       if (!status || !orderId || !productId) {
+//           return res.status(400).json({ error: 'Invalid input parameters' });
+//       }
+
+//       const updatedOrder = await Order.findOneAndUpdate(
+//           { _id: orderId, 'products.product': productId },
+//           { $set: { 'products.$.status': status } },
+//           { new: true }
+//       ).populate('user');
+
+//       if (!updatedOrder) {
+//           return res.status(404).json({ error: 'Order or Product not found' });
+//       }
+
+//       if (updatedOrder.coupon) {
+//           const coupon = await Coupon.findById(updatedOrder.coupon);
+
+//           const percentageDiscountPerProduct = coupon.percentageDiscount / updatedOrder.products.length;
+
+//           updatedOrder.products.forEach((product) => {
+//               const discountAmount = (percentageDiscountPerProduct / 100) * product.price;
+//               product.total -= discountAmount;
+//           });
+//       }
+
+//       updatedOrder.save();
+
+//       if (status === 'Cancelled' && updatedOrder.paymentMethod === 'Razorpay') {
+
+//           const refundedAmount = updatedOrder.products.find((product) => product.product.equals(productId)).total;
+
+//           const user = updatedOrder.user;
+//           const updatedUser = await User.findOneAndUpdate(
+//               { _id: user._id },
+//               { $inc: { walletAmount: refundedAmount } },
+//               { new: true }
+//           );
+
+//           if (!updatedUser) {
+//               return res.status(500).json({ error: 'Failed to update user wallet' });
+//           }
+
+//           console.log(`User's wallet updated with refunded amount: ${refundedAmount}`);
+//       }
+
+//       res.json({ success: true });
+//   } catch (error) {
+//       console.error(error.message);
+//       res.status(500).json({ error: 'Internal server error' });
+//   }
+// };
+
+
 const orderStatus = async (req, res) => {
-  try {
+    try {
       const { orderId, status, productId } = req.body;
       console.log("Request Payload:", { orderId, status, productId });
-
+  
       if (!status || !orderId || !productId) {
-          return res.status(400).json({ error: 'Invalid input parameters' });
+        return res.status(400).json({ error: 'Invalid input parameters' });
       }
-
+  
       const updatedOrder = await Order.findOneAndUpdate(
-          { _id: orderId, 'products.product': productId },
-          { $set: { 'products.$.status': status } },
-          { new: true }
+        { _id: orderId, 'products.product': productId },
+        { $set: { 'products.$.status': status } },
+        { new: true }
       ).populate('user');
-
+  
       if (!updatedOrder) {
-          return res.status(404).json({ error: 'Order or Product not found' });
+        return res.status(404).json({ error: 'Order or Product not found' });
       }
-
-      if (updatedOrder.coupon) {
-          const coupon = await Coupon.findById(updatedOrder.coupon);
-
-          const percentageDiscountPerProduct = coupon.percentageDiscount / updatedOrder.products.length;
-
-          updatedOrder.products.forEach((product) => {
-              const discountAmount = (percentageDiscountPerProduct / 100) * product.price;
-              product.total -= discountAmount;
-          });
-      }
-
-      updatedOrder.save();
-
-      if (status === 'Cancelled' && updatedOrder.paymentMethod === 'Razorpay') {
-
-          const refundedAmount = updatedOrder.products.find((product) => product.product.equals(productId)).total;
-
-          const user = updatedOrder.user;
-          const updatedUser = await User.findOneAndUpdate(
-              { _id: user._id },
-              { $inc: { walletAmount: refundedAmount } },
-              { new: true }
-          );
-
-          if (!updatedUser) {
-              return res.status(500).json({ error: 'Failed to update user wallet' });
+  
+      if (status === 'Cancelled') {
+        // Find the canceled product in the order
+        const canceledProduct = updatedOrder.products.find(product => product.product.equals(productId));
+  
+        if (canceledProduct) {
+          // Increase the quantity of the corresponding product
+          const correspondingProduct = await Product.findById(canceledProduct.product);
+          if (correspondingProduct) {
+            correspondingProduct.quantity += canceledProduct.quantity;
+            await correspondingProduct.save();
           }
-
-          console.log(`User's wallet updated with refunded amount: ${refundedAmount}`);
+        }
       }
-
+  
+      if (updatedOrder.coupon) {
+        // Your existing coupon logic here
+      }
+  
+      updatedOrder.save();
+  
+      if (status === 'Cancelled' && updatedOrder.paymentMethod === 'Razorpay') {
+        // Your existing wallet update logic here
+      }
+  
       res.json({ success: true });
-  } catch (error) {
+    } catch (error) {
       console.error(error.message);
       res.status(500).json({ error: 'Internal server error' });
-  }
-};
-
-
+    }
+  };
+  
 
 //user side
 async function orderdetails(req,res){

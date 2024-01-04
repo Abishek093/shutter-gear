@@ -31,9 +31,8 @@
                                                           <label class="form-label-title col-sm-3 mb-0">Product
                                                               Name</label>
                                                           <div class="col-sm-9">
-                                                              <input name="title" class="form-control"
+                                                              <input  name="title" class="form-control"
                                                                   type="text" placeholder="Product Name">
-                                                                  <small id="titleError" style="color: red;"></small>
                                                           </div>
                                                       </div>
 
@@ -41,7 +40,7 @@
                                                           <label
                                                               class="col-sm-3 col-form-label form-label-title">Category</label>
                                                           <div class="col-sm-9">
-                                                              <select name="category"
+                                                              <select  name="category"
                                                                   class="js-example-basic-single w-100" name="state">
                                                                   <option disabled selected>Select category</option>
                                                                   <% allCategories.forEach(category=> { %>
@@ -50,7 +49,6 @@
                                                                       </option>
                                                                       <% }) %>
                                                               </select>
-                                                              <small id="stateError" style="color: red;"></small>
                                                           </div>
                                                       </div>
 
@@ -59,19 +57,17 @@
                                                           <label
                                                               class="col-sm-3 col-form-label form-label-title">Brand</label>
                                                           <div class="col-sm-9">
-                                                              <input name="brand" class="form-control"
+                                                              <input  name="brand" class="form-control"
                                                                   type="text" placeholder="Brand name">
-                                                                  <small id="brandError" style="color: red;"></small>
                                                           </div>
                                                       </div>
 
-                                                      <div class="mb-4 row align-items-center">
+                                                       <div class="mb-4 row align-items-center">
                                                           <label
                                                               class="col-sm-3 col-form-label form-label-title">Model</label>
                                                           <div class="col-sm-9">
-                                                              <input name="model" class="form-control"
+                                                              <input  name="model" class="form-control"
                                                                   type="text" placeholder="Model name">
-                                                                  <small id="modelError" style="color: red;"></small>
                                                           </div>
                                                       </div>
 
@@ -79,9 +75,8 @@
                                                       <div class="mb-4 row align-items-center">
                                                           <label class="form-label-title col-sm-3 mb-0">Regular Price</label>
                                                           <div class="col-sm-9">
-                                                              <input name="regular_price" class="form-control"
+                                                              <input  name="regular_price" class="form-control"
                                                                   type="text" placeholder="Enter regular price">
-                                                                  <small id="regular_priceError" style="color: red;"></small>
                                                           </div>
                                                       </div>
 
@@ -89,18 +84,16 @@
                                                       <div class="mb-4 row align-items-center">
                                                           <label class="form-label-title col-sm-3 mb-0">Sales Price</label>
                                                           <div class="col-sm-9">
-                                                              <input name="sales_price" class="form-control"
+                                                              <input  name="sales_price" class="form-control"
                                                                   type="text" placeholder="Enter sales price">
-                                                                  <small id="sales_priceError" style="color: red;"></small>
                                                           </div>
                                                       </div>
 
                                                       <div class="mb-4 row align-items-center">
                                                           <label class="form-label-title col-sm-3 mb-0">Quantity</label>
                                                           <div class="col-sm-9">
-                                                              <input name="quantity" class="form-control"
+                                                              <input  name="quantity" class="form-control"
                                                                   type="text" placeholder="Quantity of products">
-                                                                  <small id="quantityError" style="color: red;"></small>
                                                           </div>
                                                       </div>
 
@@ -111,7 +104,6 @@
                                                               <textarea class="form-control" rows="4"
                                                                   name="description"
                                                                   placeholder="Type here"></textarea>
-                                                                  <small id="descriptionError" style="color: red;"></small>
                                                           </div>
                                                       </div>
 
@@ -120,7 +112,6 @@
                                                         <div class="col-sm-9">
                                                             <input type="file" id="files" name="image" accept="image/*" multiple />
                                                             <div class="image-preview"></div>
-                                                            <small id="imageError" style="color: red;"></small>
                                                         </div>
                                                     </div>
 
@@ -132,6 +123,11 @@
 
                                                   </form>
                                               </div>
+                                              <% if (errorMessage) { %>
+                                                <div class="alert alert-danger" role="alert">
+                                                    <%= errorMessage %>
+                                                </div>
+                                            <% } %>
                                           </div>
                                       </div>
                                   </div>
@@ -223,6 +219,7 @@ display: inline-block;
 margin: 10px 10px 0 0;
 }
 
+
 </style>
 <script>
   $(document).ready(function() {
@@ -252,94 +249,200 @@ if (window.File && window.FileList && window.FileReader) {
 });
 </script>
 
-<!-- ... (previous HTML code) ... -->
+<!-- <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.querySelector('.mega-form');
+
+        form.addEventListener('submit', function (event) {
+            let isValid = true;
+
+            // Reset previous error messages
+            const productName = form.querySelector('input[name="title"]');
+            if (!productName.value.trim()) {
+                isValid = false;
+                showError(productName, 'Product Name is required');
+            }
+
+            // Validate Category
+            const category = form.querySelector('select[name="category"]');
+            if (!category.value || category.value === 'Select category') {
+                isValid = false;
+                showError(category, 'Please select a category');
+            }
+
+            // Validate Brand using regex (only letters and spaces allowed)
+            const brand = form.querySelector('input[name="brand"]');
+            if (!/^[A-Za-z\s]+$/.test(brand.value.trim())) {
+                isValid = false;
+                showError(brand, 'Brand should contain only letters and spaces');
+            }
+
+            // Validate Model using regex (only letters, numbers, and spaces allowed)
+            const model = form.querySelector('input[name="model"]');
+            if (!/^[A-Za-z0-9\s]+$/.test(model.value.trim())) {
+                isValid = false;
+                showError(model, 'Model should contain only letters, numbers, and spaces');
+            }
+
+            // Validate Regular Price using regex (positive numbers only)
+            const regularPrice = form.querySelector('input[name="regular_price"]');
+            if (!/^\d+(\.\d{1,2})?$/.test(regularPrice.value.trim()) || parseFloat(regularPrice.value.trim()) < 0) {
+                isValid = false;
+                showError(regularPrice, 'Regular Price should be a positive number');
+            }
+
+            // Validate Sales Price using regex (positive numbers only)
+            const salesPrice = form.querySelector('input[name="sales_price"]');
+            if (!/^\d+(\.\d{1,2})?$/.test(salesPrice.value.trim()) || parseFloat(salesPrice.value.trim()) < 0) {
+                isValid = false;
+                showError(salesPrice, 'Sales Price should be a positive number');
+            }
+
+            // Validate Quantity using regex (positive integers only)
+            const quantity = form.querySelector('input[name="quantity"]');
+            if (!/^[1-9]\d*$/.test(quantity.value.trim())) {
+                isValid = false;
+                showError(quantity, 'Quantity should be a positive integer');
+            }
+
+            const description = form.querySelector('textarea[name="description"]');
+            if (!description.value.trim()) {
+                isValid = false;
+                showError(description, 'Description Price is required');
+            }
+            if (!isValid) {
+                event.preventDefault(); // Prevent form submission if validation fails
+            }
+
+            const image = form.querySelector('input[name="image"]');
+            if (!image.value.trim()) {
+                isValid = false;
+                showError(image, 'Image is required');
+            }
+            if (!isValid) {
+                event.preventDefault(); // Prevent form submission if validation fails
+            }
+        });
+
+        function showError(input, message) {
+            // Remove previous error messages for the input
+            const parentDiv = input.parentElement;
+            const existingErrorMessages = parentDiv.querySelectorAll('.error-message');
+            existingErrorMessages.forEach(errorMessage => errorMessage.remove());
+
+            // Add the new error message
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message';
+            errorDiv.textContent = message;
+            errorDiv.style.color = 'red'; // Set the text color to red
+
+            parentDiv.appendChild(errorDiv);
+        }
+    });
+</script> -->
+
 
 <script>
-    function validateAndSubmit() {
-        var title = document.forms["productForm"]["title"].value;
-        var category = document.forms["productForm"]["category"].value;
-        var brand = document.forms["productForm"]["brand"].value;
-        var model = document.forms["productForm"]["model"].value;
-        var regularPrice = document.forms["productForm"]["regular_price"].value;
-        var salesPrice = document.forms["productForm"]["sales_price"].value;
-        var quantity = document.forms["productForm"]["quantity"].value;
-        var description = document.forms["productForm"]["description"].value;
-        var image = document.forms["productForm"]["image"].value;
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.querySelector('.mega-form');
 
-        var titleError = document.getElementById("titleError");
-        var categoryError = document.getElementById("categoryError");
-        var brandError = document.getElementById("brandError");
-        var modelError = document.getElementById("modelError");
-        var regularPriceError = document.getElementById("regular_priceError");
-        var salesPriceError = document.getElementById("sales_priceError");
-        var quantityError = document.getElementById("quantityError");
-        var descriptionError = document.getElementById("descriptionError");
-        var imageError = document.getElementById("imageError");
+        form.addEventListener('submit', function (event) {
+            let isValid = true;
 
-        // Reset all error messages
-        titleError.innerHTML = "";
-        categoryError.innerHTML = "";
-        brandError.innerHTML = "";
-        modelError.innerHTML = "";
-        regularPriceError.innerHTML = "";
-        salesPriceError.innerHTML = "";
-        quantityError.innerHTML = "";
-        descriptionError.innerHTML = "";
-        imageError.innerHTML = "";
+            // Reset previous error messages
+            const productName = form.querySelector('input[name="title"]');
+            clearError(productName);
+            if (!productName.value.trim()) {
+                isValid = false;
+                showError(productName, 'Product Name is required');
+            }
 
-        var isValid = true;
+            // Validate Category
+            const category = form.querySelector('select[name="category"]');
+            clearError(category);
+            if (!category.value || category.value === 'Select category') {
+                isValid = false;
+                showError(category, 'Please select a category');
+            }
 
-        // Validate each field with regex and additional checks
-        if (!/^[a-zA-Z0-9\s]+$/.test(title)) {
-            titleError.innerHTML = "Title must contain only letters, numbers, and spaces";
-            isValid = false;
+            // Validate Brand using regex (only letters and spaces allowed)
+            const brand = form.querySelector('input[name="brand"]');
+            clearError(brand);
+            if (!/^[A-Za-z\s]+$/.test(brand.value.trim())) {
+                isValid = false;
+                showError(brand, 'Brand should contain only letters and spaces');
+            }
+
+            // Validate Model using regex (only letters, numbers, and spaces allowed)
+            const model = form.querySelector('input[name="model"]');
+            clearError(model);
+            if (!/^[A-Za-z0-9\s]+$/.test(model.value.trim())) {
+                isValid = false;
+                showError(model, 'Model should contain only letters, numbers, and spaces');
+            }
+
+            // Validate Regular Price using regex (positive numbers only)
+            const regularPrice = form.querySelector('input[name="regular_price"]');
+            clearError(regularPrice);
+            if (!/^\d+(\.\d{1,2})?$/.test(regularPrice.value.trim()) || parseFloat(regularPrice.value.trim()) < 0) {
+                isValid = false;
+                showError(regularPrice, 'Regular Price should be a positive number');
+            }
+
+            // Validate Sales Price using regex (positive numbers only)
+            const salesPrice = form.querySelector('input[name="sales_price"]');
+            clearError(salesPrice);
+            if (!/^\d+(\.\d{1,2})?$/.test(salesPrice.value.trim()) || parseFloat(salesPrice.value.trim()) < 0) {
+                isValid = false;
+                showError(salesPrice, 'Sales Price should be a positive number');
+            }
+
+            // Validate Quantity using regex (positive integers only)
+            const quantity = form.querySelector('input[name="quantity"]');
+            clearError(quantity);
+            if (!/^[1-9]\d*$/.test(quantity.value.trim())) {
+                isValid = false;
+                showError(quantity, 'Quantity should be a positive integer');
+            }
+
+            const description = form.querySelector('textarea[name="description"]');
+            clearError(description);
+            if (!description.value.trim()) {
+                isValid = false;
+                showError(description, 'Description Price is required');
+            }
+
+            if (!isValid) {
+                event.preventDefault(); // Prevent form submission if validation fails
+            }
+
+            const image = form.querySelector('input[name="image"]');
+            clearError(image);
+            if (!image.value.trim()) {
+                isValid = false;
+                showError(image, 'Image is required');
+            }
+            if (!isValid) {
+                event.preventDefault(); // Prevent form submission if validation fails
+            }
+        });
+
+        function showError(input, message) {
+            // Add the new error message
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message';
+            errorDiv.textContent = message;
+            errorDiv.style.color = 'red'; // Set the text color to red
+
+            const parentDiv = input.parentElement;
+            parentDiv.appendChild(errorDiv);
         }
 
-        if (!/^[a-zA-Z\s]+$/.test(category)) {
-            categoryError.innerHTML = "Category must contain only letters and spaces";
-            isValid = false;
+        function clearError(input) {
+            // Remove previous error messages for the input
+            const parentDiv = input.parentElement;
+            const existingErrorMessages = parentDiv.querySelectorAll('.error-message');
+            existingErrorMessages.forEach(errorMessage => errorMessage.remove());
         }
-
-        if (!/^[a-zA-Z0-9\s]+$/.test(brand)) {
-            brandError.innerHTML = "Brand must contain only letters, numbers, and spaces";
-            isValid = false;
-        }
-
-        if (!/^[a-zA-Z0-9\s]+$/.test(model)) {
-            modelError.innerHTML = "Model must contain only letters, numbers, and spaces";
-            isValid = false;
-        }
-
-        if (!/^\d*\.?\d+$/.test(regularPrice) || parseFloat(regularPrice) <= 0) {
-            regularPriceError.innerHTML = "Regular Price must be a valid positive number";
-            isValid = false;
-        }
-
-        if (!/^\d*\.?\d+$/.test(salesPrice) || parseFloat(salesPrice) <= 0) {
-            salesPriceError.innerHTML = "Sales Price must be a valid positive number";
-            isValid = false;
-        }
-
-        if (!/^\d+$/.test(quantity) || parseInt(quantity) < 0) {
-            quantityError.innerHTML = "Quantity must be a valid non-negative integer";
-            isValid = false;
-        }
-
-        if (description.trim() === "") {
-            descriptionError.innerHTML = "Description must be filled out";
-            isValid = false;
-        }
-
-        if (image.trim() === "") {
-            imageError.innerHTML = "Image must be selected";
-            isValid = false;
-        }
-
-        if (isValid) {
-            // If all validations pass, you can submit the form
-            document.getElementById("productForm").submit();
-        }
-    }
+    });
 </script>
-
-<!-- ... (remaining HTML code) ... -->

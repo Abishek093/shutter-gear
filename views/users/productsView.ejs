@@ -80,8 +80,20 @@
                                                             </div><!-- End .product-action-vertical -->
 
                                                             <div class="product-action">
-                                                                <a href="/add-to-cart/<%=product._id%>" class="btn-product btn-cart"
-                                                                    title="Add to cart"><span>add to cart</span></a>
+                                                                <% if (product.quantity === 0) { %>
+                                                                    <div class="product-action">
+                                                                        <a class="btn-product" title="Add to cart" disabled>
+                                                                            <span style="color: red;">Out of Stock</span>
+                                                                        </a>
+                                                                    </div><!-- End .product-action -->
+                                                                <% } else { %>
+                                                                    <!-- Enable "Add to Cart" button if quantity is greater than zero -->
+                                                                    <div class="product-action">
+                                                                        <a href="/add-to-cart/<%=product._id%>" class="btn-product btn-cart" title="Add to cart">
+                                                                            <span>Add to cart</span>
+                                                                        </a>
+                                                                    </div><!-- End .product-action -->
+                                                                <% } %>
                                                             </div><!-- End .product-action -->
                                                         </figure><!-- End .product-media -->
 

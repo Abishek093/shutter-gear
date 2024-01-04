@@ -29,6 +29,7 @@
                                                                     Title</label>
                                                                 <div class="col-md-9 col-lg-10">
                                                                     <input class="form-control" type="text" name="name" id="name" value="<%= coupon.name %>">
+                                                                    <small class="text-danger" id="nameError"></small>
                                                                 </div>
                                                             </div>
 
@@ -38,6 +39,7 @@
                                                                     Code</label>
                                                                 <div class="col-md-9 col-lg-10">
                                                                     <input class="form-control" type="text" name="code" id="code" value="<%= coupon.code %>">
+                                                                    <small class="text-danger" id="codeError"></small>
                                                                 </div>
                                                             </div>
 
@@ -47,6 +49,7 @@
                                                                     Date</label>
                                                                 <div class="col-md-9 col-lg-10">
                                                                     <input class="form-control" type="date" name="createdAt" id="createdAt" value="<%= coupon.createdAt %>">
+                                                                    <small class="text-danger" id="createdAtError"></small>
                                                                 </div>
                                                             </div>
 
@@ -56,6 +59,7 @@
                                                                     Date</label>
                                                                 <div class="col-md-9 col-lg-10">
                                                                     <input class="form-control" type="date" name="expiryDate" id="expiryDate" value="<%= coupon.expiryDate %>">
+                                                                    <small class="text-danger" id="expiryDateError"></small>
                                                                 </div>
                                                             </div>
 
@@ -65,6 +69,7 @@
                                                                     Spend</label>
                                                                 <div class="col-md-9 col-lg-10">
                                                                     <input class="form-control" type="text"  name="minimumAmount" id="minimumAmount" value="<%= coupon.minimumAmount %>">
+                                                                    <small class="text-danger" id="minimumAmountError"></small>
                                                                 </div>
                                                             </div>
 
@@ -74,6 +79,7 @@
                                                                     Percentage</label>
                                                                 <div class="col-md-9 col-lg-10">
                                                                     <input class="form-control" type="text" name="percentageDiscount" id="percentageDiscount" value="<%= coupon.percentageDiscount %>">
+                                                                    <small class="text-danger" id="percentageDiscountError"></small>
                                                                 </div>
                                                             </div>
                                                             
@@ -169,7 +175,66 @@
     <!-- Theme js -->
     <script src="/assetsb/js/script.js"></script>
     
-    
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+          const form = document.querySelector('.theme-form');
+      
+          form.addEventListener('submit', function (e) {
+            let isValid = true;
+      
+            // Reset previous error messages
+            document.querySelectorAll('.text-danger').forEach(function (errorElement) {
+              errorElement.textContent = '';
+            });
+      
+            // Validation for Coupon Title
+            const title = document.getElementById('name').value.trim();
+            if (!title) {
+              document.getElementById('nameError').textContent = 'Coupon Title is required';
+              isValid = false;
+            }
+      
+            // Validation for Coupon Code
+            const code = document.getElementById('code').value.trim();
+            if (!code) {
+              document.getElementById('codeError').textContent = 'Coupon Code is required';
+              isValid = false;
+            }
+      
+            // Validation for Start Date
+            const startDate = document.getElementById('createdAt').value.trim();
+            if (!startDate) {
+              document.getElementById('createdAtError').textContent = 'Start Date is required';
+              isValid = false;
+            }
+      
+            // Validation for End Date
+            const endDate = document.getElementById('expiryDate').value.trim();
+            if (!endDate) {
+              document.getElementById('expiryDateError').textContent = 'End Date is required';
+              isValid = false;
+            }
+      
+            // Validation for Minimum Spend
+            const minimumSpend = document.getElementById('minimumAmount').value.trim();
+            if (!minimumSpend) {
+              document.getElementById('minimumAmountError').textContent = 'Minimum Spend is required';
+              isValid = false;
+            }
+      
+            // Validation for Discount Percentage
+            const discountPercentage = document.getElementById('percentageDiscount').value.trim();
+            if (!discountPercentage) {
+              document.getElementById('percentageDiscountError').textContent = 'Discount Percentage is required';
+              isValid = false;
+            }
+      
+            if (!isValid) {
+              e.preventDefault(); // Prevent form submission if validation fails
+            }
+          });
+        });
+      </script>    
 </body>
 
 
