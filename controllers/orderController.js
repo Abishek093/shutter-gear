@@ -7,7 +7,7 @@ const Address = require('../models/address')
 const Order = require('../models/orderModel')
 const Coupon = require('../models/Coupon')
 
-const { generateOrderRazorpay, verifyOrderPayment } = require('../helper/razorPay')
+const { generateOrderRazorpay, verifyOrderPayment } = require('../helper/razorPay');
 
 const generatePdf = require('../helper/pdfGenerator');
 const mongoose = require('mongoose')
