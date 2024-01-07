@@ -739,7 +739,7 @@
 
             if (response.ok) {
                 const responseData = await response.json();
-                console.log(responseData);
+                const keyId = responseData.razorpayOrder.key_id;
 
                 if (responseData.message === 'success') {
                     // Process success
@@ -749,7 +749,7 @@
                     } else if (PaymentMethod === 'Razorpay') {
                         // Initialize Razorpay checkout
                         const options = {
-                            key: responseData.razorpayOrder.key_id,
+                            key: keyId,
                             amount: responseData.razorpayOrder.amount,
                             currency: 'INR',
                             order_id: responseData.razorpayOrder.id,
@@ -780,8 +780,8 @@
                             },
                         };
 
-                        const rzp = new Razorpay(options);
-                        rzp.open();
+                        const razorpayInstance = new Razorpay(options);
+                        razorpayInstance.open();
                     }
                 } 
             } else {
