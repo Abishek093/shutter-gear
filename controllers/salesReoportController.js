@@ -1,4 +1,4 @@
-const Order = require('../models/Order')
+const Order = require('../models/orderModel')
 const Product = require('../models/productModel')
 const Category = require('../controllers/categoryController')
 const PDFDocument = require('pdfkit');

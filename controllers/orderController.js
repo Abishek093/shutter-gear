@@ -4,7 +4,7 @@ const Product = require('../models/productModel')
 const Category = require('../models/categoryModel')
 const Cart = require('../models/cartModel');
 const Address = require('../models/address')
-const Order = require('../models/Order')
+const Order = require('../models/orderModel')
 const Coupon = require('../models/Coupon')
 
 const { generateOrderRazorpay, verifyOrderPayment } = require('../helper/razorPay')
@@ -300,7 +300,6 @@ const loadOrderDetails = async(req,res) => {
 const orderStatus = async (req, res) => {
   try {
       const { orderId, status, productId } = req.body;
-      console.log("Request Payload:", { orderId, status, productId });
 
       if (!status || !orderId || !productId) {
           return res.status(400).json({ error: 'Invalid input parameters' });

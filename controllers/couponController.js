@@ -1,7 +1,7 @@
 const Coupon = require('../models/Coupon')
 const User = require('../models/userModel')
 const Cart = require('../models/cartModel');
-const Order = require('../models/Order');
+const Order = require('../models/orderModel');
 const mongoose = require('mongoose');
 
 const { LogarithmicScale } = require('chart.js');

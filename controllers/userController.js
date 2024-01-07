@@ -6,7 +6,7 @@ const path = require('path')
 const Product = require('../models/productModel')
 const Category = require('../models/categoryModel')
 const Address = require('../models/address')
-const Order = require('../models/Order')
+const Order = require('../models/orderModel')
 const Cart = require('../models/cartModel')
 const { v4: uuidv4 } = require('uuid');
 

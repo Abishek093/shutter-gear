@@ -1,5 +1,5 @@
 const Admin = require("../models/adminModel")
-const Order = require('../models/Order')
+const Order = require('../models/orderModel')
 const User = require('../models/userModel')
 const Product = require('../models/productModel')
 const path = require('path')
