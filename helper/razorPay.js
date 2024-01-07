@@ -1,3 +1,6 @@
+const Razorpay = require('razorpay');
+require('dotenv').config();
+
 // const { reject } = require('async')
 // const { resolve } = require('path')
 // const Razorpay = require('razorpay')
@@ -25,7 +28,6 @@
 // }
 
 // razorpay.js
-const Razorpay = require('razorpay');
 
 const razorpay = new Razorpay({
     key_id: process.env.RAZORPAY_ID_KEY,
