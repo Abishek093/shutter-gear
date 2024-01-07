@@ -61,11 +61,13 @@ user_route.get('/checkOut',auth.isLogin,orderController.loadCheckOut)
 //checkout
 user_route.get('/checkOut',auth.isLogin, auth.isUserBlocked,orderController.loadCheckOut);
 user_route.post('/confirm-order',auth.isLogin, auth.isUserBlocked,orderController.confirmOrder);
+user_route.post('/verify-payment',auth.isLogin, auth.isUserBlocked,orderController.verifyPayment);
 user_route.get('/success-page',auth.isLogin, auth.isUserBlocked,orderController.loadSuccess)
 
 user_route.get('/orderdetails',auth.isLogin, auth.isUserBlocked,orderController.orderdetails);
 user_route.post('/applyCoupon', auth.isLogin, couponController.applyCoupon);
 
+user_route.post('/ChangeOrderStatus',auth.isLogin,orderController.orderStatus);
 
 //change password
 user_route.get('/forgot-password',userController.loadforgotPass)

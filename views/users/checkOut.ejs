@@ -659,6 +659,7 @@
 
 
             <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
             <!-- Add this style in your HTML or in your CSS file -->
 <!-- 
@@ -713,15 +714,15 @@
         let couponCodeInput = document.getElementById("couponCodeInput");
         var totalPriceElement = document.getElementById('total-price');
         
-        async function orderConfirm() {
-            const confirmed = await Swal.fire({
-                title: 'Confirm Order',
-                text: "Are you sure you want to proceed with the order?",
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonText: 'Yes',
-                cancelButtonText: 'No, cancel',
-            });
+    async function orderConfirm() {
+        const confirmed = await Swal.fire({
+            title: 'Confirm Order',
+            text: "Are you sure you want to proceed with the order?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No, cancel',
+        });
 
     if (confirmed.isConfirmed) {
         try {
@@ -748,7 +749,7 @@
                     } else if (PaymentMethod === 'Razorpay') {
                         // Initialize Razorpay checkout
                         const options = {
-                            key: 'rzp_test_RZUMY3LMpsKLSW',
+                            key: responseData.razorpayOrder.key_id,
                             amount: responseData.razorpayOrder.amount,
                             currency: 'INR',
                             order_id: responseData.razorpayOrder.id,
@@ -760,15 +761,16 @@
                                 console.log('Razorpay Payment ID:', response.razorpay_payment_id);
                                 console.log('Razorpay Order ID:', response.razorpay_order_id);
                                 console.log('Razorpay Signature:', response.razorpay_signature);
-
+                                console.log(response);
                                 // Perform any additional actions (e.g., update order status)
                                 // Redirect to success page
-                                window.location.href = '/success-page';
+                                verifyPayment(response, response.razorpay_order_id, response.razorpay_payment_id);
+                                // window.location.href = '/success-page';
                             },
                             prefill: {
-                                name: 'Your Name',
-                                email: 'your.email@example.com',
-                                contact: 'Your Contact Number',
+                                name: "" + response.name + "",
+                                email: "" + response.email + "",
+                                contact: "" + response.contact + "",
                             },
                             notes: {
                                 address: 'Your Delivery Address',
@@ -794,6 +796,27 @@
         }
     }
 }
+
+
+async function verifyPayment(payment, order, orderId) {
+    try {
+        const response = await fetch('/verify-payment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({payment, order, orderId}),
+            });
+        
+        if(response.ok){
+            window.location.href = '/success-page';
+        }else{
+            await Swal.fire('Error', errorData.error, 'error');            
+        }
+    } catch (error) {
+        console.log(error.message);
+    }
+  }
 
 async function applyCoupon(){
 
@@ -824,8 +847,11 @@ async function applyCoupon(){
                     console.log(responseData);
                     document.getElementById("total-price").innerText = responseData.totalAmount
                     document.getElementById("couponCodeInput").innerText = responseData.coupon
-                    let apply = document.getElementById('apply').disabled = true
-                    let couponCodeInput = document.getElementById('couponCodeInput').disabled = true
+                    let apply = document.getElementById('apply');
+                    let couponCodeInput = document.getElementById('couponCodeInput');
+                    apply.disabled = true;
+                    couponCodeInput.disabled = true;
+
                 }else{
                     Swal.fire({
                         title: 'Enter valid coupon',
