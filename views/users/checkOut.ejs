@@ -195,8 +195,118 @@
                                     <button type="button" class="btn btn-outline-primary btn-rounded" data-toggle="modal" data-target="#ModalLoginForm">
                                         Add new address
                                     </button>
+                                    <aside class="col-lg-3" style="display: flex;
+                                    position: absolute;
+                                    margin-left: 50%;">
+                                        <div class="summary" style="width: 70%;">
+                                            <h3 class="summary-title">Your Order</h3><!-- End .summary-title -->
 
-                                            <div class="row" style="gap: 10px ;">
+                                            <table class="table table-summary">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Product</th>
+                                                        <th>Total</th>
+                                                    </tr>
+                                                </thead>
+
+                                                <tbody>
+                                                    <%userCart.products.forEach((item)=> { %> 
+                                                    <tr>
+                                                        <td><a href="#"><%=item.product.title%></a></td>
+                                                        <td><%=item.subTotal%></td>
+                                                    </tr>
+                                                    <%  })%>
+
+                                                 
+                                                    <tr>
+                                                        <td>Shipping:</td>
+                                                        <td>Free shipping</td>
+                                                    </tr>
+                                                    <tr class="summary-total">
+                                                        <td>Total:</td>
+                                                        <td id="total-price"><%=userCart.total%></td>
+                                                    </tr><!-- End .summary-total -->
+                                             
+                                                </tbody>
+                                            </table><!-- End .table table-summary -->
+
+                                            <div class="accordion-summary" id="accordion-payment">
+
+
+
+
+                                                <div class="card">
+                                                    <div class="card-header" id="heading-3">
+                                                        <h2 class="card-title">
+                                                            <a class="collapsed" role="button" data-toggle="collapse" href="#collapse-3" 
+                                                            aria-expanded="false" aria-controls="collapse-3" onclick="selectPeyment('Cash On Delivery')" >
+                                                                Cash on delivery
+                                                            </a>
+                                                        </h2>
+                                                    </div><!-- End .card-header -->
+                                                    <div id="collapse-3" class="collapse"
+                                                        aria-labelledby="heading-3"
+                                                        data-parent="#accordion-payment">
+                                                        <div class="card-body">Quisque volutpat mattis eros. Lorem
+                                                            ipsum dolor sit amet, consectetuer adipiscing elit.
+                                                            Donec odio. Quisque volutpat mattis eros.
+                                                        </div><!-- End .card-body -->
+                                                    </div><!-- End .collapse -->
+                                                </div><!-- End .card -->
+
+                                                <div class="card">
+                                                    <div class="card-header" id="heading-4">
+                                                        <h2 class="card-title">
+                                                            <a class="collapsed" role="button"
+                                                                data-toggle="collapse" href="#collapse-4"
+                                                                aria-expanded="false" aria-controls="collapse-4" onclick="selectPeyment('Razorpay')">
+                                                                Razorpay <small class="float-right paypal-link">What
+                                                                    is Razorpay?</small>
+                                                            </a>
+                                                        </h2>
+                                                    </div><!-- End .card-header -->
+                                                    <div id="collapse-4" class="collapse"
+                                                        aria-labelledby="heading-4"
+                                                        data-parent="#accordion-payment">
+                                                        <div class="card-body">
+                                                            Razorpay is a payment gateway that allows 
+                                                            businesses to accept and disburse payments online
+                                                        </div><!-- End .card-body -->
+                                                    </div><!-- End .collapse -->
+                                                </div><!-- End .card -->
+
+                                                <div class="card">
+                                                    <div class="card-header" id="heading-5">
+                                                        <h2 class="card-title">
+                                                            <a class="collapsed" role="button"
+                                                                data-toggle="collapse" href="#collapse-5"
+                                                                aria-expanded="false" aria-controls="collapse-5">
+                                                                Credit Card (Stripe)
+                                                                <img src="/assets/images/payments-summary.png"
+                                                                    alt="payments cards">
+                                                            </a>
+                                                        </h2>
+                                                    </div><!-- End .card-header -->
+                                                    <div id="collapse-5" class="collapse"
+                                                        aria-labelledby="heading-5"
+                                                        data-parent="#accordion-payment">
+                                                        <div class="card-body"> Donec nec justo eget felis facilisis
+                                                            fermentum.Lorem ipsum dolor sit amet, consectetuer
+                                                            adipiscing elit. Donec odio. Quisque volutpat mattis
+                                                            eros. Lorem ipsum dolor sit ame.
+                                                        </div><!-- End .card-body -->
+                                                    </div><!-- End .collapse -->
+                                                </div><!-- End .card -->
+                                            </div><!-- End .accordion -->
+
+                                            <button type="submit" class="btn btn-outline-primary-2 btn-order btn-block" onclick="orderConfirm()" >
+                                                <span class="btn-text">Place Order</span>
+                                                <span class="btn-hover-text">Proceed to Checkout</span>
+                                            </button>
+                                         
+                                        </div><!-- End .summary -->
+                                    </aside><!-- End .col-lg-3 -->
+                                            <div class="row" style="gap: 10px ; margin-bottom: 184px;">
                                                 
                                                 <% address.map((item)=> { %>
                                                     <div class="col-lg-4">
@@ -230,115 +340,7 @@
 
 
                                                     
-                                        <aside class="col-lg-3">
-                                            <div class="summary">
-                                                <h3 class="summary-title">Your Order</h3><!-- End .summary-title -->
-
-                                                <table class="table table-summary">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Product</th>
-                                                            <th>Total</th>
-                                                        </tr>
-                                                    </thead>
-
-                                                    <tbody>
-                                                        <%userCart.products.forEach((item)=> { %> 
-                                                        <tr>
-                                                            <td><a href="#"><%=item.product.title%></a></td>
-                                                            <td><%=item.subTotal%></td>
-                                                        </tr>
-                                                        <%  })%>
-
-                                                     
-                                                        <tr>
-                                                            <td>Shipping:</td>
-                                                            <td>Free shipping</td>
-                                                        </tr>
-                                                        <tr class="summary-total">
-                                                            <td>Total:</td>
-                                                            <td id="total-price"><%=userCart.total%></td>
-                                                        </tr><!-- End .summary-total -->
-                                                 
-                                                    </tbody>
-                                                </table><!-- End .table table-summary -->
-
-                                                <div class="accordion-summary" id="accordion-payment">
-
-
-
-
-                                                    <div class="card">
-                                                        <div class="card-header" id="heading-3">
-                                                            <h2 class="card-title">
-                                                                <a class="collapsed" role="button" data-toggle="collapse" href="#collapse-3" 
-                                                                aria-expanded="false" aria-controls="collapse-3" onclick="selectPeyment('Cash On Delivery')" >
-                                                                    Cash on delivery
-                                                                </a>
-                                                            </h2>
-                                                        </div><!-- End .card-header -->
-                                                        <div id="collapse-3" class="collapse"
-                                                            aria-labelledby="heading-3"
-                                                            data-parent="#accordion-payment">
-                                                            <div class="card-body">Quisque volutpat mattis eros. Lorem
-                                                                ipsum dolor sit amet, consectetuer adipiscing elit.
-                                                                Donec odio. Quisque volutpat mattis eros.
-                                                            </div><!-- End .card-body -->
-                                                        </div><!-- End .collapse -->
-                                                    </div><!-- End .card -->
-
-                                                    <div class="card">
-                                                        <div class="card-header" id="heading-4">
-                                                            <h2 class="card-title">
-                                                                <a class="collapsed" role="button"
-                                                                    data-toggle="collapse" href="#collapse-4"
-                                                                    aria-expanded="false" aria-controls="collapse-4" onclick="selectPeyment('Razorpay')">
-                                                                    Razorpay <small class="float-right paypal-link">What
-                                                                        is Razorpay?</small>
-                                                                </a>
-                                                            </h2>
-                                                        </div><!-- End .card-header -->
-                                                        <div id="collapse-4" class="collapse"
-                                                            aria-labelledby="heading-4"
-                                                            data-parent="#accordion-payment">
-                                                            <div class="card-body">
-                                                                Razorpay is a payment gateway that allows 
-                                                                businesses to accept and disburse payments online
-                                                            </div><!-- End .card-body -->
-                                                        </div><!-- End .collapse -->
-                                                    </div><!-- End .card -->
-
-                                                    <div class="card">
-                                                        <div class="card-header" id="heading-5">
-                                                            <h2 class="card-title">
-                                                                <a class="collapsed" role="button"
-                                                                    data-toggle="collapse" href="#collapse-5"
-                                                                    aria-expanded="false" aria-controls="collapse-5">
-                                                                    Credit Card (Stripe)
-                                                                    <img src="/assets/images/payments-summary.png"
-                                                                        alt="payments cards">
-                                                                </a>
-                                                            </h2>
-                                                        </div><!-- End .card-header -->
-                                                        <div id="collapse-5" class="collapse"
-                                                            aria-labelledby="heading-5"
-                                                            data-parent="#accordion-payment">
-                                                            <div class="card-body"> Donec nec justo eget felis facilisis
-                                                                fermentum.Lorem ipsum dolor sit amet, consectetuer
-                                                                adipiscing elit. Donec odio. Quisque volutpat mattis
-                                                                eros. Lorem ipsum dolor sit ame.
-                                                            </div><!-- End .card-body -->
-                                                        </div><!-- End .collapse -->
-                                                    </div><!-- End .card -->
-                                                </div><!-- End .accordion -->
-
-                                            	<button type="submit" class="btn btn-outline-primary-2 btn-order btn-block" onclick="orderConfirm()" >
-                                                    <span class="btn-text">Place Order</span>
-                                                    <span class="btn-hover-text">Proceed to Checkout</span>
-                                                </button>
-                                             
-                                            </div><!-- End .summary -->
-                                        </aside><!-- End .col-lg-3 -->
+                                     
                                     </div><!-- End .row -->
                                 </div>
                             </div><!-- End .container -->
@@ -712,14 +714,14 @@
         var totalPriceElement = document.getElementById('total-price');
         
         async function orderConfirm() {
-    const confirmed = await Swal.fire({
-        title: 'Confirm Order',
-        text: "Are you sure you want to proceed with the order?",
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonText: 'Yes',
-        cancelButtonText: 'No, cancel',
-    });
+            const confirmed = await Swal.fire({
+                title: 'Confirm Order',
+                text: "Are you sure you want to proceed with the order?",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'No, cancel',
+            });
 
     if (confirmed.isConfirmed) {
         try {

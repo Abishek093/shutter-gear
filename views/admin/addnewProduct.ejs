@@ -221,7 +221,7 @@ margin: 10px 10px 0 0;
 
 
 </style>
-<script>
+<!-- <script>
   $(document).ready(function() {
 if (window.File && window.FileList && window.FileReader) {
   $("#files").on("change", function(e) {
@@ -247,7 +247,7 @@ if (window.File && window.FileList && window.FileReader) {
   alert("Your browser doesn't support to File API")
 }
 });
-</script>
+</script> -->
 
 <!-- <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -341,6 +341,42 @@ if (window.File && window.FileList && window.FileReader) {
     });
 </script> -->
 
+
+<script>
+    $(document).ready(function() {
+      if (window.File && window.FileList && window.FileReader) {
+        $("#files").on("change", function(e) {
+          var files = e.target.files,
+            filesLength = files.length;
+  
+          // Clear existing preview images
+          $(".pip").remove();
+  
+          for (var i = 0; i < Math.min(filesLength, 4); i++) {
+            var f = files[i];
+            var fileReader = new FileReader();
+            fileReader.onload = (function(e) {
+              var file = e.target;
+              $("<span class=\"pip\">" +
+                "<img class=\"imageThumb\" src=\"" + e.target.result + "\" title=\"" + file.name + "\"/>" +
+                "<br/><span class=\"remove\" onclick=\"removeImage(this)\">Remove</span>" +
+                "</span>").insertAfter("#files");
+            });
+  
+            fileReader.readAsDataURL(f);
+          }
+        });
+      } else {
+        alert("Your browser doesn't support the File API");
+      }
+    });
+  
+    function removeImage(element) {
+      $(element).parent(".pip").remove();
+      $("#files").val(""); // Clear the file input to allow selecting the same file again
+    }
+  </script>
+  
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {

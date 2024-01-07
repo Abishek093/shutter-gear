@@ -179,12 +179,13 @@ const editCategory = async (req, res) => {
     const name = req.body.name;
     const description = req.body.description;
     const updateData = { name, description };
-    const category = await Category.findById(category_id)
+    const category = await Category.findById(category_id);
 
+    // Check if there's an existing category with the same name
     const existingCategory = await Category.findOne({ name });
 
-    if (existingCategory && existingCategory._id.toString() !== category_id) {
-      res.render('editCategory', {category, errorMessage: 'Category already exists.' });
+    if (existingCategory && existingCategory._id.toString() !== category_id.toString()) {
+      res.render('editCategory', { category, errorMessage: 'Category already exists.' });
       return;
     }
 
@@ -192,7 +193,7 @@ const editCategory = async (req, res) => {
       // Validate if the uploaded file is an image
       const validImageTypes = ['image/jpeg', 'image/png'];
       if (!validImageTypes.includes(req.file.mimetype)) {
-        res.render('editCategory', {category, errorMessage: 'Invalid file type. Only JPEG or PNG images are allowed.'});
+        res.render('editCategory', { category, errorMessage: 'Invalid file type. Only JPEG or PNG images are allowed.' });
         return;
       }
 
