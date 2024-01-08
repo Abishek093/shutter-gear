@@ -748,7 +748,7 @@ function sendPasswordResetEmail(email, resetToken) {
       }
   });
 
-  const resetLink = `http://localhost:3000/resetPassword/${resetToken}`;
+  const resetLink = `http://shuttergear.online/resetPassword/${resetToken}`;
 
   const mailOptions = {
       from: 'your@email.com',
