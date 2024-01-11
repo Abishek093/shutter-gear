@@ -1,3 +1,4 @@
+const err = require('../middleware/err'); // Assuming err.js is in the same directory
 const express = require("express");
 const admin_route = express();
 const path = require("path");
@@ -46,7 +47,7 @@ admin_route.post('/edit-category/:id',auth.isLogin, categoryUpload.single('image
 //Product
 admin_route.get('/products',auth.isLogin, productController.loadProduct)
 admin_route.get('/addnewProduct',auth.isLogin, productController.loadNewProduct)
-admin_route.post('/addnewProduct', auth.isLogin,productUpload.array('image'), productController.addProduct)
+admin_route.post('/addnewProduct', auth.isLogin, err,productUpload.array('image'), productController.addProduct)
 admin_route.get('/editProduct/:id',auth.isLogin,productController.loadEditProduct)
 admin_route.post('/editProduct/:id', auth.isLogin,productUpload.array('image'), productController.editProduct)
 admin_route.get('/listProduct/:id', auth.isLogin,productController.deleteProduct)
@@ -83,5 +84,7 @@ admin_route.get('/removeCoupon',auth.isLogin, couponController.removeCoupon)
 
 
 admin_route.get('/logout',auth.isLogout,adminController.logout)
+
+admin_route.use(err);
 
 module.exports = admin_route;

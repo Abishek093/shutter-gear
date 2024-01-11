@@ -220,10 +220,10 @@
 													</div><!-- End .col-sm-6 -->
 
 														<div class="col-sm-6">
-															<label>County *</label>
+															<label>Country *</label>
 															<input type="text" class="form-control"
-																name="county" >
-																<small id="countyError" class="error-message"></small>
+																name="country" >
+																<small id="countryError" class="error-message"></small>
 														</div><!-- End .col-sm-6 -->
 													</div><!-- End .row -->
 
@@ -290,13 +290,13 @@
 												const street = validateInput('street', 'Street is required.');
 												const address = validateInput('address', 'Address is required.');
 												const city = validateInput('city', 'City is required.');
-												const county = validateInput('county', 'County is required.');
+												const country = validateInput('country', 'Country is required.');
 												const pincode = validatePincode('pincode');
 												const mobile = validateMobile('mobile');
 									
 												// You can add more specific validations for each field as needed
 									
-												return name && state && district && street && address && city && county && pincode && mobile;
+												return name && state && district && street && address && city && country && pincode && mobile;
 											}
 									
 											function validateInput(fieldName, errorMessage) {

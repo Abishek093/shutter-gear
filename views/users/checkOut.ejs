@@ -129,54 +129,60 @@
                                                                 <div class="row">
                                                                     <div class="col-sm-6">
                                                                         <label>First Name *</label>
-                                                                        <input name="name" type="text" class="form-control" required>
+                                                                        <input name="name" type="text" class="form-control">
+                                                                        <small  class="error-message" id="name-error"></small>
                                                                     </div><!-- End .col-sm-6 -->
                                     
                                                                     <div class="col-sm-6">
                                                                         <label>Phone *</label>
-                                                                        <input name="phone" type="text" class="form-control" required>
+                                                                        <input name="mobile" type="text" class="form-control">
+                                                                        <small  class="error-message" id="mobile-error"></small>
                                                                     </div><!-- End .col-sm-6 -->
                                                                 </div><!-- End .row -->
                                     
                                                                 
                                                                 <label>Street address *</label>
-                                                                <input name="street" type="text" class="form-control" placeholder="Street name" required>
-                                                                <label>House Number *</label>
-                                                                <input name="houseNum" type="text" class="form-control" placeholder="House number " required>
+                                                                <input name="street" type="text" class="form-control" placeholder="Street name">
+                                                                <small  class="error-message" id="street-error"></small>
+                                                                <label>Address *</label>
+                                                                <input name="address" type="text" class="form-control" placeholder="Address ">
+                                                                <small  class="error-message" id="address-error"></small>
                                     
                                                                 <div class="row">
                                                                     <div class="col-sm-6">
                                                                         <label>Town / City *</label>
-                                                                        <input name="city" type="text" class="form-control" required>
+                                                                        <input name="city" type="text" class="form-control">
+                                                                        <small  class="error-message" id="city-error"></small>
                                                                     </div><!-- End .col-sm-6 -->
                                     
                                                                     <div class="col-sm-6">
-                                                                        <label>State / Country *</label>
-                                                                        <input name="country" type="text" class="form-control" required>
+                                                                        <label>Country *</label>
+                                                                        <input name="country" type="text" class="form-control">
+                                                                        <small  class="error-message" id="country-error"></small>
+                                                                    </div><!-- End .col-sm-6 -->
+
+                                                                    <div class="col-sm-6">
+                                                                        <label>State *</label>
+                                                                        <input name="state" type="text" class="form-control">
+                                                                        <small  class="error-message" id="state-error"></small>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <label>District *</label>
+                                                                        <input name="district" type="tel" class="form-control">
+                                                                        <small  class="error-message" id="district-error"></small>
                                                                     </div><!-- End .col-sm-6 -->
                                                                 </div><!-- End .row -->
                                     
                                                                 <div class="row">
                                                                     <div class="col-sm-6">
                                                                         <label>Postcode / ZIP *</label>
-                                                                        <input name="pincode" type="text" class="form-control" required>
+                                                                        <input name="pincode" type="text" class="form-control">
+                                                                        <small  class="error-message" id="pincode-error"></small>
                                                                     </div><!-- End .col-sm-6 -->
                                     
-                                                                    <div class="col-sm-6">
-                                                                        <label>Landmark *</label>
-                                                                        <input name="landmark" type="tel" class="form-control" required>
-                                                                    </div><!-- End .col-sm-6 -->
+
                                                                 </div><!-- End .row -->
                                     
-                                                     
-                                    
-                                                                <label>Email address *</label>
-                                                                <input name="email" type="email" class="form-control" required>
-                                    
-                                                                <div class="custom-control custom-checkbox">
-                                                                    <input type="checkbox" class="custom-control-input" id="checkout-create-acc">
-                                                                    <label class="custom-control-label" for="checkout-create-acc">Create an account?</label>
-                                                                </div><!-- End .custom-checkbox -->
                                                                 
                                                             <div>
                                                                 <button  type="submit" class="btn btn-success">
@@ -192,6 +198,95 @@
                                             </div><!-- /.modal-content -->
                                         </div><!-- /.modal-dialog -->
                                     </div><!-- /.modal -->
+                                    <style>
+                                        .error-message {
+                                            color: red;
+                                            font-size: 12px;
+                                        }
+                                    </style>
+                                    <!-- Add this script at the end of your HTML or in a separate JavaScript file -->
+                                    <script>
+                                        document.addEventListener('DOMContentLoaded', function () {
+                                            // Target the form and add an event listener for form submission
+                                            const form = document.getElementById('addressForm');
+                                            form.addEventListener('submit', function (event) {
+                                                // Prevent the default form submission
+                                                event.preventDefault();
+                                    
+                                                // Reset previous error messages
+                                                resetErrorMessages();
+                                    
+                                                // Validate each field
+                                                const isValid = validateForm();
+                                    
+                                                // If the form is valid, submit it; otherwise, show error messages
+                                                if (isValid) {
+                                                    form.submit();
+                                                }
+                                            });
+                                    
+                                            function resetErrorMessages() {
+                                                // Reset all error messages to empty
+                                                const errorElements = document.querySelectorAll('.error-message');
+                                                errorElements.forEach(function (element) {
+                                                    element.textContent = '';
+                                                });
+                                            }
+                                    
+                                            function validateForm() {
+                                                // Add your validation logic for each field
+                                                let isValid = true;
+                                    
+                                                // Validate Name
+                                                isValid = validateField('name', 'name-error', 'Name is required') && isValid;
+                                    
+                                                // Validate Mobile
+                                                isValid = validateField('mobile', 'mobile-error', 'Mobile is required and should be 10 digits', /^[0-9]{10}$/) && isValid;
+                                    
+                                                // Validate Street
+                                                isValid = validateField('street', 'street-error', 'Street is required') && isValid;
+                                    
+                                                // Validate Address
+                                                isValid = validateField('address', 'address-error', 'Address is required') && isValid;
+                                    
+                                                // Validate City
+                                                isValid = validateField('city', 'city-error', 'City is required') && isValid;
+                                    
+                                                // Validate Country
+                                                isValid = validateField('country', 'country-error', 'Country is required') && isValid;
+                                    
+                                                // Validate State
+                                                isValid = validateField('state', 'state-error', 'State is required') && isValid;
+                                    
+                                                // Validate District
+                                                isValid = validateField('district', 'district-error', 'District is required') && isValid;
+                                    
+                                                // Validate Pincode
+                                                isValid = validateField('pincode', 'pincode-error', 'Pincode is required and should be 6 digits', /^[0-9]{6}$/) && isValid;
+                                    
+                                                return isValid;
+                                            }
+                                    
+                                            function validateField(fieldName, errorId, errorMessage, regex) {
+                                                const input = document.getElementsByName(fieldName)[0];
+                                                const errorElement = document.getElementById(errorId);
+                                    
+                                                if (!input.value.trim()) {
+                                                    errorElement.textContent = errorMessage;
+                                                    return false;
+                                                }
+                                    
+                                                if (regex && !regex.test(input.value.trim())) {
+                                                    errorElement.textContent = errorMessage;
+                                                    return false;
+                                                }
+                                    
+                                                return true;
+                                            }
+                                        });
+                                    </script>
+                                    
+
                                     <button type="button" class="btn btn-outline-primary btn-rounded" data-toggle="modal" data-target="#ModalLoginForm">
                                         Add new address
                                     </button>
@@ -279,12 +374,12 @@
                                                     <div class="card-header" id="heading-5">
                                                         <h2 class="card-title">
                                                             <a class="collapsed" role="button"
-                                                                data-toggle="collapse" href="#collapse-5"
-                                                                aria-expanded="false" aria-controls="collapse-5">
-                                                                Credit Card (Stripe)
-                                                                <img src="/assets/images/payments-summary.png"
-                                                                    alt="payments cards">
-                                                            </a>
+                                                            data-toggle="collapse" href="#collapse-5" onclick="selectPeyment('wallet')"
+                                                            aria-expanded="false" aria-controls="collapse-5">
+                                                            Wallet
+                                                            <img src="/assets/images/payments-summary.png"
+                                                                alt="payments cards">
+                                                        </a>
                                                         </h2>
                                                     </div><!-- End .card-header -->
                                                     <div id="collapse-5" class="collapse"
@@ -329,12 +424,28 @@
                                                                     <%=item.country %><br>
                                                                     <!-- <a href="#">Edit <i class="icon-edit"></i></a> -->
                                                                 </p>
+                                                                <button type="button" class="btn btn-outline-primary btn-rounded edit-address-btn"
+                                                                data-toggle="modal" data-target="#ModalEditAddress"
+                                                                data-address-id="<%= item._id %>"
+                                                                data-name="<%= item.name %>"
+                                                                data-mobile="<%= item.mobile %>"
+                                                                data-street="<%= item.street %>"
+                                                                data-address="<%= item.address %>"
+                                                                data-city="<%= item.city %>"
+                                                                data-country="<%= item.country %>"
+                                                                data-state="<%= item.state %>"
+                                                                data-district="<%= item.district %>"
+                                                                data-pincode="<%= item.pin %>">
+                                                                Edit Address
+                                                            </button>
                                                             </div>
                                                             <!-- End .card-body -->
+                                                            
                                                         </div>
                                                         <!-- End .card-dashboard -->
             
                                                     </div>
+                                                    
                                                 </label>
                                                     <% }) %><!-- End .col-lg-9 -->
 
@@ -347,8 +458,138 @@
                         </div><!-- End .checkout -->
                     </div><!-- End .page-content -->
                 </main><!-- End .main -->
+                <div id="ModalEditAddress" class="modal fade">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h2 class="checkout-title">Billing Details</h2>
+                            </div>
+                            <div class="modal-body">
+                                
+                                <form id="addressForm" role="form" method="POST" action="/editAddress">
+                                    <input type="hidden" name="address-id" >
+                                    <div class="form-group">
+                                         
+                                        <div class="p-5">
+                
+                
+                
+                                            <div class="row">
+                                                <div class="col-sm-6">
+                                                    <label>First Name *</label>
+                                                    <input name="name" type="text" class="form-control">
+                                                    <small  class="error-message" id="name-error"></small>
+                                                </div><!-- End .col-sm-6 -->
+                
+                                                <div class="col-sm-6">
+                                                    <label>Phone *</label>
+                                                    <input name="mobile" type="text" class="form-control">
+                                                    <small  class="error-message" id="mobile-error"></small>
+                                                </div><!-- End .col-sm-6 -->
+                                            </div><!-- End .row -->
+                
+                                            
+                                            <label>Street address *</label>
+                                            <input name="street" type="text" class="form-control" placeholder="Street name">
+                                            <small  class="error-message" id="street-error"></small>
+                                            <label>Address *</label>
+                                            <input name="address" type="text" class="form-control" placeholder="Address ">
+                                            <small  class="error-message" id="address-error"></small>
+                
+                                            <div class="row">
+                                                <div class="col-sm-6">
+                                                    <label>Town / City *</label>
+                                                    <input name="city" type="text" class="form-control">
+                                                    <small  class="error-message" id="city-error"></small>
+                                                </div><!-- End .col-sm-6 -->
+                
+                                                <div class="col-sm-6">
+                                                    <label>Country *</label>
+                                                    <input name="country" type="text" class="form-control">
+                                                    <small  class="error-message" id="country-error"></small>
+                                                </div><!-- End .col-sm-6 -->
 
+                                                <div class="col-sm-6">
+                                                    <label>State *</label>
+                                                    <input name="state" type="text" class="form-control">
+                                                    <small  class="error-message" id="state-error"></small>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <label>District *</label>
+                                                    <input name="district" type="tel" class="form-control">
+                                                    <small  class="error-message" id="district-error"></small>
+                                                </div><!-- End .col-sm-6 -->
+                                            </div><!-- End .row -->
+                
+                                            <div class="row">
+                                                <div class="col-sm-6">
+                                                    <label>Postcode / ZIP *</label>
+                                                    <input name="pincode" type="text" class="form-control">
+                                                    <small  class="error-message" id="pincode-error"></small>
+                                                </div><!-- End .col-sm-6 -->
+                
 
+                                            </div><!-- End .row -->
+                
+                                            
+                                        <div>
+                                            <button  type="submit" class="btn btn-success">
+                                                Add
+                                            </button>
+                                        </div>
+                
+                                        </div>
+                
+                                    </div>
+                                </form>
+                            </div>
+                        </div><!-- /.modal-content -->
+                    </div><!-- /.modal-dialog -->
+                </div><!-- /.modal -->
+                <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        // Get the modal element
+                        const editAddressModal = document.getElementById('ModalEditAddress');
+                
+                        // Attach click event listeners to all "Edit Address" buttons
+                        const editAddressButtons = document.querySelectorAll('.edit-address-btn');
+                        editAddressButtons.forEach(function (button) {
+                            button.addEventListener('click', function (event) {
+                                // Prevent the default link behavior
+                                event.preventDefault();
+                
+                                // Get the address details from the data attributes
+                                const addressId = button.getAttribute('data-address-id');
+                                const name = button.getAttribute('data-name');
+                                const mobile = button.getAttribute('data-mobile');
+                                const street = button.getAttribute('data-street');
+                                const address = button.getAttribute('data-address');
+                                const city = button.getAttribute('data-city');
+                                const country = button.getAttribute('data-country');
+                                const state = button.getAttribute('data-state');
+                                const district = button.getAttribute('data-district');
+                                const pincode = button.getAttribute('data-pincode');
+                
+                                // Populate the form fields with the address details
+                                const form = editAddressModal.querySelector('#addressForm');
+                                const addressIdInput = form.querySelector('[name="address-id"]');
+                                addressIdInput.value = addressId;
+                                form.querySelector('[name="name"]').value = name;
+                                form.querySelector('[name="mobile"]').value = mobile;
+                                form.querySelector('[name="street"]').value = street;
+                                form.querySelector('[name="address"]').value = address;
+                                form.querySelector('[name="city"]').value = city;
+                                form.querySelector('[name="country"]').value = country;
+                                form.querySelector('[name="state"]').value = state;
+                                form.querySelector('[name="district"]').value = district;
+                                form.querySelector('[name="pincode"]').value = pincode;
+                
+                                // Open the modal
+                                $('#ModalEditAddress').modal('show');
+                            });
+                        });
+                    });
+                </script>
                 <%- include('../partials/footer') %>
             </div><!-- End .page-wrapper -->
             <button id="scroll-top" title="Back to Top"><i class="icon-arrow-up"></i></button>
@@ -739,7 +980,6 @@
 
             if (response.ok) {
                 const responseData = await response.json();
-                const keyId = responseData.razorpayOrder.key_id;
 
                 if (responseData.message === 'success') {
                     // Process success
@@ -747,7 +987,9 @@
                         await Swal.fire('Success', 'Order Placed successfully', 'success');
                         window.location.href = '/success-page';
                     } else if (PaymentMethod === 'Razorpay') {
+                        const keyId = responseData.razorpayOrder.key_id;
                         // Initialize Razorpay checkout
+                        const orderdetails = responseData.orderdetails
                         const options = {
                             key: keyId,
                             amount: responseData.razorpayOrder.amount,
@@ -761,10 +1003,11 @@
                                 console.log('Razorpay Payment ID:', response.razorpay_payment_id);
                                 console.log('Razorpay Order ID:', response.razorpay_order_id);
                                 console.log('Razorpay Signature:', response.razorpay_signature);
-                                console.log(response);
                                 // Perform any additional actions (e.g., update order status)
                                 // Redirect to success page
-                                verifyPayment(response, response.razorpay_order_id, response.razorpay_payment_id);
+                                console.log("Calling verifyPayment with:", response, response.razorpay_order_id, response.razorpay_payment_id, orderdetails);
+                                verifyPayment(response, response.razorpay_order_id, response.razorpay_payment_id, orderdetails);
+
                                 // window.location.href = '/success-page';
                             },
                             prefill: {
@@ -779,9 +1022,11 @@
                                 color: '#F37254',
                             },
                         };
-
                         const razorpayInstance = new Razorpay(options);
                         razorpayInstance.open();
+                    }else if(PaymentMethod === "wallet"){
+                        await Swal.fire('Success', 'Order Placed successfully', 'success');
+                        window.location.href = '/success-page';
                     }
                 } 
             } else {
@@ -798,25 +1043,29 @@
 }
 
 
-async function verifyPayment(payment, order, orderId) {
+async function verifyPayment(payment, order, orderId, orderdetails) {
     try {
         const response = await fetch('/verify-payment', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({payment, order, orderId}),
-            });
-        
-        if(response.ok){
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ payment, order, orderId, orderdetails }),
+        });
+
+        console.log("Response status:", response.status);
+
+        if (response.ok) {
             window.location.href = '/success-page';
-        }else{
-            await Swal.fire('Error', errorData.error, 'error');            
+        } else {
+            const errorData = await response.json();
+            await Swal.fire('Error', errorData.error, 'error');
         }
     } catch (error) {
         console.log(error.message);
     }
-  }
+}
+
 
 async function applyCoupon(){
 

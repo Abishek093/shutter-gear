@@ -7,12 +7,14 @@ const instance = new Razorpay({
 });
 
 
-exports.generateOrderRazorpay = (orderId, totalPrice) => {
+exports.generateOrderRazorpay = ( totalPrice) => {
+    console.log("Second call",);
+
     return new Promise((resolve, reject) => {
         const options = {
             amount: totalPrice * 100, // amount in the smallest currency unit
             currency: "INR",
-            receipt: orderId,
+            // receipt: orderId,
         }
 
         instance.orders.create(options, function (err, order) {
@@ -24,6 +26,7 @@ exports.generateOrderRazorpay = (orderId, totalPrice) => {
             }
         })
     })
+    
 }
 
 exports.verifyOrderPayment = (details) => {

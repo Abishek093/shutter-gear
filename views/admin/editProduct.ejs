@@ -32,7 +32,7 @@
                                                           <label class="form-label-title col-sm-3 mb-0">Product
                                                               Name</label>
                                                           <div class="col-sm-9">
-                                                              <input required id="title" name="title" class="form-control"
+                                                              <input  id="title" name="title" class="form-control"
                                                                   type="text" value="<%= product.title %>">
                                                                   <small class="text-danger" id="titleError"></small>
                                                           </div>
@@ -42,7 +42,7 @@
                                                           <label
                                                               class="col-sm-3 col-form-label form-label-title">Category</label>
                                                           <div class="col-sm-9">
-                                                              <select required name="category" id="category"
+                                                              <select  name="category" id="category"
                                                                   class="js-example-basic-single w-100" name="state">
                                                                   <option selected> <%= product.category %></option>
                                                                   <% allCategories.forEach(category=> { %>
@@ -61,7 +61,7 @@
                                                           <label
                                                               class="col-sm-3 col-form-label form-label-title">Brand</label>
                                                           <div class="col-sm-9">
-                                                              <input required name="brand" class="form-control"
+                                                              <input  name="brand" class="form-control"
                                                                   type="text" id="brand" value="<%= product.brand %>">
                                                                   <small class="text-danger" id="brandError"></small>
                                                           </div>
@@ -72,7 +72,7 @@
                                                           <label
                                                               class="col-sm-3 col-form-label form-label-title">Model</label>
                                                           <div class="col-sm-9">
-                                                              <input required name="product_type" class="form-control"
+                                                              <input  name="product_type" class="form-control"
                                                                   type="text" id="model" value="<%= product.model %>">
                                                                   <small class="text-danger" id="modelError"></small>
                                                           </div>
@@ -82,7 +82,7 @@
                                                       <div class="mb-4 row align-items-center">
                                                           <label class="form-label-title col-sm-3 mb-0">Regular Price</label>
                                                           <div class="col-sm-9">
-                                                              <input required name="regular_price" class="form-control"
+                                                              <input  name="regular_price" class="form-control"
                                                                   type="text" id="regular_price" value="<%= product.regular_price %>">
                                                                   <small class="text-danger" id="regular_priceError"></small>
                                                           </div>
@@ -92,7 +92,7 @@
                                                       <div class="mb-4 row align-items-center">
                                                           <label class="form-label-title col-sm-3 mb-0">Sales Price</label>
                                                           <div class="col-sm-9">
-                                                              <input required name="sales_price" id="sales_price" class="form-control"
+                                                              <input  name="sales_price" id="sales_price" class="form-control"
                                                                   type="text" value="<%= product.sales_price%>">
                                                                   <small class="text-danger" id="sales_priceError"></small>
                                                           </div>
@@ -101,7 +101,7 @@
                                                       <div class="mb-4 row align-items-center">
                                                           <label class="form-label-title col-sm-3 mb-0">Quantity</label>
                                                           <div class="col-sm-9">
-                                                              <input required name="quantity" id="quantity" class="form-control"
+                                                              <input  name="quantity" id="quantity" class="form-control"
                                                                   type="text" value="<%= product.quantity %>">
                                                                   <small class="text-danger" id="quantityError"></small>
                                                           </div>
@@ -181,6 +181,93 @@
 
 
 </body>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.querySelector('.theme-form');
+        form.addEventListener('submit', function (event) {
+            // Reset previous error messages
+            resetErrorMessages();
+
+            // Validate each input field
+            const title = document.getElementById('title');
+            const category = document.getElementById('category');
+            const brand = document.getElementById('brand');
+            const model = document.getElementById('model');
+            const regular_price = document.getElementById('regular_price');
+            const sales_price = document.getElementById('sales_price');
+            const quantity = document.getElementById('quantity');
+            const description = document.getElementById('description');
+
+            if (!validateInput(title)) {
+                setError('titleError', 'Product Name is required');
+                event.preventDefault();
+            }
+
+            if (!validateInput(category)) {
+                setError('categoryError', 'Category is required');
+                event.preventDefault();
+            }
+
+            if (!validateInput(brand)) {
+                setError('brandError', 'Brand is required');
+                event.preventDefault();
+            }
+
+            if (!validateInput(model)) {
+                setError('modelError', 'Model is required');
+                event.preventDefault();
+            }
+
+            if (!validatePrice(regular_price)) {
+                setError('regular_priceError', 'Regular Price should be a non-negative number');
+                event.preventDefault();
+            }
+
+            if (!validatePrice(sales_price)) {
+                setError('sales_priceError', 'Sales Price should be a non-negative number');
+                event.preventDefault();
+            }
+
+            if (!validateQuantity(quantity)) {
+                setError('quantityError', 'Quantity should be a non-negative integer');
+                event.preventDefault();
+            }
+
+            if (!validateInput(description)) {
+                setError('descriptionError', 'Description is required');
+                event.preventDefault();
+            }
+        });
+
+        function resetErrorMessages() {
+            const errorElements = document.querySelectorAll('.text-danger');
+            errorElements.forEach(element => {
+                element.textContent = '';
+            });
+        }
+
+        function setError(id, message) {
+            const errorElement = document.getElementById(id);
+            errorElement.textContent = message;
+        }
+
+        function validateInput(input) {
+            return input.value.trim() !== '';
+        }
+
+        function validatePrice(input) {
+            const price = parseFloat(input.value);
+            return !isNaN(price) && price >= 0;
+        }
+
+        function validateQuantity(input) {
+            const quantity = parseInt(input.value, 10);
+            return !isNaN(quantity) && quantity >= 0;
+        }
+    });
+</script>
+
 <style>
 
 /* CSS for image preview size */
@@ -260,10 +347,11 @@ newImagesInput.addEventListener("change", function () {
   <!-- Theme js -->
   <script src="/assetsb/js/script.js"></script>
 
+  
 
 <!-- Include this script at the end of your HTML body or in a separate script file -->
 <!-- Include this script at the end of your HTML body or in a separate script file -->
-<script>
+<!-- <script>
     document.addEventListener('DOMContentLoaded', function () {
       const form = document.querySelector('.theme-form');
   
@@ -344,7 +432,7 @@ newImagesInput.addEventListener("change", function () {
         }
       });
     });
-  </script>
+  </script> -->
   
   
 

@@ -29,121 +29,278 @@ const loadCheckOut = async (req, res) => {
 
 
 
+// const confirmOrder = async (req, res) => {
+//   try {
+//       const userId = req.session.user_id;
+//       const addressId = req.body.addressId;
+//       const paymentMethod = req.body.PaymentMethod;
+//       const totalPrice = req.body.totalPrice;
+
+//       const cart = await Cart.findOne({ user: userId }).populate('products.product');
+//       if (!cart || cart.products.length === 0) {
+//           return res.status(400).json({ error: 'Cart is empty. Add products to the cart before checkout.' });
+//       }
+
+//       const hasZeroQuantity = cart.products.some(item => item.product.quantity === 0);
+//       if (hasZeroQuantity) {
+//           return res.status(400).json({ error: 'Some products in the cart have quantity 0. Remove or update them before checkout.' });
+//       }
+
+//       const coupon = await Coupon.findOne({ code: req.body.couponCode });
+
+//       let couponId;
+//       if (!coupon) {
+//           couponId = null;
+//       } else {
+//           couponId = coupon._id;
+//       }
+
+//       const order = {
+//           user: req.session.user_id,
+//           address: addressId,
+//           paymentMethod: paymentMethod,
+//           products: cart.products.map((item) => {
+//             return {
+//                 product: item.product,
+//                 quantity: item.quantity,
+//                 price: item.product.sales_price,
+//                 total: item.subTotal,
+//             };
+//           }),
+//           grandTotal: totalPrice,
+//           coupon: couponId,
+//       };
+
+//       const orderDocument = await Order.create(order); 
+//       const orderId = orderDocument._id; 
+
+//       if(orderDocument){
+
+//         if (order.paymentMethod === 'Cash On Delivery') {
+
+//           for (const product of order.products) {
+//             const productId = product.product._id;
+//             const orderedQuantity = product.quantity;
+  
+//             await Product.findByIdAndUpdate(
+//                 productId,
+//                 { $inc: { quantity: -orderedQuantity } },
+//                 { new: true }
+//             );
+//           }
+
+//           await Cart.findOneAndUpdate({ user: userId }, { $set: { products: [], total: 0 } });
+
+//           res.status(200).json({ message: 'success' });
+  
+//         } else if (order.paymentMethod === 'Razorpay') {
+//           const generatedOrder = await generateOrderRazorpay(orderId, totalPrice)
+//             res.status(200).json({
+//                 message: 'success',
+//                 razorpayOrder: {
+//                     id: generatedOrder.id,
+//                     amount: generatedOrder.amount,
+//                     currency: generatedOrder.currency,
+//                     order_id: generatedOrder.id,
+//                     key_id: process.env.RAZORPAY_ID_KEY,
+//                     reciept: orderId,
+//                     contact: "8943759719",
+//                     name: "ShutterGear",
+//                     email: "admin@gmail.com"
+//                 },
+//             });
+//         }
+//       }
+
+//   } catch (error) {
+//       console.log(error);
+//       res.status(500).json({ error: 'Internal server error' });
+//   }
+// };
+
 const confirmOrder = async (req, res) => {
-  try {
-      const userId = req.session.user_id;
-      const addressId = req.body.addressId;
-      const paymentMethod = req.body.PaymentMethod;
-      const totalPrice = req.body.totalPrice;
-
-      const cart = await Cart.findOne({ user: userId }).populate('products.product');
-      if (!cart || cart.products.length === 0) {
-          return res.status(400).json({ error: 'Cart is empty. Add products to the cart before checkout.' });
-      }
-
-      const hasZeroQuantity = cart.products.some(item => item.product.quantity === 0);
-      if (hasZeroQuantity) {
-          return res.status(400).json({ error: 'Some products in the cart have quantity 0. Remove or update them before checkout.' });
-      }
-
-      const coupon = await Coupon.findOne({ code: req.body.couponCode });
-
-      let couponId;
-      if (!coupon) {
-          couponId = null;
-      } else {
-          couponId = coupon._id;
-      }
-
-      const order = {
-          user: req.session.user_id,
-          address: addressId,
-          paymentMethod: paymentMethod,
-          products: cart.products.map((item) => {
-            return {
-                product: item.product,
-                quantity: item.quantity,
-                price: item.product.sales_price,
-                total: item.subTotal,
-            };
-          }),
-          grandTotal: totalPrice,
-          coupon: couponId,
-      };
-
-      const orderDocument = await Order.create(order); 
-      const orderId = orderDocument._id; 
-
-      if(orderDocument){
-
-        if (order.paymentMethod === 'Cash On Delivery') {
-
-          for (const product of order.products) {
-            const productId = product.product._id;
-            const orderedQuantity = product.quantity;
+    try {
+        const userId = req.session.user_id;
+        const addressId = req.body.addressId;
+        const paymentMethod = req.body.PaymentMethod;
+        const totalPrice = req.body.totalPrice;
+        const userData = await User.findById(userId)
   
-            await Product.findByIdAndUpdate(
-                productId,
-                { $inc: { quantity: -orderedQuantity } },
-                { new: true }
-            );
-          }
-
-          await Cart.findOneAndUpdate({ user: userId }, { $set: { products: [], total: 0 } });
-
-          res.status(200).json({ message: 'success' });
-  
-        } else if (order.paymentMethod === 'Razorpay') {
-          const generatedOrder = await generateOrderRazorpay(orderId, totalPrice)
-            res.status(200).json({
-                message: 'success',
-                razorpayOrder: {
-                    id: generatedOrder.id,
-                    amount: generatedOrder.amount,
-                    currency: generatedOrder.currency,
-                    order_id: generatedOrder.id,
-                    key_id: process.env.RAZORPAY_ID_KEY,
-                    reciept: orderId,
-                    contact: "8943759719",
-                    name: "ShutterGear",
-                    email: "admin@gmail.com"
-                },
-            });
+        const cart = await Cart.findOne({ user: userId }).populate('products.product');
+        if (!cart || cart.products.length === 0) {
+            return res.status(400).json({ error: 'Cart is empty. Add products to the cart before checkout.' });
         }
-      }
+  
+        const hasZeroQuantity = cart.products.some(item => item.product.quantity === 0);
+        if (hasZeroQuantity) {
+            return res.status(400).json({ error: 'Some products in the cart have quantity 0. Remove or update them before checkout.' });
+        }
+  
+        const coupon = await Coupon.findOne({ code: req.body.couponCode });
+  
+        let couponId;
+        if (!coupon) {
+            couponId = null;
+        } else {
+            couponId = coupon._id;
+        }
+    
+          if (paymentMethod === 'Cash On Delivery') {
+            const order = {
+                user: req.session.user_id,
+                address: addressId,
+                paymentMethod: paymentMethod,
+                products: cart.products.map((item) => {
+                  return {
+                      product: item.product,
+                      quantity: item.quantity,
+                      price: item.product.sales_price,
+                      total: item.subTotal,
+                  };
+                }),
+                grandTotal: totalPrice,
+                coupon: couponId,
+            };
+      
+            const orderDocument = await Order.create(order); 
+            const orderId = orderDocument._id; 
 
-  } catch (error) {
-      console.log(error);
-      res.status(500).json({ error: 'Internal server error' });
-  }
-};
+            for (const product of order.products) {
+              const productId = product.product._id;
+              const orderedQuantity = product.quantity;
+    
+              await Product.findByIdAndUpdate(
+                  productId,
+                  { $inc: { quantity: -orderedQuantity } },
+                  { new: true }
+              );
+            }
+  
+            await Cart.findOneAndUpdate({ user: userId }, { $set: { products: [], total: 0 } });
 
-const verifyPayment = async (req, res) => {
-  try {
+            res.status(200).json({ message: 'success' });
+    
+          } else if (paymentMethod === 'Razorpay') {
+            const order = {
+                user: req.session.user_id,
+                address: addressId,
+                paymentMethod: paymentMethod,
+                products: cart.products.map((item) => {
+                  return {
+                      product: item.product,
+                      quantity: item.quantity,
+                      price: item.product.sales_price,
+                      total: item.subTotal,
+                  };
+                }),
+                grandTotal: totalPrice,
+                coupon: couponId,
+            };   
+            const generatedOrder = await generateOrderRazorpay( totalPrice)
+
+              res.status(200).json({
+                  message: 'success',
+                  razorpayOrder: {
+                      id: generatedOrder.id,
+                      amount: generatedOrder.amount,
+                      currency: generatedOrder.currency,
+                      order_id: generatedOrder.id,
+                      key_id: process.env.RAZORPAY_ID_KEY,
+                    //   reciept: orderId,
+                      contact: "8943759719",
+                      name: "ShutterGear",
+                      email: "admin@gmail.com"
+                  },
+                  orderdetails: order
+              });
+          }else if(paymentMethod === 'wallet'){
+            const walletAmount = userData.walletAmount;
+            console.log("walletAmount",walletAmount);
+            console.log("totalPrice",totalPrice);
+            if(walletAmount >= totalPrice){
+                const order = {
+                    user: req.session.user_id,
+                    address: addressId,
+                    paymentMethod: paymentMethod,
+                    products: cart.products.map((item) => {
+                      return {
+                          product: item.product,
+                          quantity: item.quantity,
+                          price: item.product.sales_price,
+                          total: item.subTotal,
+                      };
+                    }),
+                    grandTotal: totalPrice,
+                    coupon: couponId,
+                };
+
+
+                const orderDocument = await Order.create(order); 
+                const orderId = orderDocument._id; 
+                const newWalletAmount = walletAmount - totalPrice;
+                userData.walletAmount = newWalletAmount;
+                await userData.save();
+
+                for (const product of order.products) {
+                  const productId = product.product._id;
+                  const orderedQuantity = product.quantity;
+        
+                  await Product.findByIdAndUpdate(
+                      productId,
+                      { $inc: { quantity: -orderedQuantity } },
+                      { new: true }
+                  );
+                }
+      
+                await Cart.findOneAndUpdate({ user: userId }, { $set: { products: [], total: 0 } });
+    
+                res.status(200).json({ message: 'success' });
+            }else{
+                // res.status(204).json({ message: "Insufficient Balance" });
+                return res.status(400).json({ error: 'Insufficient Balance' });
+            }
+          }
+  
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+  };
+  const verifyPayment = async (req, res) => {
+    try {
       verifyOrderPayment(req.body)
           .then(async () => {
               const userId = req.session.user_id;
-              // const orderId = req.body.orderId;
               const user = await User.findById(userId);
-              // console.log("orderIdorderIdorderIdorderId",orderId);
-
               const cart = await Cart.findOne({ user: userId });
+              console.log("Received data in /verify-payment:", req.body.orderdetails);
 
-              // Decrease product quantity
-              for (const product of cart.products) {
-                const productId = product.product._id;
-                const orderedQuantity = product.quantity;
+              const orderData = req.body.orderdetails
+
+              const orderDocument = await Order.create(orderData); 
+
+              if(orderDocument){
+                for (const product of cart.products) {
+                  const productId = product.product._id;
+                  const orderedQuantity = product.quantity;
+        
+                  await Product.findByIdAndUpdate(
+                      productId,
+                      { $inc: { quantity: -orderedQuantity } },
+                      { new: true }
+                  );
+                }
       
-                await Product.findByIdAndUpdate(
-                    productId,
-                    { $inc: { quantity: -orderedQuantity } },
-                    { new: true }
-                );
+                await Cart.findOneAndUpdate({ user: userId }, { $set: { products: [], total: 0 } });
+                req.session.cartQuantity = null
+                res.status(200).json({ status: "success"});
+              }else{
+                res.status(400).json({
+                  status: "error",
+                  msg: "Payment verification failed",
+              });
               }
-    
-              await Cart.findOneAndUpdate({ user: userId }, { $set: { products: [], total: 0 } });
-              req.session.cartQuantity = null
-              res.status(200).json({ status: "success"});
+
           })
           .catch((error) => {
               console.error(error);
@@ -297,62 +454,117 @@ const loadOrderDetails = async(req,res) => {
 //   };
   
   
+// const orderStatus = async (req, res) => {
+//   try {
+//       const { orderId, status, productId } = req.body;
+
+//       if (!status || !orderId || !productId) {
+//           return res.status(400).json({ error: 'Invalid input parameters' });
+//       }
+
+//       const updatedOrder = await Order.findOneAndUpdate(
+//           { _id: orderId, 'products.product': productId },
+//           { $set: { 'products.$.status': status } },
+//           { new: true }
+//       ).populate('user');
+
+//       if (!updatedOrder) {
+//           return res.status(404).json({ error: 'Order or Product not found' });
+//       }
+
+//       if (updatedOrder.coupon) {
+//           const coupon = await Coupon.findById(updatedOrder.coupon);
+
+//           const percentageDiscountPerProduct = coupon.percentageDiscount / updatedOrder.products.length;
+
+//           updatedOrder.products.forEach((product) => {
+//               const discountAmount = (percentageDiscountPerProduct / 100) * product.price;
+//               product.total -= discountAmount;
+//           });
+//       }
+
+//       updatedOrder.save();
+
+//       if (status === 'Cancelled' && updatedOrder.paymentMethod === 'Razorpay') {
+//           const refundedAmount = updatedOrder.products.find((product) => product.product.equals(productId)).total;
+
+//           const user = updatedOrder.user;
+//           const updatedUser = await User.findOneAndUpdate(
+//               { _id: user._id },
+//               { $inc: { walletAmount: refundedAmount } },
+//               { new: true }
+//           );
+
+//           if (!updatedUser) {
+//               // console.error('Failed to update user wallet');
+//               return res.status(500).json({ error: 'Failed to update user wallet' });
+//           }
+
+//           // console.log(`User's wallet updated with refunded amount: ${refundedAmount}`);
+//       }
+
+//       return res.status(200).json({ success: true });
+//   } catch (error) {
+//       console.error(error.message);
+//       return res.status(500).json({ error: 'Internal server error' });
+//   }
+// };
+
 const orderStatus = async (req, res) => {
-  try {
-      const { orderId, status, productId } = req.body;
+    try {
+        const { orderId, status, productId } = req.body;
+        console.log(orderId, status, productId);
+        if (!status || !orderId || !productId) {
+            return res.status(400).json({ error: 'Invalid input parameters' });
+        }
 
-      if (!status || !orderId || !productId) {
-          return res.status(400).json({ error: 'Invalid input parameters' });
-      }
+        const updatedOrder = await Order.findOneAndUpdate(
+            { _id: orderId, 'products.product': productId },
+            { $set: { 'products.$.status': status } },
+            { new: true }
+        ).populate('user');
 
-      const updatedOrder = await Order.findOneAndUpdate(
-          { _id: orderId, 'products.product': productId },
-          { $set: { 'products.$.status': status } },
-          { new: true }
-      ).populate('user');
+        if (!updatedOrder) {
+            return res.status(404).json({ error: 'Order or Product not found' });
+        }
 
-      if (!updatedOrder) {
-          return res.status(404).json({ error: 'Order or Product not found' });
-      }
+        if (updatedOrder.coupon) {
+            const coupon = await Coupon.findById(updatedOrder.coupon);
 
-      if (updatedOrder.coupon) {
-          const coupon = await Coupon.findById(updatedOrder.coupon);
+            const percentageDiscountPerProduct = coupon.percentageDiscount / updatedOrder.products.length;
 
-          const percentageDiscountPerProduct = coupon.percentageDiscount / updatedOrder.products.length;
+            updatedOrder.products.forEach((product) => {
+                const discountAmount = (percentageDiscountPerProduct / 100) * product.price;
+                product.total -= discountAmount;
+            });
+        }
 
-          updatedOrder.products.forEach((product) => {
-              const discountAmount = (percentageDiscountPerProduct / 100) * product.price;
-              product.total -= discountAmount;
-          });
-      }
+        updatedOrder.save();
 
-      updatedOrder.save();
+        if (status === 'Cancelled' && updatedOrder.paymentMethod === 'Razorpay') {
+            const refundedAmount = updatedOrder.products.find((product) => product.product.equals(productId)).total;
 
-      if (status === 'Cancelled' && updatedOrder.paymentMethod === 'Razorpay') {
-          const refundedAmount = updatedOrder.products.find((product) => product.product.equals(productId)).total;
+            const user = updatedOrder.user;
+            const updatedUser = await User.findOneAndUpdate(
+                { _id: user._id },
+                { $inc: { walletAmount: refundedAmount } },
+                { new: true }
+            );
 
-          const user = updatedOrder.user;
-          const updatedUser = await User.findOneAndUpdate(
-              { _id: user._id },
-              { $inc: { walletAmount: refundedAmount } },
-              { new: true }
-          );
+            if (!updatedUser) {
+                console.error('Failed to update user wallet');
+                return res.status(500).json({ error: 'Failed to update user wallet' });
+            }
 
-          if (!updatedUser) {
-              // console.error('Failed to update user wallet');
-              return res.status(500).json({ error: 'Failed to update user wallet' });
-          }
+            console.log(`User's wallet updated with refunded amount: ${refundedAmount}`);
+        }
 
-          // console.log(`User's wallet updated with refunded amount: ${refundedAmount}`);
-      }
-
-      return res.status(200).json({ success: true });
-  } catch (error) {
-      console.error(error.message);
-      return res.status(500).json({ error: 'Internal server error' });
-  }
-};
-
+        return res.status(200).json({ success: true });
+    } catch (error) {
+        console.error('Error updating order status:', error);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
+};//working
 
 // const orderStatus = async (req, res) => {
 //     try {

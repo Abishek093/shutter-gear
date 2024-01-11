@@ -624,7 +624,7 @@ const loadProduct = async (req, res) => {
 const logout = async (req, res) => {
   try {
     req.session.user_id = null;
-    res.redirect('/landingHome')
+    res.redirect('/')
   } catch (error) {
     console.log(error.message);
   }

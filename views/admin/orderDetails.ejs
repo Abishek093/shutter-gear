@@ -91,6 +91,12 @@
                                                                                 <p>status</p>
                                                                                 <h5 data-status="<%=items.status%>"><%=items.status%></h5>
                                                                             </td>
+                                                                            <% if(items.status === "Return Requested"){ %>
+                                                                            <td>
+                                                                                <button data-product-id="<%= items.product._id %>" data-status="Return Accepted" style=" width: 80%;"  class="btn-solid btn m-1 accept-btn" >Accept</button>
+                                                                                <button data-product-id="<%= items.product._id %>" data-status="Return Rejected" style="background-color: rgb(198, 36, 36); color: rgb(248, 248, 248); width: 80%;"  class="btn reject-btn" >Reject</button>
+                                                                            </td>
+                                                                            <% }else{ %>
                                                                             <td>
                                                                                 <div class="dropdown" id="statusDropdown">
                                                                                     <button
@@ -99,7 +105,7 @@
                                                                                         data-bs-toggle="dropdown"
                                                                                         aria-expanded="false"
                                                                                         style="background-color: #0da487 !important;" 
-                                                                                        <% if(items.status === 'Cancelled') { %> disabled <% } %>>
+                                                                                        <% if(items.status === 'Cancelled'|| items.status === 'Return Rejected' || items.status === 'Return Requested' || items.status === 'Return Accepted' || items.status === 'Delivered') { %> disabled <% } %>>
                                                                                         Select Status
                                                                                     </button>
                                                                                     <ul class="dropdown-menu"
@@ -107,7 +113,7 @@
                                                                                         id="statusId">
                                                                                         <li>
                                                                                             <a class="dropdown-item" data-product-id="<%= items.product._id %>"
-                                                                                                data-status="Order confirmed">Order
+                                                                                                data-status="Confirmed">Order
                                                                                                 confirmed</a>
                                                                                         </li>
                                                                                         <li>
@@ -116,18 +122,18 @@
                                                                                         </li>
                                                                                         <li>
                                                                                             <a class="dropdown-item" data-product-id="<%= items.product._id %>"
-                                                                                                data-status="Out of delivery">Out
+                                                                                                data-status="Out for Delivery">Out
                                                                                                 of delivery</a>
                                                                                         </li>
                                                                                         <li>
                                                                                             <a class="dropdown-item" data-product-id="<%= items.product._id %>"
                                                                                                 data-status="Shipped">Shipped</a>
                                                                                         </li>
-                                                                                        <li>
+                                                                                        <!-- <li>
                                                                                             <a class="dropdown-item" data-product-id="<%= items.product._id %>"
                                                                                                 data-status="Return confirmed">Return
                                                                                                 confirmed</a>
-                                                                                        </li>
+                                                                                        </li> -->
                                                                                         <li>
                                                                                             <a class="dropdown-item" data-product-id="<%= items.product._id %>"
                                                                                                 data-status="Delivered">Delivered</a>
@@ -135,8 +141,10 @@
                                                                                     </ul>
                                                                                 </div>
                                                                             </td>
+                                                                            <% } %>
+                                                                            <td></td>
                                                                             <td>
-                                                                                <button data-status="<%=items.status%>" data-product-id="<%=items.product._id%>" class="btn btn-secondary cancel-btn" type="button" aria-expanded="false" style="background-color: #0da487 !important;" <% if(items.status === 'Cancelled') { %> disabled <% } %>>
+                                                                                <button data-status="<%=items.status%>" data-product-id="<%=items.product._id%>" class="btn btn-secondary cancel-btn" type="button" aria-expanded="false" style="background-color: #0da487 !important;" <% if(items.status === 'Cancelled' || items.status === 'Return Rejected' || items.status === 'Return Requested' || items.status === 'Return Accepted' || items.status === 'Delivered') { %> disabled <% } %>>
                                                                                     Cancel Order
                                                                                 </button>
                                                                             </td>
@@ -194,11 +202,9 @@
                                                     <div class="col-xl-4">
                                                         <div class="order-success">
                                                             <div class="row g-4">
-
-                                                                <ul class="order-details">
-                                                                    <br>
-
-                                                                </ul>
+                                                                <div class="container align-items-center " style="display: flex; ">
+                                                                     
+                                                                </div>
                                                                 <h4>summery</h4>
                                                                 <ul class="order-details">
                                                                     <li>Order ID: <%=orderDetails._id%>
@@ -317,10 +323,12 @@
             <script src="/assetsb/js/script.js"></script>
 
 
-            <script>
+            <!-- <script>
                 const cancelButtons = document.querySelectorAll('.cancel-btn');
                 const returnButtons = document.querySelectorAll('.return-btn');
-            
+                const returnAccept = document.querySelectorAll('.accept-btn');
+                const returnReject = document.querySelectorAll('.reject-btn');
+
                 cancelButtons.forEach(button => {
                     button.addEventListener('click', function () {
                         console.log('Cancel Order Clicked');
@@ -346,7 +354,7 @@
                         const orderId = '<%= orderDetails._id %>';
                         const productId = this.getAttribute('data-product-id');
                         const newStatus = this.getAttribute('data-status');
-            
+                        console.log(newStatus);
                         updateOrderStatus(orderId, newStatus, productId);
                     });
                 });
@@ -367,7 +375,10 @@
                         },
                         body: JSON.stringify({ orderId, status, productId }),
                     })
-                        .then(response => response.json())
+                        .then(response =>{
+                            console.log('Raw Response:', response);
+                            response.json()
+                        })
                         .then(data => {
                             const updatedStatus = status;
                             console.log(updatedStatus);
@@ -379,7 +390,121 @@
                             console.error('Error updating order status:', error);
                         });
                 }
+            </script> -->
+        
+            
+            <script>
+                const cancelButtons = document.querySelectorAll('.cancel-btn');
+                const returnButtons = document.querySelectorAll('.return-btn');
+                const returnAccept = document.querySelectorAll('.accept-btn');
+                const returnReject = document.querySelectorAll('.reject-btn');
+
+                cancelButtons.forEach(button => {
+                    button.addEventListener('click', function () {
+                        console.log('Cancel Order Clicked');
+
+                        // Extracting data attributes
+                        const orderId = '<%= orderDetails._id %>';
+                        const status = this.getAttribute('data-status');
+                        const productId = this.getAttribute('data-product-id');
+                        const newStatus = 'Cancelled';
+
+                        console.log('Order ID:', orderId);
+                        console.log('Status:', status);
+                        console.log('Product ID:', productId);
+
+                        updateOrderStatus(orderId, newStatus, productId);
+                    });
+                });
+
+                const dropdownItems = document.querySelectorAll('.dropdown-item');
+
+                dropdownItems.forEach(item => {
+                    item.addEventListener('click', function () {
+                        const orderId = '<%= orderDetails._id %>';
+                        const productId = this.getAttribute('data-product-id');
+                        const newStatus = this.getAttribute('data-status');
+                        console.log(newStatus);
+                        updateOrderStatus(orderId, newStatus, productId);
+                    });
+                });
+
+                returnButtons.forEach(button => {
+                    if (button.closest('td').querySelector('.cancel-btn[disabled]')) {
+                        button.disabled = true;
+                    }
+                });
+                returnAccept.forEach(button => {
+                    button.addEventListener('click', function () {
+                        console.log('Accept Order Clicked');
+                        const orderId = '<%= orderDetails._id %>';
+                        const status = this.getAttribute('data-status');
+                        const productId = this.getAttribute('data-product-id');
+                        const newStatus = 'Return Accepted';
+
+                        console.log('Order ID:', orderId);
+                        console.log('Status:', status);
+                        console.log('Product ID:', productId);
+
+                        updateOrderStatus(orderId, newStatus, productId);
+                    });
+                });
+
+                returnReject.forEach(button => {
+                    button.addEventListener('click', function () {
+                        console.log('Reject Order Clicked');
+                        const orderId = '<%= orderDetails._id %>';
+                        const status = this.getAttribute('data-status');
+                        const productId = this.getAttribute('data-product-id');
+                        const newStatus = 'Return Rejected';
+
+                        console.log('Order ID:', orderId);
+                        console.log('Status:', status);
+                        console.log('Product ID:', productId);
+
+                        updateOrderStatus(orderId, newStatus, productId);
+                    });
+                });
+                function updateOrderStatus(orderId, status, productId) {
+    const url = `/ChangeOrderStatus`;
+
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ orderId, status, productId }),
+    })
+        .then(response => {
+            console.log('Raw Response:', response);
+
+            // Check if the response is JSON
+            if (!response.ok || !response.headers.get('content-type').includes('application/json')) {
+                console.error('Invalid JSON response');
+                console.log('Response Headers:', response.headers);
+                return response.text(); // Log response content as text
+            }
+
+            return response.json();
+        })
+        .then(data => {
+            if (data) {
+                console.log('Response Data:', data);
+                const updatedStatus = status;
+                console.log(updatedStatus);
+
+                console.log('Order status updated successfully:', updatedStatus);
+                location.reload();
+            }
+        })
+        .catch(error => {
+            console.error('Error updating order status:', error);
+        });
+}
+
+
             </script>
+            
         </body>
 
 

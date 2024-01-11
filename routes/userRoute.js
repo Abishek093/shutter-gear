@@ -45,6 +45,7 @@ user_route.post('/editUserDetails',auth.isLogin, auth.isUserBlocked,userControll
 
 user_route.post('/add-billing-address',auth.isLogin, auth.isUserBlocked, addressController.addAddress)
 user_route.post('/addAddress',auth.isLogin, auth.isUserBlocked,addressController.addAddressChekout)
+user_route.post('/editAddress',auth.isLogin, auth.isUserBlocked,addressController.editAddressCheckout)
 
 
 user_route.get('/productsView',userController.loadProductsView)

@@ -118,14 +118,14 @@
                                                                     <h5 data-status="<%=items.status%>"><%=items.status%></h5>
                                                                 </td>
                                                                 <td>
-                                                                    <button data-status="<%=items.status%>" data-product-id="<%=items.product._id%>" class="btn btn-secondary cancel-btn" type="button" aria-expanded="false" style="background-color: #0da487 !important;" <% if(items.status === 'Cancelled' || items.status === 'Delivered') { %> disabled <% } %>>
+                                                                    <button data-status="<%=items.status%>" data-product-id="<%=items.product._id%>" class="btn btn-secondary cancel-btn" type="button" aria-expanded="false" style="background-color: #0da487 !important;" <% if(items.status === 'Cancelled' || items.status === 'Delivered'|| items.status === 'Return Requested'|| items.status === 'Return Accepted') { %> disabled <% } %>>
                                                                         Cancel Order
                                                                     </button>
                                                                 </td>
                                                                 <td>
                                                                 </td>
                                                                 <td>
-                                                                    <button class="btn btn-secondary return-btn" type="button" aria-expanded="false" style="background-color: #0da487 !important;" <% if(items.status !== 'Delivered') { %> disabled <% } %>>
+                                                                    <button data-status="<%=items.status%>" data-product-id="<%=items.product._id%>" class="btn btn-secondary return-btn" type="button" aria-expanded="false" style="background-color: #0da487 !important;" <% if(items.status !== 'Delivered') { %> disabled <% } %>>
                                                                         Return Order
                                                                     </button>
                                                                 </td>
@@ -326,7 +326,7 @@
 </script> -->
 
 
-<script>
+<!-- <script>
     const cancelButtons = document.querySelectorAll('.cancel-btn');
     const returnButtons = document.querySelectorAll('.return-btn');
 
@@ -377,8 +377,77 @@
             console.error('Error updating order status:', error);
         });
     }
-</script>
+</script> -->
 
+    
+
+<script>
+    const cancelButtons = document.querySelectorAll('.cancel-btn');
+    const returnButtons = document.querySelectorAll('.return-btn');
+
+    cancelButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            console.log('Cancel Order Clicked');
+
+            // Extracting data attributes
+            const orderId = '<%= orderDetails._id %>';
+            const status = this.getAttribute('data-status');
+            const productId = this.getAttribute('data-product-id');
+            const newStatus = 'Cancelled';
+
+            console.log('Order ID:', orderId);
+            console.log('Status:', status);
+            console.log('Product ID:', productId);
+
+            updateOrderStatus(orderId, newStatus, productId);
+        });
+    });
+
+    returnButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            console.log('Return Order Clicked');
+
+            // Extracting data attributes
+            const orderId = '<%= orderDetails._id %>';
+            const status = 'Return Requested'; // Set the status to 'Return Requested'
+            const productId = this.getAttribute('data-product-id');
+
+            console.log('Order ID:', orderId);
+            console.log('Status:', status);
+            console.log('Product ID:', productId);
+
+            updateOrderStatus(orderId, status, productId);
+        });
+
+        if (button.closest('td').querySelector('.cancel-btn[disabled]')) {
+            button.disabled = true;
+        }
+    });
+
+    function updateOrderStatus(orderId, status, productId) {    
+        const url = `/ChangeOrderStatus`;
+
+        fetch(url, {
+            method: 'POST', 
+            headers: {
+                'Content-Type': 'application/json',   
+            },
+            body: JSON.stringify({ orderId, status, productId }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            const updatedStatus = status;
+            console.log(updatedStatus);
+            // updateFrontendStatus(updatedStatus);
+
+            console.log('Order status updated successfully:', updatedStatus);
+            location.reload();
+        })
+        .catch(error => {
+            console.error('Error updating order status:', error);
+        });
+    }
+</script>
     <!-- latest js -->
     <script src="/assetsb/js/jquery-3.6.0.min.js"></script>
 

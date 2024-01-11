@@ -93,7 +93,9 @@ const loadDashboard = async (req, res) => {
 
 
         const razorpayTotal = await Order.aggregate([
-            { $match: { paymentMethod: 'Razorpay', status: 'Delivered' } },
+            { $match: { paymentMethod: 'Razorpay', 
+            // status: 'Delivered' 
+          } },
             { $group: { _id: null, total: { $sum: '$grandTotal' } } }
         ]);
 
