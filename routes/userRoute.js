@@ -68,7 +68,7 @@ user_route.get('/success-page',auth.isLogin, auth.isUserBlocked,orderController.
 user_route.get('/orderdetails',auth.isLogin, auth.isUserBlocked,orderController.orderdetails);
 user_route.post('/applyCoupon', auth.isLogin, couponController.applyCoupon);
 
-user_route.post('/ChangeOrderStatus',auth.isLogin,orderController.orderStatus);
+user_route.post('/ChangeOrderStatus',orderController.orderStatus);
 
 //change password
 user_route.get('/forgot-password',userController.loadforgotPass)
