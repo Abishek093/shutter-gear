@@ -60,7 +60,7 @@ admin_route.get('/blockuser', customerController.blockUser);
 //order list
 admin_route.get('/orderList',auth.isLogin,orderController.loadOrderList)
 admin_route.get('/orderDetails',auth.isLogin,orderController.loadOrderDetails)
-admin_route.post('/ChangeOrderStatus',orderController.orderStatus);
+admin_route.post('/ChangeOrderStatus',auth.isLogin,orderController.orderStatus);
 
 //sales report
 admin_route.get('/salesReport', auth.isLogin,salesReportController.loadReport);

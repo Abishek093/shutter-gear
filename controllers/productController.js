@@ -195,8 +195,9 @@ const loadEditProduct = async(req, res)=>{
     try {
         let product_id = req.params.id
         let product = await Product.findOne({_id: product_id})
+        const errorMessage = ''
         const allCategories = await Category.find({})
-        res.render('editProduct',{product_id, product, allCategories})
+        res.render('editProduct',{product_id, product, allCategories, errorMessage})
     } catch (error) {
         console.log(error.message);
     }
@@ -257,11 +258,22 @@ const editProduct = async (req, res) => {
         const existingImages = existingProduct.images || [];
         const fileNames = req.files.map(file => file.filename);
 
+        // Check if the total number of images (existing + new) exceeds the limit of 4
+        if (existingImages.length + fileNames.length > 4) {
+            return res.status(400).json({
+                success: false,
+                message: 'Total number of images should not exceed 4.',
+            });
+        }
+
         if (req.files.length) {
-            // Check if the total number of images (existing + new) exceeds the limit of 4
-            if (existingImages.length + fileNames.length > 4) {
-                console.log("Error: Exceeded the maximum allowed images limit (4).");
-                return res.redirect('/admin/products');
+            // Check if the uploaded files are images
+            const areAllImages = req.files.every(file => file.mimetype.startsWith('image/'));
+            if (!areAllImages) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Please upload valid image files.',
+                });
             }
 
             // Update product information with both existing and new images
@@ -280,56 +292,57 @@ const editProduct = async (req, res) => {
                 }
             );
 
-        // Create a temporary directory for resized images
-        const tempDir = path.join(__dirname, "temp");
-        await fs.mkdir(tempDir, { recursive: true });
+            // Create a temporary directory for resized images
+            const tempDir = path.join(__dirname, "temp");
+            await fs.mkdir(tempDir, { recursive: true });
 
-        // Resize and crop the uploaded images to 277x277
-        await Promise.all(fileNames.map(async (filename) => {
-            const inputImagePath = `./public/productImages/${filename}`;
-            const outputImagePath = path.join(tempDir, filename);
+            // Resize and crop the uploaded images to 277x277
+            await Promise.all(fileNames.map(async (filename) => {
+                const inputImagePath = `./public/productImages/${filename}`;
+                const outputImagePath = path.join(tempDir, filename);
 
-            await sharp(inputImagePath)
-                .resize({ width: 277, height: 277, fit: 'cover' })
-                .toFile(outputImagePath);
-        }));
+                await sharp(inputImagePath)
+                    .resize({ width: 277, height: 277, fit: 'cover' })
+                    .toFile(outputImagePath);
+            }));
 
-        // Move the resized images back to the original directory
-        await Promise.all(fileNames.map(async (filename) => {
-            const tempImagePath = path.join(tempDir, filename);
-            const finalImagePath = `./public/productImages/${filename}`;
+            // Move the resized images back to the original directory
+            await Promise.all(fileNames.map(async (filename) => {
+                const tempImagePath = path.join(tempDir, filename);
+                const finalImagePath = `./public/productImages/${filename}`;
 
-            await fs.rename(tempImagePath, finalImagePath);
-        }));
+                await fs.rename(tempImagePath, finalImagePath);
+            }));
 
-        // Remove the temporary directory
-        await fs.rmdir(tempDir, { recursive: true });
+            // Remove the temporary directory
+            await fs.rmdir(tempDir, { recursive: true });
 
-        console.log("Success");
-        res.redirect('/admin/products');
-    } else {
-        // Update product information without changing images
-        await Product.findByIdAndUpdate(
-            { _id: product_id },
-            {
-                title,
-                category,
-                brand,
-                model,
-                regular_price,
-                sales_price,
-                quantity,
-                description,
-            }
-        );
-        console.log('Success');
-        res.redirect('/admin/products');
+            console.log("Success");
+            res.json({ success: true, message: 'Product updated successfully' });
+        } else {
+            // Update product information without changing images
+            await Product.findByIdAndUpdate(
+                { _id: product_id },
+                {
+                    title,
+                    category,
+                    brand,
+                    model,
+                    regular_price,
+                    sales_price,
+                    quantity,
+                    description,
+                }
+            );
+            console.log('Success');
+            res.json({ success: true, message: 'Product updated successfully' });
+        }
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({ success: false, message: 'Internal server error' });
     }
-} catch (error) {
-    console.log(error.message);
-    res.redirect('/admin/products'); // Redirect in case of an error
-}
 };
+
 
 
 

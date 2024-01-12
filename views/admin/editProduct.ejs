@@ -25,9 +25,7 @@
                                                   <div class="card-header-2">
                                                       <h5>Edit Product</h5>
                                                   </div>
-                                                  <form class="theme-form theme-form-2 mega-form"
-                                                      action=""
-                                                      enctype="multipart/form-data" role="form" method="post">
+                                                  <form id="editProductForm" class="theme-form theme-form-2 mega-form" role="form">
                                                       <div class="mb-4 row align-items-center">
                                                           <label class="form-label-title col-sm-3 mb-0">Product
                                                               Name</label>
@@ -138,12 +136,18 @@
                                                       </div>
 
                                                       <div class="col-xxl-4">
-                                                          <button type="submit"
-                                                              class="btn text-white theme-bg-color">Update
-                                                              Product</button>
+                                                        <button type="button" onclick="submitForm('<%= product._id %>')" class="btn text-white theme-bg-color">Update Product</button>
+
                                                       </div>
                                                   </form>
                                               </div>
+                                              <% if (errorMessage) { %>
+                                                <div class="alert alert-danger" role="alert" id="errorMessage">
+                                                <%= errorMessage %>
+                                                </div>
+                                            <% } %>
+                                            <div class="alert alert-danger" role="alert" id="errorMessage"></div>
+
                                           </div>
                                       </div>
                                   </div>
@@ -348,6 +352,38 @@ newImagesInput.addEventListener("change", function () {
   <script src="/assetsb/js/script.js"></script>
 
   
+
+
+
+  <script>
+    function submitForm(product_id) {
+        const form = document.getElementById('editProductForm');
+        const formData = new FormData(form);
+
+        fetch('/admin/editProduct/' + product_id, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Handle success, e.g., redirect to a new page
+                window.location.href = '/admin/products';
+            } else {
+                // Display error message
+                const errorMessageElement = document.getElementById('errorMessage');
+                errorMessageElement.innerHTML = data.message;
+            }
+        })
+        .catch(error => {
+            // Handle error, e.g., display a generic error message
+            const errorMessageElement = document.getElementById('errorMessage');
+            errorMessageElement.innerHTML = 'An error occurred while processing your request.';
+            console.error('Error:', error.message);
+        });
+    }
+</script>
+
 
 <!-- Include this script at the end of your HTML body or in a separate script file -->
 <!-- Include this script at the end of your HTML body or in a separate script file -->
