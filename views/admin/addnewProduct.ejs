@@ -1,383 +1,447 @@
 <body>
-  <!-- tap on top start -->
-  <div class="tap-top">
-      <span class="lnr lnr-chevron-up"></span>
-  </div>
-  <!-- tap on tap end -->
-
-  <!-- page-wrapper start -->
-  <div class="page-wrapper compact-wrapper" id="pageWrapper">
-      <%- include('../partials/adminHeader') %>
-          <!-- Page Body start -->
-          <div class="page-body-wrapper">
-            <%- include('../partials/adminSidebar') %>
-
-
-                  <div class="page-body">
-
-                      <!-- New Product Add Start -->
-                      <div class="container-fluid">
-                          <div class="row">
-                              <div class="col-12">
-                                  <div class="row">
-                                      <div class="col-sm-8 m-auto">
-                                          <div class="card">
-                                              <div class="card-body">
-                                                  <div class="card-header-2">
-                                                      <h5>Product Information</h5>
-                                                  </div>
-                                                  <form class="theme-form theme-form-2 mega-form" action="" enctype="multipart/form-data" role="form" method="post">
-                                                      <div class="mb-4 row align-items-center">
-                                                          <label class="form-label-title col-sm-3 mb-0">Product
-                                                              Name</label>
-                                                          <div class="col-sm-9">
-                                                              <input  name="title" class="form-control"
-                                                                  type="text" placeholder="Product Name">
-                                                          </div>
-                                                      </div>
-
-                                                      <div class="mb-4 row align-items-center">
-                                                          <label
-                                                              class="col-sm-3 col-form-label form-label-title">Category</label>
-                                                          <div class="col-sm-9">
-                                                              <select  name="category"
-                                                                  class="js-example-basic-single w-100" name="state">
-                                                                  <option disabled selected>Select category</option>
-                                                                  <% allCategories.forEach(category=> { %>
-                                                                      <option >
-                                                                          <%= category.name%>
-                                                                      </option>
-                                                                      <% }) %>
-                                                              </select>
-                                                          </div>
-                                                      </div>
-
-                                                      
-                                                      <div class="mb-4 row align-items-center">
-                                                          <label
-                                                              class="col-sm-3 col-form-label form-label-title">Brand</label>
-                                                          <div class="col-sm-9">
-                                                              <input  name="brand" class="form-control"
-                                                                  type="text" placeholder="Brand name">
-                                                          </div>
-                                                      </div>
-
-                                                       <div class="mb-4 row align-items-center">
-                                                          <label
-                                                              class="col-sm-3 col-form-label form-label-title">Model</label>
-                                                          <div class="col-sm-9">
-                                                              <input  name="model" class="form-control"
-                                                                  type="text" placeholder="Model name">
-                                                          </div>
-                                                      </div>
-
-
-                                                      <div class="mb-4 row align-items-center">
-                                                          <label class="form-label-title col-sm-3 mb-0">Regular Price</label>
-                                                          <div class="col-sm-9">
-                                                              <input  name="regular_price" class="form-control"
-                                                                  type="text" placeholder="Enter regular price">
-                                                          </div>
-                                                      </div>
-
-                                                      
-                                                      <div class="mb-4 row align-items-center">
-                                                          <label class="form-label-title col-sm-3 mb-0">Sales Price</label>
-                                                          <div class="col-sm-9">
-                                                              <input  name="sales_price" class="form-control"
-                                                                  type="text" placeholder="Enter sales price">
-                                                          </div>
-                                                      </div>
-
-                                                      <div class="mb-4 row align-items-center">
-                                                          <label class="form-label-title col-sm-3 mb-0">Quantity</label>
-                                                          <div class="col-sm-9">
-                                                              <input  name="quantity" class="form-control"
-                                                                  type="text" placeholder="Quantity of products">
-                                                          </div>
-                                                      </div>
-
-                                                      <div class="mb-4 row align-items-center">
-                                                          <label
-                                                              class="form-label-title col-sm-3 mb-0">Description</label>
-                                                          <div class="col-sm-9">
-                                                              <textarea class="form-control" rows="4"
-                                                                  name="description"
-                                                                  placeholder="Type here"></textarea>
-                                                          </div>
-                                                      </div>
-
-                                                      <div class="mb-4 row align-items-center">
-                                                        <label class="col-sm-3 col-form-label form-label-title">Images</label>
-                                                        <div class="col-sm-9">
-                                                            <input type="file" id="files" name="image" accept="image/*" multiple />
-                                                            <div class="image-preview"></div>
-                                                        </div>
+    <!-- tap on top start -->
+    <div class="tap-top">
+        <span class="lnr lnr-chevron-up"></span>
+    </div>
+    <!-- tap on tap end -->
+  
+    <!-- page-wrapper start -->
+    <div class="page-wrapper compact-wrapper" id="pageWrapper">
+        <%- include('../partials/adminHeader') %>
+            <!-- Page Body start -->
+            <div class="page-body-wrapper">
+              <%- include('../partials/adminSidebar') %>
+  
+  
+                    <div class="page-body">
+  
+                        <!-- New Product Add Start -->
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="row">
+                                        <div class="col-sm-8 m-auto">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <div class="card-header-2">
+                                                        <h5>Product Information</h5>
                                                     </div>
-
-                                                      <div class="col-xxl-4">
-                                                          <button type="submit"
-                                                              class="btn text-white theme-bg-color">Add
-                                                              Product</button>
+                                                    <form class="theme-form theme-form-2 mega-form" action="" enctype="multipart/form-data" role="form" method="post">
+                                                        <div class="mb-4 row align-items-center">
+                                                            <label class="form-label-title col-sm-3 mb-0">Product
+                                                                Name</label>
+                                                            <div class="col-sm-9">
+                                                                <input  name="title" class="form-control"
+                                                                    type="text" placeholder="Product Name">
+                                                            </div>
+                                                        </div>
+  
+                                                        <div class="mb-4 row align-items-center">
+                                                            <label
+                                                                class="col-sm-3 col-form-label form-label-title">Category</label>
+                                                            <div class="col-sm-9">
+                                                                <select  name="category"
+                                                                    class="js-example-basic-single w-100" name="state">
+                                                                    <option disabled selected>Select category</option>
+                                                                    <% allCategories.forEach(category=> { %>
+                                                                        <option >
+                                                                            <%= category.name%>
+                                                                        </option>
+                                                                        <% }) %>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+  
+                                                        
+                                                        <div class="mb-4 row align-items-center">
+                                                            <label
+                                                                class="col-sm-3 col-form-label form-label-title">Brand</label>
+                                                            <div class="col-sm-9">
+                                                                <input  name="brand" class="form-control"
+                                                                    type="text" placeholder="Brand name">
+                                                            </div>
+                                                        </div>
+  
+                                                         <div class="mb-4 row align-items-center">
+                                                            <label
+                                                                class="col-sm-3 col-form-label form-label-title">Model</label>
+                                                            <div class="col-sm-9">
+                                                                <input  name="model" class="form-control"
+                                                                    type="text" placeholder="Model name">
+                                                            </div>
+                                                        </div>
+  
+  
+                                                        <div class="mb-4 row align-items-center">
+                                                            <label class="form-label-title col-sm-3 mb-0">Regular Price</label>
+                                                            <div class="col-sm-9">
+                                                                <input  name="regular_price" class="form-control"
+                                                                    type="text" placeholder="Enter regular price">
+                                                            </div>
+                                                        </div>
+  
+                                                        
+                                                        <div class="mb-4 row align-items-center">
+                                                            <label class="form-label-title col-sm-3 mb-0">Sales Price</label>
+                                                            <div class="col-sm-9">
+                                                                <input  name="sales_price" class="form-control"
+                                                                    type="text" placeholder="Enter sales price">
+                                                            </div>
+                                                        </div>
+  
+                                                        <div class="mb-4 row align-items-center">
+                                                            <label class="form-label-title col-sm-3 mb-0">Quantity</label>
+                                                            <div class="col-sm-9">
+                                                                <input  name="quantity" class="form-control"
+                                                                    type="text" placeholder="Quantity of products">
+                                                            </div>
+                                                        </div>
+  
+                                                        <div class="mb-4 row align-items-center">
+                                                            <label
+                                                                class="form-label-title col-sm-3 mb-0">Description</label>
+                                                            <div class="col-sm-9">
+                                                                <textarea class="form-control" rows="4"
+                                                                    name="description"
+                                                                    placeholder="Type here"></textarea>
+                                                            </div>
+                                                        </div>
+  
+                                                        <div class="mb-4 row align-items-center">
+                                                          <label class="col-sm-3 col-form-label form-label-title">Images</label>
+                                                          <div class="col-sm-9">
+                                                              <input type="file" id="files" name="image" accept="image/*" multiple />
+                                                              <div class="image-preview"></div>
+                                                          </div>
                                                       </div>
-
-                                                  </form>
-                                              </div>
-                                              <% if (errorMessage) { %>
-                                                <div class="alert alert-danger" role="alert">
-                                                    <%= errorMessage %>
+  
+                                                        <div class="col-xxl-4">
+                                                            <button type="submit"
+                                                                class="btn text-white theme-bg-color">Add
+                                                                Product</button>
+                                                        </div>
+  
+                                                    </form>
                                                 </div>
-                                            <% } %>
-                                          </div>
-                                      </div>
-                                  </div>
-                              </div>
-                          </div>
-                      </div>
-                      <!-- New Product Add End -->
-
-                  </div>
-                  <!-- Container-fluid End -->
-          </div>
-          <!-- Page Body End -->
-  </div>
-  <!-- page-wrapper End -->
-
-  <!-- Modal Start -->
-  <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-      aria-labelledby="staticBackdropLabel" aria-hidden="true">
-      <div class="modal-dialog  modal-dialog-centered">
-          <div class="modal-content">
-              <div class="modal-body">
-                  <h5 class="modal-title" id="staticBackdropLabel">Logging Out</h5>
-                  <p>Are you sure you want to log out?</p>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-
-                  <div class="button-box">
-                      <button type="button" class="btn btn--no" data-bs-dismiss="modal">No</button>
-                      <button type="button" class="btn  btn--yes btn-primary">Yes</button>
-                  </div>
-              </div>
-          </div>
-      </div>
-  </div>
-  <!-- Modal End -->
-  <script src="/assetsb/js/jquery-3.6.0.min.js"></script>
-  <script src="/assetsb/js/bootstrap/bootstrap.bundle.min.js"></script>
-  <script src="/assetsb/js/icons/feather-icon/feather.min.js"></script>
-  <script src="/assetsb/js/icons/feather-icon/feather-icon.js"></script>
-  <!-- scrollbar simplebar js -->
-  <script src="/assetsb/js/scrollbar/simplebar.js"></script>
-  <script src="/assetsb/js/scrollbar/custom.js"></script>
-  <!-- Sidebar js -->
-  <script src="/assetsb/js/config.js"></script>        
-  <!-- bootstrap tag-input js -->
-  <script src="/assetsb/js/bootstrap-tagsinput.min.js"></script>
-  <script src="/assetsb/js/sidebar-menu.js"></script>        
-  <!-- customizer js -->
-  <script src="/assetsb/js/customizer.js"></script>
-
-  <!--Dropzon js -->
-  <script src="/assetsb/js/dropzone/dropzone.js"></script>
-  <script src="/assetsb/js/dropzone/dropzone-script.js"></script>        
-  <!-- Plugins js -->
-  <script src="/assetsb/js/notify/bootstrap-notify.min.js"></script>
-  <script src="/assetsb/js/notify/index.js"></script>        
-  <!-- ck editor js -->
-  <script src="/assetsb/js/ckeditor.js"></script>
-  <script src="/assetsb/js/ckeditor-custom.js"></script>        
-  <!-- select2 js -->
-  <script src="/assetsb/js/select2.min.js"></script>
-  <!-- <script src="/assetsb/js/select2-custom.js"></script> -->
-
-  <!-- sidebar effect -->
-  <script src="/assetsb/js/sidebareffect.js"></script>        
-  <!-- Theme js -->
-  <script src="/assetsb/js/script.js"></script>
-
-  <link src="path/to/croppr.css" rel="stylesheet"/>
-  <script src="path/to/croppr.js"></script>
-
-
-
-
-
-
-</body>
-<style>
-  input[type="file"] {
-display: block;
-}
-.imageThumb {
-max-height: 75px;
-border: 2px solid;
-padding: 1px;
-cursor: pointer;
-}
-.pip {
-display: inline-block;
-margin: 10px 10px 0 0;
-}
-
-
-</style>
+                                                <% if (errorMessage) { %>
+                                                  <div class="alert alert-danger" role="alert">
+                                                      <%= errorMessage %>
+                                                  </div>
+                                              <% } %>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- New Product Add End -->
+  
+                    </div>
+                    <!-- Container-fluid End -->
+            </div>
+            <!-- Page Body End -->
+    </div>
+    <!-- page-wrapper End -->
+  
+    <!-- Modal Start -->
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog  modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <h5 class="modal-title" id="staticBackdropLabel">Logging Out</h5>
+                    <p>Are you sure you want to log out?</p>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  
+                    <div class="button-box">
+                        <button type="button" class="btn btn--no" data-bs-dismiss="modal">No</button>
+                        <button type="button" class="btn  btn--yes btn-primary">Yes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal End -->
+    <script src="/assetsb/js/jquery-3.6.0.min.js"></script>
+    <script src="/assetsb/js/bootstrap/bootstrap.bundle.min.js"></script>
+    <script src="/assetsb/js/icons/feather-icon/feather.min.js"></script>
+    <script src="/assetsb/js/icons/feather-icon/feather-icon.js"></script>
+    <!-- scrollbar simplebar js -->
+    <script src="/assetsb/js/scrollbar/simplebar.js"></script>
+    <script src="/assetsb/js/scrollbar/custom.js"></script>
+    <!-- Sidebar js -->
+    <script src="/assetsb/js/config.js"></script>        
+    <!-- bootstrap tag-input js -->
+    <script src="/assetsb/js/bootstrap-tagsinput.min.js"></script>
+    <script src="/assetsb/js/sidebar-menu.js"></script>        
+    <!-- customizer js -->
+    <script src="/assetsb/js/customizer.js"></script>
+  
+    <!--Dropzon js -->
+    <script src="/assetsb/js/dropzone/dropzone.js"></script>
+    <script src="/assetsb/js/dropzone/dropzone-script.js"></script>        
+    <!-- Plugins js -->
+    <script src="/assetsb/js/notify/bootstrap-notify.min.js"></script>
+    <script src="/assetsb/js/notify/index.js"></script>        
+    <!-- ck editor js -->
+    <script src="/assetsb/js/ckeditor.js"></script>
+    <script src="/assetsb/js/ckeditor-custom.js"></script>        
+    <!-- select2 js -->
+    <script src="/assetsb/js/select2.min.js"></script>
+    <!-- <script src="/assetsb/js/select2-custom.js"></script> -->
+  
+    <!-- sidebar effect -->
+    <script src="/assetsb/js/sidebareffect.js"></script>        
+    <!-- Theme js -->
+    <script src="/assetsb/js/script.js"></script>
+  
+    <link src="path/to/croppr.css" rel="stylesheet"/>
+    <script src="path/to/croppr.js"></script>
+  
+  
+  
+  
+  
+  
+  </body>
+  <style>
+    input[type="file"] {
+  display: block;
+  }
+  .imageThumb {
+  max-height: 75px;
+  border: 2px solid;
+  padding: 1px;
+  cursor: pointer;
+  }
+  .pip {
+  display: inline-block;
+  margin: 10px 10px 0 0;
+  }
+  
+  
+  </style>
 <script>
     $(document).ready(function() {
-      if (window.File && window.FileList && window.FileReader) {
-        $("#files").on("change", function(e) {
-          var files = e.target.files,
-            filesLength = files.length;
-  
-          // Clear existing preview images
-          $(".pip").remove();
-  
-          for (var i = 0; i < Math.min(filesLength, 4); i++) {
-            var f = files[i];
-            var fileReader = new FileReader();
-            fileReader.onload = (function(e) {
-              var file = e.target;
-              $("<span class=\"pip\">" +
-                "<img class=\"imageThumb\" src=\"" + e.target.result + "\" title=\"" + file.name + "\"/>" +
-                "<br/><span class=\"remove\" onclick=\"removeImage(this)\">Remove</span>" +
-                "</span>").insertAfter("#files");
+        if (window.File && window.FileList && window.FileReader) {
+            $("#files").on("change", function(e) {
+                var files = e.target.files,
+                    filesLength = files.length;
+
+                // Clear existing preview images
+                $(".pip").remove();
+
+                for (var i = 0; i < filesLength; i++) {
+                    var f = files[i];
+                    var fileReader = new FileReader();
+                    fileReader.onload = (function(e) {
+                        var file = e.target;
+                        $("<span class=\"pip\">" +
+                            "<img class=\"imageThumb\" src=\"" + e.target.result + "\" title=\"" + file.name + "\"/>" +
+                            "<br/><span class=\"remove\" onclick=\"removeImage(this)\">Remove</span>" +
+                            "</span>").insertAfter("#files");
+                    });
+
+                    fileReader.readAsDataURL(f);
+                }
             });
-  
-            fileReader.readAsDataURL(f);
-          }
-        });
-      } else {
-        alert("Your browser doesn't support the File API");
-      }
+        } else {
+            alert("Your browser doesn't support the File API");
+        }
     });
-  
+
     function removeImage(element) {
-      $(element).parent(".pip").remove();
-      $("#files").val(""); // Clear the file input to allow selecting the same file again
+        var pipElement = $(element).parent(".pip");
+
+        // Get the index of the removed image in the file input
+        var index = pipElement.index();
+
+        // Remove the corresponding file from the input's files array
+        var filesInput = $("#files")[0];
+        if (filesInput && filesInput.files.length > index) {
+            var filesArray = Array.from(filesInput.files);
+            filesArray.splice(index, 1);
+
+            // Create a new DataTransfer object and populate it with the remaining files
+            var newFilesInput = new DataTransfer();
+            filesArray.forEach(function (file) {
+                newFilesInput.items.add(file);
+            });
+
+            // Update the file input with the new files
+            filesInput.files = newFilesInput.files;
+
+            // Remove the image preview
+            pipElement.remove();
+
+            // Check if it's the last image and clear the file input if needed
+            if (filesArray.length === 0) {
+                $("#files").val(""); // Clear the file input
+            }
+        }
     }
+</script>
+
+
+  
+  
+    
+  
+  <script>
+      document.addEventListener('DOMContentLoaded', function () {
+          const form = document.querySelector('.mega-form');
+  
+          form.addEventListener('submit', function (event) {
+              let isValid = true;
+  
+              // Reset previous error messages
+              const productName = form.querySelector('input[name="title"]');
+              clearError(productName);
+              if (!productName.value.trim()) {
+                  isValid = false;
+                  showError(productName, 'Product Name is required');
+              }
+  
+              // Validate Category
+              const category = form.querySelector('select[name="category"]');
+              clearError(category);
+              if (!category.value || category.value === 'Select category') {
+                  isValid = false;
+                  showError(category, 'Please select a category');
+              }
+  
+              // Validate Brand using regex (only letters and spaces allowed)
+              const brand = form.querySelector('input[name="brand"]');
+              clearError(brand);
+              if (!/^[A-Za-z\s]+$/.test(brand.value.trim())) {
+                  isValid = false;
+                  showError(brand, 'Brand should contain only letters and spaces');
+              }
+  
+              // Validate Model using regex (only letters, numbers, and spaces allowed)
+              const model = form.querySelector('input[name="model"]');
+              clearError(model);
+              if (!/^[A-Za-z0-9\s]+$/.test(model.value.trim())) {
+                  isValid = false;
+                  showError(model, 'Model should contain only letters, numbers, and spaces');
+              }
+  
+              // Validate Regular Price using regex (positive numbers only)
+              const regularPrice = form.querySelector('input[name="regular_price"]');
+              clearError(regularPrice);
+              if (!/^\d+(\.\d{1,2})?$/.test(regularPrice.value.trim()) || parseFloat(regularPrice.value.trim()) < 0) {
+                  isValid = false;
+                  showError(regularPrice, 'Regular Price should be a positive number');
+              }
+  
+              // Validate Sales Price using regex (positive numbers only)
+              const salesPrice = form.querySelector('input[name="sales_price"]');
+              clearError(salesPrice);
+              if (!/^\d+(\.\d{1,2})?$/.test(salesPrice.value.trim()) || parseFloat(salesPrice.value.trim()) < 0) {
+                  isValid = false;
+                  showError(salesPrice, 'Sales Price should be a positive number');
+              }
+  
+              // Validate Quantity using regex (positive integers only)
+              const quantity = form.querySelector('input[name="quantity"]');
+              clearError(quantity);
+              if (!/^[1-9]\d*$/.test(quantity.value.trim())) {
+                  isValid = false;
+                  showError(quantity, 'Quantity should be a positive integer');
+              }
+  
+              const description = form.querySelector('textarea[name="description"]');
+              clearError(description);
+              if (!description.value.trim()) {
+                  isValid = false;
+                  showError(description, 'Description Price is required');
+              }
+  
+              if (!isValid) {
+                  event.preventDefault(); // Prevent form submission if validation fails
+              }
+  
+              const imageInput = form.querySelector('input[name="image"]');
+              clearError(imageInput);
+  
+              // Check if any file is selected
+              if (imageInput.files.length === 0) {
+                  isValid = false;
+                  showError(imageInput, 'Please select at least one image');
+              }
+  
+              // Check if the number of selected files is more than 4
+              if (imageInput.files.length > 4) {
+                  isValid = false;
+                  showError(imageInput, 'Maximum of 4 images allowed');
+              }
+  
+              // Check if all selected files are images (supporting common image formats)
+              const supportedImageFormats = ['jpg', 'jpeg', 'png']; // Add more if needed
+              for (const file of imageInput.files) {
+                  const fileExtension = file.name.split('.').pop().toLowerCase();
+                  if (!supportedImageFormats.includes(fileExtension)) {
+                      isValid = false;
+                      showError(imageInput, 'Invalid file type. Only JPG, JPEG, PNG are supported.');
+                      break; // Exit the loop after the first unsupported file is found
+                  }
+              }
+  
+              if (!isValid) {
+                  event.preventDefault(); // Prevent form submission if validation fails
+              }
+          });
+  
+          function showError(input, message) {
+              // Add the new error message
+              const errorDiv = document.createElement('div');
+              errorDiv.className = 'error-message';
+              errorDiv.textContent = message;
+              errorDiv.style.color = 'red'; // Set the text color to red
+  
+              const parentDiv = input.parentElement;
+              parentDiv.appendChild(errorDiv);
+          }
+  
+          function clearError(input) {
+              // Remove previous error messages for the input
+              const parentDiv = input.parentElement;
+              const existingErrorMessages = parentDiv.querySelectorAll('.error-message');
+              existingErrorMessages.forEach(errorMessage => errorMessage.remove());
+          }
+      });
   </script>
   
 
+<!-- Add the following script to handle form submission using Fetch API -->
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const form = document.querySelector('.mega-form');
 
         form.addEventListener('submit', function (event) {
-            let isValid = true;
+            event.preventDefault();
 
-            // Reset previous error messages
-            const productName = form.querySelector('input[name="title"]');
-            clearError(productName);
-            if (!productName.value.trim()) {
-                isValid = false;
-                showError(productName, 'Product Name is required');
-            }
+            const formData = new FormData(form);
 
-            // Validate Category
-            const category = form.querySelector('select[name="category"]');
-            clearError(category);
-            if (!category.value || category.value === 'Select category') {
-                isValid = false;
-                showError(category, 'Please select a category');
-            }
-
-            // Validate Brand using regex (only letters and spaces allowed)
-            const brand = form.querySelector('input[name="brand"]');
-            clearError(brand);
-            if (!/^[A-Za-z\s]+$/.test(brand.value.trim())) {
-                isValid = false;
-                showError(brand, 'Brand should contain only letters and spaces');
-            }
-
-            // Validate Model using regex (only letters, numbers, and spaces allowed)
-            const model = form.querySelector('input[name="model"]');
-            clearError(model);
-            if (!/^[A-Za-z0-9\s]+$/.test(model.value.trim())) {
-                isValid = false;
-                showError(model, 'Model should contain only letters, numbers, and spaces');
-            }
-
-            // Validate Regular Price using regex (positive numbers only)
-            const regularPrice = form.querySelector('input[name="regular_price"]');
-            clearError(regularPrice);
-            if (!/^\d+(\.\d{1,2})?$/.test(regularPrice.value.trim()) || parseFloat(regularPrice.value.trim()) < 0) {
-                isValid = false;
-                showError(regularPrice, 'Regular Price should be a positive number');
-            }
-
-            // Validate Sales Price using regex (positive numbers only)
-            const salesPrice = form.querySelector('input[name="sales_price"]');
-            clearError(salesPrice);
-            if (!/^\d+(\.\d{1,2})?$/.test(salesPrice.value.trim()) || parseFloat(salesPrice.value.trim()) < 0) {
-                isValid = false;
-                showError(salesPrice, 'Sales Price should be a positive number');
-            }
-
-            // Validate Quantity using regex (positive integers only)
-            const quantity = form.querySelector('input[name="quantity"]');
-            clearError(quantity);
-            if (!/^[1-9]\d*$/.test(quantity.value.trim())) {
-                isValid = false;
-                showError(quantity, 'Quantity should be a positive integer');
-            }
-
-            const description = form.querySelector('textarea[name="description"]');
-            clearError(description);
-            if (!description.value.trim()) {
-                isValid = false;
-                showError(description, 'Description Price is required');
-            }
-
-            if (!isValid) {
-                event.preventDefault(); // Prevent form submission if validation fails
-            }
-
-            const imageInput = form.querySelector('input[name="image"]');
-            clearError(imageInput);
-
-            // Check if any file is selected
-            if (imageInput.files.length === 0) {
-                isValid = false;
-                showError(imageInput, 'Please select at least one image');
-            }
-
-            // Check if the number of selected files is more than 4
-            if (imageInput.files.length > 4) {
-                isValid = false;
-                showError(imageInput, 'Maximum of 4 images allowed');
-            }
-
-            // Check if all selected files are images (supporting common image formats)
-            const supportedImageFormats = ['jpg', 'jpeg', 'png']; // Add more if needed
-            for (const file of imageInput.files) {
-                const fileExtension = file.name.split('.').pop().toLowerCase();
-                if (!supportedImageFormats.includes(fileExtension)) {
-                    isValid = false;
-                    showError(imageInput, 'Invalid file type. Only JPG, JPEG, PNG are supported.');
-                    break; // Exit the loop after the first unsupported file is found
+            fetch('/admin/addnewProduct', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
                 }
-            }
-
-            if (!isValid) {
-                event.preventDefault(); // Prevent form submission if validation fails
-            }
+                return response.json();
+            })
+            .then(data => {
+                // Handle success, e.g., redirect to a success page or display a success message
+                console.log('Product added successfully:', data);
+                window.location.href = '/admin/products';
+            })
+            .catch(error => {
+                // Handle error, e.g., display an error message
+                console.error('Error adding product:', error.message);
+            });
         });
-
-        function showError(input, message) {
-            // Add the new error message
-            const errorDiv = document.createElement('div');
-            errorDiv.className = 'error-message';
-            errorDiv.textContent = message;
-            errorDiv.style.color = 'red'; // Set the text color to red
-
-            const parentDiv = input.parentElement;
-            parentDiv.appendChild(errorDiv);
-        }
-
-        function clearError(input) {
-            // Remove previous error messages for the input
-            const parentDiv = input.parentElement;
-            const existingErrorMessages = parentDiv.querySelectorAll('.error-message');
-            existingErrorMessages.forEach(errorMessage => errorMessage.remove());
-        }
     });
 </script>

@@ -109,11 +109,17 @@ const addProduct = async (req, res) => {
         const { title, category, brand, model, regular_price, sales_price, quantity, description } = req.body;
         const category_id = await Category.findOne({ name: category }, {});
         const fileNames = req.files.map(file => file.filename);
-        const allCategories = await Category.find({})
+        const allCategories = await Category.find({});
 
         // Check if the uploaded files are images (only supporting common image formats)
         const supportedImageFormats = ['jpg', 'jpeg', 'png']; // Add more if needed
 
+        if(fileNames.length>=4 || fileNames.length === 0){
+            return res.status(400).json({
+                success: false,
+                message: 'Please insert four images.'
+            });           
+        }
         const areImages = fileNames.every((filename) => {
             const fileExtension = filename.split('.').pop().toLowerCase();
             return supportedImageFormats.includes(fileExtension);
@@ -121,12 +127,11 @@ const addProduct = async (req, res) => {
 
         if (!areImages) {
             // Log an error and handle accordingly
-            console.log('Error: Unsupported file format. Only JPG, JPEG, PNG  are supported.');
-            // return res.status(400).send('Error: Unsupported file format. Only JPG, JPEG, PNG, and GIF are supported.');
-            res.render('addnewProduct', {allCategories, 
-                errorMessage: 'Invalid file type. Only JPEG or PNG images are allowed.'
+            console.error('Error: Unsupported file format. Only JPG, JPEG, PNG are supported.');
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid file type. Only JPEG or PNG images are allowed.'
             });
-
         }
 
         const product = await Product.create({
@@ -169,11 +174,19 @@ const addProduct = async (req, res) => {
         await fs.rmdir(tempDir, { recursive: true });
 
         console.log("Success");
-        res.redirect('/admin/products');
+        res.status(200).json({
+            success: true,
+            message: 'Product added successfully',
+            product: { /* Include relevant product details if needed */ }
+        });
     } catch (error) {
-        console.log(error.message);
-        // Handle other errors or send an appropriate response
-        res.status(500).send('Internal Server Error');
+        console.error(error.message);
+        // Handle other errors or send an appropriate JSON response
+        res.status(500).json({
+            success: false,
+            error: 'Internal Server Error',
+            message: 'An error occurred while adding the product.'
+        });
     }
 };
 

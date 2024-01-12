@@ -1,238 +1,149 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-
-
-<!-- Mirrored from themes.pixelstrap.com/fastkart/back-end/order-detail.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 04 Sep 2023 05:49:47 GMT -->
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta http-equiv=
-    "X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description"
-        content="Fastkart admin is super flexible, powerful, clean &amp; modern responsive bootstrap 5 admin template with unlimited possibilities.">
-    <meta name="keywords"
-        content="admin template, Fastkart admin template, dashboard template, flat admin template, responsive admin template, web app">
-    <meta name="author" content="pixelstrap">
-    <link rel="icon" href="/assetsb/images/favicon.png" type="image/x-icon">
-    <link rel="shortcut icon" href="/assetsb/images/favicon.png" type="image/x-icon">
-    <title>Fastkart - Order Details</title>
-
-    <!-- Google font-->
-    <link
-        href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap"
-        rel="stylesheet">
-
-    <!-- Fontawesome css -->
-    <link rel="stylesheet" type="text/css" href="/assetsb/css/vendors/font-awesome.css">
-
-    <!-- Linear Icon css -->
-    <link rel="stylesheet" href="/assetsb/css/linearicon.css">
-
-    <!-- Themify icon css -->
-    <link rel="stylesheet" type="text/css" href="/assetsb/css/vendors/themify.css">
-
-    <!-- Feather icon css -->
-    <link rel="stylesheet" type="text/css" href="/assetsb/css/vendors/feather-icon.css">
-
-    <!-- remixicon css -->
-    <link rel="stylesheet" type="text/css" href="/assetsb/css/remixicon.css">
-
-    <!-- Plugins css -->
-    <link rel="stylesheet" type="text/css" href="/assetsb/css/vendors/scrollbar.css">
-    <link rel="stylesheet" type="text/css" href="/assetsb/css/vendors/animate.css">
-
-    <!-- Bootstrap css -->
-    <link rel="stylesheet" type="text/css" href="/assetsb/css/vendors/bootstrap.css">
-
-    <!-- App css -->
-    <link rel="stylesheet" type="text/css" href="/assetsb/css/style.css">
-</head>
-<%- include('../partials/styleh') %>
-<%- include('../partials/header') %>
 <body>
     <!-- tap on top start -->
- 
-         
-
-            <!-- tracking section start -->
-            <div class="page-body">
-                <!-- tracking table start -->
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <div class="card">
-                                <div class="card-body">
-                                    <div class="title-header title-header-block package-card">
-                                        
-                                        <div>
-                                            <h5><%=orderDetails._id%></h5>
-                                        </div>
-                                        <div class="card-order-section">
-                                            <ul>
-                                                <li><%=orderDetails.createdAt%></li>
-                                                <li>items</li>
-                                                <li>₹<%=orderDetails.grandTotal%></li>
-                                            </ul>
-                                        </div>
-                                  
-                                    </div>
-                                    <div class="bg-inner cart-section order-details-table">
-                                        <div class="row g-4">
-                                            <div class="col-xl-8">
-                                                <div class="table-responsive table-details">
-                                                    <table class="table cart-table table-borderless">
-                                                        <thead>
-
-                                                            <tr>
-                                                                <th colspan="2" style="background-color: #a44e0d;">Items</th>
-                                                                <th class="text-end" colspan="2">
-                                                                   
-                                                                </th>
-                                                            </tr>
-                                                        </thead>
-
-                                                        <tbody>
-                                                            <% orderDetails.products.map((items) => { %> 
-                                                            <tr class="table-order">
-                                                                <td>
-                                                                    <a href="javascript:void(0)">
-                                                                        <img src="/productImages/<%=items.product.images[0]%>"
-                                                                            class="img-fluid blur-up lazyload"
-                                                                            alt="">
-                                                                    </a>
-                                                                </td>
-                                                                <td>
-                                                                    <p><%=items.product.name%></p>
-                                                                    <!-- <h5>Outwear & Coats</h5> -->
-                                                                </td>
-                                                                <td>
-                                                                    <p>Quantity</p>
-                                                                    <h5><%=items.quantity%></h5>
-                                                                </td>
-                                                                <td>
-                                                                    <p>Price</p>
-                                                                    <h5>₹<%=items.total%></h5>
-                                                                </td>
-                                                            </tr>
-                                                     <%   }) %>
-                                                           
-                                                        </tbody>
-
-                                                        <tfoot>
-                                                            <tr class="table-order">
-                                                                <td colspan="3">
-                                                                    <h5>Subtotal :</h5>
-                                                                </td>
-                                                                <td>
-                                                                    <h4><%=orderDetails.grandTotal%></h4>
-                                                                </td>
-                                                            </tr>
-
-                                                            <tr class="table-order">
-                                                                <td colspan="3">
-                                                                    <h5>Shipping :</h5>
-                                                                </td>
-                                                                <td>
-                                                                    <h4>Free Shipping</h4>
-                                                                </td>
-                                                            </tr>
-
-                                                            <tr class="table-order">
-                                                                <td colspan="3">
-                                                                    <h4 class="theme-color fw-bold">Total Price
-                                                                        :</h4>
-                                                                </td>
-                                                                <td>
-                                                                    <h4 class="theme-color fw-bold"><%=orderDetails.grandTotal%>
-                                                                    </h4>
-                                                                </td>
-                                                            </tr>
-                                                        </tfoot>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                            
-
-                                            <div class="col-xl-4">
-                                                <div class="order-success">
-                                                    <div class="row g-4">
-
-
-                                                        
-
-
-                                                        <div class="dropdown" id="statusDropdown">
-                                                            <button  class="btn btn-secondary dropdown-toggle" id="statusDropdownBtn" type="button" data-bs-toggle="dropdown"  aria-expanded="false" style="background-color: #0da487 !important;" >
-                                                              Select Status
-                                                            </button>
-                                                            <ul class="dropdown-menu" aria-labelledby="statusDropdown" id="statusId">
-                                                                <li>
-                                                                    <a class="dropdown-item" href="#" data-status="Cancel Order">Cancel order</a>
-                                                                </li>
-                                                                <li>
-                                                                    <a class="dropdown-item" href="#" data-status="Delivered">Delivered</a>
-                                                                </li>                              
-                                                            </ul>
-                                                          </div>
-                                              <ul class="order-details">
-                                                <br>
-                                                    
-                                                    <li id="statusDetails"><%= orderDetails.status %></li>
-                                                    
-                                                </ul>
-                                                        <h4>summery</h4>
-                                                        <ul class="order-details">
-                                                            <li>Order ID: <%=orderDetails._id%></li>
-                                                            <li>Order Date: October 22, 2018</li>
-                                                            <li>Order Total:₹<%=orderDetails.grandTotal%></li>
-                                                        </ul>
-
-                                                        <h4>shipping address</h4>
-                                                        <ul class="order-details">
-                                                            <li><%=orderDetails.address.name%></li>
-                                                            <li><%= orderDetails.address.houseno%>, <%= orderDetails.address.street %>.</li>
-                                                            <li><%= orderDetails.address.country %>, <%= orderDetails.address.pincode %> Contact No: <%= orderDetails.address.phone %></li>
-                                                        </ul>
-
-                                                        <div class="payment-mode">
-                                                            <h4>payment method</h4>
-                                                            <p><%=orderDetails.paymentMethod%></p>
-                                                        </div>
-
-                                                        <div class="delivery-sec">
-                                                            <!-- <h3>expected date of delivery: <span>october 22,
-                                                                    2018</span>
-                                                            </h3> -->
-                                                            <a href="order-tracking.html">track order</a>
-                                                        </div>
+    <div class="tap-top">
+        <span class="lnr lnr-chevron-up"></span>
+    </div>
+    <!-- tap on tap end -->
+  
+    <!-- page-wrapper start -->
+    <div class="page-wrapper compact-wrapper" id="pageWrapper">
+        <%- include('../partials/adminHeader') %>
+            <!-- Page Body start -->
+            <div class="page-body-wrapper">
+              <%- include('../partials/adminSidebar') %>
+  
+  
+                    <div class="page-body">
+  
+                        <!-- New Product Add Start -->
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="row">
+                                        <div class="col-sm-8 m-auto">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <div class="card-header-2">
+                                                        <h5>Product Information</h5>
                                                     </div>
+                                                    <form class="theme-form theme-form-2 mega-form" action="" enctype="multipart/form-data" role="form" method="post">
+                                                        <div class="mb-4 row align-items-center">
+                                                            <label class="form-label-title col-sm-3 mb-0">Product
+                                                                Name</label>
+                                                            <div class="col-sm-9">
+                                                                <input  name="title" class="form-control"
+                                                                    type="text" placeholder="Product Name">
+                                                            </div>
+                                                        </div>
+  
+                                                        <div class="mb-4 row align-items-center">
+                                                            <label
+                                                                class="col-sm-3 col-form-label form-label-title">Category</label>
+                                                            <div class="col-sm-9">
+                                                                <select  name="category"
+                                                                    class="js-example-basic-single w-100" name="state">
+                                                                    <option disabled selected>Select category</option>
+                                                                    <% allCategories.forEach(category=> { %>
+                                                                        <option >
+                                                                            <%= category.name%>
+                                                                        </option>
+                                                                        <% }) %>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+  
+                                                        
+                                                        <div class="mb-4 row align-items-center">
+                                                            <label
+                                                                class="col-sm-3 col-form-label form-label-title">Brand</label>
+                                                            <div class="col-sm-9">
+                                                                <input  name="brand" class="form-control"
+                                                                    type="text" placeholder="Brand name">
+                                                            </div>
+                                                        </div>
+  
+                                                         <div class="mb-4 row align-items-center">
+                                                            <label
+                                                                class="col-sm-3 col-form-label form-label-title">Model</label>
+                                                            <div class="col-sm-9">
+                                                                <input  name="model" class="form-control"
+                                                                    type="text" placeholder="Model name">
+                                                            </div>
+                                                        </div>
+  
+  
+                                                        <div class="mb-4 row align-items-center">
+                                                            <label class="form-label-title col-sm-3 mb-0">Regular Price</label>
+                                                            <div class="col-sm-9">
+                                                                <input  name="regular_price" class="form-control"
+                                                                    type="text" placeholder="Enter regular price">
+                                                            </div>
+                                                        </div>
+  
+                                                        
+                                                        <div class="mb-4 row align-items-center">
+                                                            <label class="form-label-title col-sm-3 mb-0">Sales Price</label>
+                                                            <div class="col-sm-9">
+                                                                <input  name="sales_price" class="form-control"
+                                                                    type="text" placeholder="Enter sales price">
+                                                            </div>
+                                                        </div>
+  
+                                                        <div class="mb-4 row align-items-center">
+                                                            <label class="form-label-title col-sm-3 mb-0">Quantity</label>
+                                                            <div class="col-sm-9">
+                                                                <input  name="quantity" class="form-control"
+                                                                    type="text" placeholder="Quantity of products">
+                                                            </div>
+                                                        </div>
+  
+                                                        <div class="mb-4 row align-items-center">
+                                                            <label
+                                                                class="form-label-title col-sm-3 mb-0">Description</label>
+                                                            <div class="col-sm-9">
+                                                                <textarea class="form-control" rows="4"
+                                                                    name="description"
+                                                                    placeholder="Type here"></textarea>
+                                                            </div>
+                                                        </div>
+  
+                                                        <div class="mb-4 row align-items-center">
+                                                          <label class="col-sm-3 col-form-label form-label-title">Images</label>
+                                                          <div class="col-sm-9">
+                                                              <input type="file" id="files" name="image" accept="image/*" multiple />
+                                                              <div class="image-preview"></div>
+                                                          </div>
+                                                      </div>
+  
+                                                        <div class="col-xxl-4">
+                                                            <button type="submit"
+                                                                class="btn text-white theme-bg-color">Add
+                                                                Product</button>
+                                                        </div>
+  
+                                                    </form>
                                                 </div>
+                                                <% if (errorMessage) { %>
+                                                  <div class="alert alert-danger" role="alert">
+                                                      <%= errorMessage %>
+                                                  </div>
+                                              <% } %>
                                             </div>
                                         </div>
                                     </div>
-                                    <!-- section end -->
-
-                                    <a href="productsView" class="btn btn-outline-primary-2"><span>GO
-                                        SHOP</span><i class="icon-long-arrow-right"></i></a>
-                                        <a href="user" class="btn btn-outline-primary-2"><span>GO
-                                            TO DASHBOARD</span><i class="icon-long-arrow-right"></i></a>
-                                            
-                                        
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-                <!-- tracking table end -->
-               
-              
-            </div>
-            <!-- tracking section End -->
+                        <!-- New Product Add End -->
   
-    
+                    </div>
+                    <!-- Container-fluid End -->
+            </div>
+            <!-- Page Body End -->
+    </div>
     <!-- page-wrapper End -->
-
-    <!-- Modal start -->
+  
+    <!-- Modal Start -->
     <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog  modal-dialog-centered">
@@ -241,7 +152,7 @@
                     <h5 class="modal-title" id="staticBackdropLabel">Logging Out</h5>
                     <p>Are you sure you want to log out?</p>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-
+  
                     <div class="button-box">
                         <button type="button" class="btn btn--no" data-bs-dismiss="modal">No</button>
                         <button type="button" class="btn  btn--yes btn-primary">Yes</button>
@@ -249,541 +160,225 @@
                 </div>
             </div>
         </div>
-        <%-include('../partials/footer')%>
     </div>
-    <!-- Modal end -->
-   
-
-
-    <script>
-
-
-        const statusDropdwon = document.getElementById('statusDropdown');
-        const orderStatus = '<%=orderDetails.status%>';
-
-         if (orderStatus === 'Cancel Order') {
-              statusDropdwon.style.display = 'none'
-         }else{
-
-         }
-
-       
-        const dropdownItems = document.querySelectorAll('.dropdown-item');
-        
-        dropdownItems.forEach(item => {
-            item.addEventListener('click', function(event) {
-                event.preventDefault(); 
-        
-               
-                const newStatus = this.getAttribute('data-status');
-                const orderId = '<%= orderDetails._id%>'
-                console.log(orderId);
-                console.log(newStatus)
-        
-                
-                updateOrderStatus(orderId,newStatus);
-            });
-        });
-        
-        function updateOrderStatus(orderId, status) {
-            
-            const url = `/admin/ChangeOrderStatus`;
-        
-            fetch(url, {
-                method: 'POST', 
-                headers: {
-                    'Content-Type': 'application/json',
-                   
-                },
-                
-                body: JSON.stringify({ orderId, status }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                
-                const updatedStatus = status;
-                console.log(updatedStatus);
-                updateFrontendStatus(updatedStatus);
-        
-                console.log('Order status updated successfully:', updatedStatus);
-            })
-            .catch(error => {
-                console.error('Error updating order status:', error);
-            });
-        }
-        
-        function updateFrontendStatus(status) {
-            
-            const statusDetailsDiv = document.getElementById('statusDetails');
-            if (statusDetailsDiv) {
-                statusDetailsDiv.innerHTML = `<strong></strong><br>${status}`;
-            }
-           
-            console.log('Updating front-end with new status:', status);
-        }
-        
-        </script>
-
-    <!-- latest js -->
+    <!-- Modal End -->
     <script src="/assetsb/js/jquery-3.6.0.min.js"></script>
-
-    <!-- Bootstrap js -->
     <script src="/assetsb/js/bootstrap/bootstrap.bundle.min.js"></script>
-
-    <!-- feather icon js -->
     <script src="/assetsb/js/icons/feather-icon/feather.min.js"></script>
     <script src="/assetsb/js/icons/feather-icon/feather-icon.js"></script>
-
     <!-- scrollbar simplebar js -->
     <script src="/assetsb/js/scrollbar/simplebar.js"></script>
     <script src="/assetsb/js/scrollbar/custom.js"></script>
-
     <!-- Sidebar js -->
-    <script src="/assetsb/js/config.js"></script>
-
+    <script src="/assetsb/js/config.js"></script>        
+    <!-- bootstrap tag-input js -->
+    <script src="/assetsb/js/bootstrap-tagsinput.min.js"></script>
+    <script src="/assetsb/js/sidebar-menu.js"></script>        
     <!-- customizer js -->
     <script src="/assetsb/js/customizer.js"></script>
-
+  
+    <!--Dropzon js -->
+    <script src="/assetsb/js/dropzone/dropzone.js"></script>
+    <script src="/assetsb/js/dropzone/dropzone-script.js"></script>        
     <!-- Plugins js -->
-    <script src="/assetsb/js/sidebar-menu.js"></script>
     <script src="/assetsb/js/notify/bootstrap-notify.min.js"></script>
-    <script src="/assetsb/js/notify/index.js"></script>
-
+    <script src="/assetsb/js/notify/index.js"></script>        
+    <!-- ck editor js -->
+    <script src="/assetsb/js/ckeditor.js"></script>
+    <script src="/assetsb/js/ckeditor-custom.js"></script>        
+    <!-- select2 js -->
+    <script src="/assetsb/js/select2.min.js"></script>
+    <!-- <script src="/assetsb/js/select2-custom.js"></script> -->
+  
     <!-- sidebar effect -->
-    <script src="/assetsb/js/sidebareffect.js"></script>
-
+    <script src="/assetsb/js/sidebareffect.js"></script>        
     <!-- Theme js -->
     <script src="/assetsb/js/script.js"></script>
-</body>
-
-
-<!-- Mirrored from themes.pixelstrap.com/fastkart/back-end/order-detail.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 04 Sep 2023 05:49:48 GMT -->
-</html>
-
-
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const statusDropdown = document.getElementById('statusDropdown');
-        const statusDetails = document.getElementById('statusDetails');
-        const statusDropdownItems = document.querySelectorAll('#statusId .dropdown-item');
-
-        statusDropdownItems.forEach(function (item) {
-            item.addEventListener('click', function () {
-                const selectedStatus = item.getAttribute('data-status');
-                statusDetails.textContent = selectedStatus;
-                statusDropdown.setAttribute('data-status', selectedStatus);
-
-                // Enable the button and dropdown
-                statusDropdown.disabled = false;
-
-                // Call the updateOrderStatus function when a status is selected
-                const orderId = '<%= orderDetails._id%>';
-                const productId = '<%= orderDetails.products[0].product._id %>'; // Update this line with the correct way to get the product ID
-                updateOrderStatus(orderId, selectedStatus, productId);
-            });
-        });
-    });
-
-    function updateOrderStatus(orderId, status, productId) {
-        const url = `/admin/ChangeOrderStatus`;
-
-        fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ orderId, status, productId }),
-        })
-        .then(response => response.json())
-        .then(data => {
-            const updatedStatus = status;
-            updateFrontendStatus(updatedStatus);
-
-            console.log('Order status updated successfully:', updatedStatus);
-        })
-        .catch(error => {
-            console.error('Error updating order status:', error);
-        });
-    }
-
-    function updateFrontendStatus(status) {
-        const statusDetailsDiv = document.getElementById('statusDetails');
-        if (statusDetailsDiv) {
-            statusDetailsDiv.innerHTML = `<strong></strong><br>${status}`;
+  
+    <link src="path/to/croppr.css" rel="stylesheet"/>
+    <script src="path/to/croppr.js"></script>
+  
+  
+  
+  
+  
+  
+  </body>
+  <style>
+    input[type="file"] {
+  display: block;
+  }
+  .imageThumb {
+  max-height: 75px;
+  border: 2px solid;
+  padding: 1px;
+  cursor: pointer;
+  }
+  .pip {
+  display: inline-block;
+  margin: 10px 10px 0 0;
+  }
+  
+  
+  </style>
+  <script>
+      $(document).ready(function() {
+        if (window.File && window.FileList && window.FileReader) {
+          $("#files").on("change", function(e) {
+            var files = e.target.files,
+              filesLength = files.length;
+    
+            // Clear existing preview images
+            $(".pip").remove();
+    
+            for (var i = 0; i < Math.min(filesLength, 4); i++) {
+              var f = files[i];
+              var fileReader = new FileReader();
+              fileReader.onload = (function(e) {
+                var file = e.target;
+                $("<span class=\"pip\">" +
+                  "<img class=\"imageThumb\" src=\"" + e.target.result + "\" title=\"" + file.name + "\"/>" +
+                  "<br/><span class=\"remove\" onclick=\"removeImage(this)\">Remove</span>" +
+                  "</span>").insertAfter("#files");
+              });
+    
+              fileReader.readAsDataURL(f);
+            }
+          });
+        } else {
+          alert("Your browser doesn't support the File API");
         }
-
-        console.log('Updating front-end with new status:', status);
-    }
-</script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<%- include('../partials/adminHeader') %>
-<%- include('../partials/adminSidebar') %>
-
-        <body>
-            <!-- tap on top start -->
-            <div class="tap-top">
-                <i data-feather="chevrons-up"></i>
-            </div>
-            <!-- tap on tap end -->
-
-            <!-- page-wrapper Start -->
-            <div class="page-wrapper compact-wrapper" id="pageWrapper">
-
-
-                <!-- Page Body Start-->
-                <div class="page-body-wrapper">
-
-
-                    <!-- tracking section start -->
-                    <div class="page-body">
-                        <!-- tracking table start -->
-                        <div class="container-fluid">
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <div class="title-header title-header-block package-card">
-                                                
-                                                <div>
-                                                    <h5><%=orderDetails._id%></h5>
-                                                </div>
-                                                <div class="card-order-section">
-                                                    <ul>
-                                                        <li><%=orderDetails.createdAt%></li>
-                                                        <li>items</li>
-                                                        <li>₹<%=orderDetails.grandTotal%></li>
-                                                    </ul>
-                                                </div>
-                                          
-                                            </div>
-                                            <div class="bg-inner cart-section order-details-table">
-                                                <div class="row g-4">
-                                                    <div class="col-xl-8">
-                                                        <div class="table-responsive table-details">
-                                                            <table class="table cart-table table-borderless">
-
-
-                                                                <tbody>
-                                                                    <% orderDetails.products.map((items) => { %> 
-                                                                    <tr class="table-order">
-                                                                        <td>
-                                                                            <a href="javascript:void(0)">
-                                                                                <img src="/productImageS/<%=items.product.images[0]%>"
-                                                                                    class="img-fluid blur-up lazyload"
-                                                                                    alt="">
-                                                                            </a>
-                                                                        </td>
-                                                                        <td>
-                                                                            <p><%=items.product.name%></p>
-                                                                            <!-- <h5>Outwear & Coats</h5> -->
-                                                                        </td>
-                                                                        <td>
-                                                                            <p>Quantity</p>
-                                                                            <h5><%=items.quantity%></h5>
-                                                                        </td>
-                                                                        <td>
-                                                                            <p>Price</p>
-                                                                            <h5>₹<%=items.total%></h5>
-                                                                        </td>
-                                                                        <td>
-                                                                            <div class="dropdown" id="statusDropdown">
-                                                                                <button class="btn btn-secondary dropdown-toggle" id="statusDropdownBtn" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="background-color: #0da487 !important;"<% if(items.status === 'Cancelled') { %> disabled <% } %>>
-                                                                                    Select Status
-                                                                                </button>
-                                                                            <ul class="dropdown-menu" aria-labelledby="statusDropdown" id="statusId">
-                                                                                <li>
-                                                                                    <a class="dropdown-item" href="#" data-status="Pending">Pending</a>
-                                                                                </li>
-                                                                                <li>
-                                                                                    <a class="dropdown-item" href="#" data-status="Order confirmed">Order confirmed</a>
-                                                                                </li>
-                                                                                <li>
-                                                                                    <a class="dropdown-item" href="#" data-status="Out of delivery">Out of delivery</a>
-                                                                                </li>
-                                                                                <li>
-                                                                                    <a class="dropdown-item" href="#" data-status="Shipped">Shipped</a>
-                                                                                </li>
-                                                                                <li>
-                                                                                    <a class="dropdown-item" href="#" data-status="Return confirmed">Return confirmed</a>
-                                                                                </li>
-                                                                                <li>
-                                                                                    <a class="dropdown-item" href="#" data-status="Delivered">Delivered</a>
-                                                                                </li>                              
-                                                                            </ul>
-                                                                          </div>
-                                                                        </td>
-                                                                        <td>
-                                                                            <button data-status="<%=items.status%>" data-product-id="<%=items.product._id%>" class="btn btn-secondary cancel-btn" type="button" aria-expanded="false" style="background-color: #0da487 !important;" <% if(items.status === 'Cancelled') { %> disabled <% } %>>
-                                                                                Cancel Order
-                                                                            </button>
-                                                                        </td>
-                                                                    </tr>
-                                                             <%   }) %>
-                                                                   
-                                                                </tbody>
-
-                                                                <tfoot>
-                                                                    <tr class="table-order">
-                                                                        <td colspan="3">
-                                                                            <h5>Subtotal :</h5>
-                                                                        </td>
-                                                                        <td>
-                                                                            <h4><%=orderDetails.grandTotal%></h4>
-                                                                        </td>
-                                                                        
-                                                                    </tr>
-
-                                                                    <tr class="table-order">
-                                                                        <td colspan="3">
-                                                                            <h5>Shipping :</h5>
-                                                                        </td>
-                                                                        <td>
-                                                                            <h4>Free Shipping</h4>
-                                                                        </td>
-                                                                    </tr>
-
-                                                                    <!-- <tr class="table-order">
-                                                                        <td colspan="3">
-                                                                            <h5>Tax(GST) :</h5>
-                                                                        </td>
-                                                                        <td>
-                                                                            <h4>₹80.00</h4>
-                                                                        </td>
-                                                                    </tr> -->
-
-                                                                    <tr class="table-order">
-                                                                        <td colspan="3">
-                                                                            <h4 class="theme-color fw-bold">Total Price
-                                                                                :</h4>
-                                                                        </td>
-                                                                        <td>
-                                                                            <h4 class="theme-color fw-bold"><%=orderDetails.grandTotal%>
-                                                                            </h4>
-                                                                        </td>
-                                                                    </tr>
-                                                                </tfoot>
-                                                            </table>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-xl-4">
-                                                        <div class="order-success">
-                                                            <div class="row g-4">
-
-
-
-
-                                                      <ul class="order-details">
-                                                        <br>
-                                                            
-                                                            <li id="statusDetails"><%= orderDetails.status %></li>
-                                                            
-                                                        </ul>
-                                                                <h4>summery</h4>
-                                                                <ul class="order-details">
-                                                                    <li>Order ID: <%=orderDetails._id%></li>
-                                                                    <li>Order Date: October 22, 2018</li>
-                                                                    <li>Order Total:₹<%=orderDetails.grandTotal%></li>
-                                                                </ul>
-
-                                                                <h4>shipping address</h4>
-                                                                <ul class="order-details">
-                                                                    <li><%=orderDetails.address.name%></li>
-                                                                    <li><%= orderDetails.address.houseno%>, <%= orderDetails.address.street %>.</li>
-                                                                    <li><%= orderDetails.address.country %>, <%= orderDetails.address.pincode %> Contact No: <%= orderDetails.address.phone %></li>
-                                                                </ul>
-
-                                                                <div class="payment-mode">
-                                                                    <h4>payment method</h4>
-                                                                    <p><%=orderDetails.paymentMethod%></p>
-                                                                </div>
-
-                                                                <div class="delivery-sec">
-                                                                    <!-- <h3>expected date of delivery: <span>october 22,
-                                                                            2018</span>
-                                                                    </h3> -->
-                                                                    <a href="order-tracking.html">track order</a>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <!-- section end -->
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- tracking table end -->
-
-                        <div class="container-fluid">
-                            <!-- footer start-->
-                            <footer class="footer">
-                                <div class="row">
-                                    <div class="col-md-12 footer-copyright text-center">
-                                        <p class="mb-0">Copyright 2022 © Fastkart theme by pixelstrap</p>
-                                    </div>
-                                </div>
-                            </footer>
-                        </div>
-                    </div>
-                    <!-- tracking section End -->
-                </div>
-            </div>
-            <!-- page-wrapper End -->
-
-            <!-- Modal start -->
-            <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-                aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                <div class="modal-dialog  modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-body">
-                            <h5 class="modal-title" id="staticBackdropLabel">Logging Out</h5>
-                            <p>Are you sure you want to log out?</p>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-
-                            <div class="button-box">
-                                <button type="button" class="btn btn--no" data-bs-dismiss="modal">No</button>
-                                <button type="button" class="btn  btn--yes btn-primary">Yes</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Modal end -->
-
-            <script>
-                document.addEventListener('DOMContentLoaded', function () {
-                    const statusDropdown = document.getElementById('statusDropdown');
-                    const statusDetails = document.getElementById('statusDetails');
-                    const statusDropdownItems = document.querySelectorAll('#statusId .dropdown-item');
-                    const cancelButton = document.querySelector('.cancel-btn');
-            
-                    statusDropdownItems.forEach(function (item) {
-                        item.addEventListener('click', function () {
-                            const selectedStatus = item.getAttribute('data-status');
-                            statusDetails.textContent = selectedStatus;
-                            statusDropdown.setAttribute('data-status', selectedStatus);
-            
-                            // Enable the button and dropdown
-                            statusDropdown.disabled = false;
-            
-                            // Call the updateOrderStatus function when a status is selected
-                            const orderId = '<%= orderDetails._id%>';
-                            const productId = '<%= orderDetails.products[0].product._id %>'; // Update this line with the correct way to get the product ID
-                            updateOrderStatus(orderId, selectedStatus, productId);
-                        });
-                    });
-            
-                    cancelButton.addEventListener('click', function () {
-                        // Set the selectedStatus to 'Cancelled' when the "Cancel Order" button is clicked
-                        const selectedStatus = 'Cancelled';
-                        const orderId = '<%= orderDetails._id%>';
-                        const productId = '<%= orderDetails.products[0].product._id %>'; // Update this line with the correct way to get the product ID
-                        updateOrderStatus(orderId, selectedStatus, productId);
-                    });
-                });
-            
-                function updateOrderStatus(orderId, status, productId) {
-                    const url = `/admin/ChangeOrderStatus`;
-            
-                    fetch(url, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ orderId, status, productId }),
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        const updatedStatus = status;
-                        updateFrontendStatus(updatedStatus);
-            
-                        console.log('Order status updated successfully:', updatedStatus);
-                    })
-                    .catch(error => {
-                        console.error('Error updating order status:', error);
-                    });
-                }
-            
-                function updateFrontendStatus(status) {
-                    const statusDetailsDiv = document.getElementById('statusDetails');
-                    if (statusDetailsDiv) {
-                        statusDetailsDiv.innerHTML = `<strong></strong><br>${status}`;
-                    }
-            
-                    console.log('Updating front-end with new status:', status);
-                }
-            </script>
-            
-            
-        
-
-            <!-- latest js -->
-            <script src="/assetsb/js/jquery-3.6.0.min.js"></script>
-
-            <!-- Bootstrap js -->
-            <script src="/assetsb/js/bootstrap/bootstrap.bundle.min.js"></script>
-
-            <!-- feather icon js -->
-            <script src="/assetsb/js/icons/feather-icon/feather.min.js"></script>
-            <script src="/assetsb/js/icons/feather-icon/feather-icon.js"></script>
-
-            <!-- scrollbar simplebar js -->
-            <script src="/assetsb/js/scrollbar/simplebar.js"></script>
-            <script src="/assetsb/js/scrollbar/custom.js"></script>
-
-            <!-- Sidebar js -->
-            <script src="/assetsb/js/config.js"></script>
-
-            <!-- customizer js -->
-            <script src="/assetsb/js/customizer.js"></script>
-
-            <!-- Plugins js -->
-            <script src="/assetsb/js/sidebar-menu.js"></script>
-            <script src="/assetsb/js/notify/bootstrap-notify.min.js"></script>
-            <script src="/assetsb/js/notify/index.js"></script>
-
-            <!-- sidebar effect -->
-            <script src="/assetsb/js/sidebareffect.js"></script>
-
-            <!-- Theme js -->
-            <script src="/assetsb/js/script.js"></script>
-        </body>
-
-
-        <!-- Mirrored from themes.pixelstrap.com/fastkart/back-end/order-detail.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 04 Sep 2023 05:49:48 GMT -->
-
-        </html>
+      });
+    
+      function removeImage(element) {
+        $(element).parent(".pip").remove();
+        $("#files").val(""); // Clear the file input to allow selecting the same file again
+      }
+    </script>
+    
+  
+  <script>
+      document.addEventListener('DOMContentLoaded', function () {
+          const form = document.querySelector('.mega-form');
+  
+          form.addEventListener('submit', function (event) {
+              let isValid = true;
+  
+              // Reset previous error messages
+              const productName = form.querySelector('input[name="title"]');
+              clearError(productName);
+              if (!productName.value.trim()) {
+                  isValid = false;
+                  showError(productName, 'Product Name is required');
+              }
+  
+              // Validate Category
+              const category = form.querySelector('select[name="category"]');
+              clearError(category);
+              if (!category.value || category.value === 'Select category') {
+                  isValid = false;
+                  showError(category, 'Please select a category');
+              }
+  
+              // Validate Brand using regex (only letters and spaces allowed)
+              const brand = form.querySelector('input[name="brand"]');
+              clearError(brand);
+              if (!/^[A-Za-z\s]+$/.test(brand.value.trim())) {
+                  isValid = false;
+                  showError(brand, 'Brand should contain only letters and spaces');
+              }
+  
+              // Validate Model using regex (only letters, numbers, and spaces allowed)
+              const model = form.querySelector('input[name="model"]');
+              clearError(model);
+              if (!/^[A-Za-z0-9\s]+$/.test(model.value.trim())) {
+                  isValid = false;
+                  showError(model, 'Model should contain only letters, numbers, and spaces');
+              }
+  
+              // Validate Regular Price using regex (positive numbers only)
+              const regularPrice = form.querySelector('input[name="regular_price"]');
+              clearError(regularPrice);
+              if (!/^\d+(\.\d{1,2})?$/.test(regularPrice.value.trim()) || parseFloat(regularPrice.value.trim()) < 0) {
+                  isValid = false;
+                  showError(regularPrice, 'Regular Price should be a positive number');
+              }
+  
+              // Validate Sales Price using regex (positive numbers only)
+              const salesPrice = form.querySelector('input[name="sales_price"]');
+              clearError(salesPrice);
+              if (!/^\d+(\.\d{1,2})?$/.test(salesPrice.value.trim()) || parseFloat(salesPrice.value.trim()) < 0) {
+                  isValid = false;
+                  showError(salesPrice, 'Sales Price should be a positive number');
+              }
+  
+              // Validate Quantity using regex (positive integers only)
+              const quantity = form.querySelector('input[name="quantity"]');
+              clearError(quantity);
+              if (!/^[1-9]\d*$/.test(quantity.value.trim())) {
+                  isValid = false;
+                  showError(quantity, 'Quantity should be a positive integer');
+              }
+  
+              const description = form.querySelector('textarea[name="description"]');
+              clearError(description);
+              if (!description.value.trim()) {
+                  isValid = false;
+                  showError(description, 'Description Price is required');
+              }
+  
+              if (!isValid) {
+                  event.preventDefault(); // Prevent form submission if validation fails
+              }
+  
+              const imageInput = form.querySelector('input[name="image"]');
+              clearError(imageInput);
+  
+              // Check if any file is selected
+              if (imageInput.files.length === 0) {
+                  isValid = false;
+                  showError(imageInput, 'Please select at least one image');
+              }
+  
+              // Check if the number of selected files is more than 4
+              if (imageInput.files.length > 4) {
+                  isValid = false;
+                  showError(imageInput, 'Maximum of 4 images allowed');
+              }
+  
+              // Check if all selected files are images (supporting common image formats)
+              const supportedImageFormats = ['jpg', 'jpeg', 'png']; // Add more if needed
+              for (const file of imageInput.files) {
+                  const fileExtension = file.name.split('.').pop().toLowerCase();
+                  if (!supportedImageFormats.includes(fileExtension)) {
+                      isValid = false;
+                      showError(imageInput, 'Invalid file type. Only JPG, JPEG, PNG are supported.');
+                      break; // Exit the loop after the first unsupported file is found
+                  }
+              }
+  
+              if (!isValid) {
+                  event.preventDefault(); // Prevent form submission if validation fails
+              }
+          });
+  
+          function showError(input, message) {
+              // Add the new error message
+              const errorDiv = document.createElement('div');
+              errorDiv.className = 'error-message';
+              errorDiv.textContent = message;
+              errorDiv.style.color = 'red'; // Set the text color to red
+  
+              const parentDiv = input.parentElement;
+              parentDiv.appendChild(errorDiv);
+          }
+  
+          function clearError(input) {
+              // Remove previous error messages for the input
+              const parentDiv = input.parentElement;
+              const existingErrorMessages = parentDiv.querySelectorAll('.error-message');
+              existingErrorMessages.forEach(errorMessage => errorMessage.remove());
+          }
+      });
+  </script>
+  
