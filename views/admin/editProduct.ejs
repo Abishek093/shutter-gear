@@ -135,6 +135,8 @@
                                                           <input type="hidden" class="form-control" value="<%=product.images%>" name="imageImport">
                                                       </div>
 
+                                                      <div id="newImagePreviews" class="d-flex flex-wrap mt-3" ></div>
+
                                                       <div class="col-xxl-4">
                                                         <button type="button" onclick="submitForm('<%= product._id %>')" class="btn text-white theme-bg-color">Update Product</button>
 
@@ -142,11 +144,14 @@
                                                   </form>
                                               </div>
                                               <% if (errorMessage) { %>
-                                                <div class="alert alert-danger" role="alert" id="errorMessage">
+                                                <div class="alert alert-danger" role="alert" id="errorMessage" >
                                                 <%= errorMessage %>
                                                 </div>
                                             <% } %>
-                                            <div class="alert alert-danger" role="alert" id="errorMessage"></div>
+                                            <div class="alert alert-danger" role="alert" id="errorMessage" style="
+                                            background-color: white !important;
+                                            border-color: snow !important;
+                                            "></div>
 
                                           </div>
                                       </div>
@@ -185,6 +190,70 @@
 
 
 </body>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const form = document.querySelector('.theme-form');
+  
+  // Handle image removal for both existing and newly added images
+  form.addEventListener('click', function (event) {
+    if (event.target.classList.contains('remove-image')) {
+      const index = event.target.getAttribute('data-index');
+      // Remove the image preview from the DOM
+      const container = event.target.parentNode;
+      container.remove();
+      
+      // Remove the corresponding image from the input field
+      const inputField = document.querySelector('input[name="image"]');
+      const currentImages = inputField.value.split(',');
+      currentImages.splice(index, 1); // Remove the image at the specified index
+      inputField.value = currentImages.join(',');
+    }
+  });
+
+  // Handle newly selected images
+  const newImagesInput = document.querySelector('input[name="image"]');
+  newImagesInput.addEventListener("change", function () {
+    const files = this.files;
+    const imageContainer = document.getElementById('newImagePreviews');
+
+    // Clear existing image previews
+    imageContainer.innerHTML = '';
+
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      const reader = new FileReader();
+      reader.onload = function (event) {
+        // Create a container for each image and its remove button
+        const container = document.createElement("div");
+        container.classList.add("d-flex", "flex-column", "align-items-center", "mr-3", "mb-3");
+
+        // Create an image element, apply the CSS class, and append it to the container
+        const img = document.createElement("img");
+        img.src = event.target.result;
+        img.classList.add("image-preview"); // Apply the CSS class
+        container.appendChild(img);
+
+        // Create a remove button and append it to the container
+        const removeButton = document.createElement("button");
+        removeButton.classList.add("btn", "btn-danger", "remove-image");
+        removeButton.textContent = "Remove";
+        removeButton.setAttribute("type", "button");
+        removeButton.setAttribute("data-index", i);
+        container.appendChild(removeButton);
+
+        // Append the container to the main image container
+        imageContainer.appendChild(container);
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+});
+
+
+
+</script>
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -276,7 +345,7 @@
 
 /* CSS for image preview size */
 .image-preview {
-  max-width: 277px; /* Set the maximum width */
+  max-width: 160px; /* Set the maximum width */
   max-height: 277px; /* Set the maximum height */
   margin: 5px; /* Add margin for spacing */
 }
